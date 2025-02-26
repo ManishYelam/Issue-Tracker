@@ -2,7 +2,7 @@ const { hashPassword } = require('../Helpers/hashPassword');
 const { Op } = require('sequelize');
 const { generateOTPTimestamped, verifyOTPTimestamped } = require('../../Utils/OTP');
 const { sendLaunchCodeEmail, sendVerificationEmail } = require('./email.Service');
-const { User, Role, Permission, Founder } = require('../Models/Association');
+const { User, Role, Permission  } = require('../Models/Association');
 const { sequelize } = require('../../Config/Database/db.config');
 
 module.exports = {
