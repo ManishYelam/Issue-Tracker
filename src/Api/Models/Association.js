@@ -34,9 +34,8 @@ Organization.hasMany(Role, { foreignKey: 'id' });
 Role.belongsTo(Organization, { foreignKey: 'id' });
 
 // User-ApplicationProperties relationship: A user has many application properties.
-User.hasMany(ApplicationProperties, { foreignKey: 'id', as: 'applicationProperties' });
-ApplicationProperties.belongsTo(User, { foreignKey: 'id', as: 'user' });
-
+User.hasMany(ApplicationProperties, { foreignKey: 'user_id', as: 'applicationProperties' });
+ApplicationProperties.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 // Issue belongs to a User (reportedBy)
 Issue.belongsTo(User, { foreignKey: 'reportedBy', as: 'reporter' });

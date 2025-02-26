@@ -71,14 +71,6 @@ const UserActions = sequelize.MAIN_DB_NAME.define(
   {
     tableName: 'tbl_user_actions',
     timestamps: true,
-    indexes: [
-      { fields: ['user_id'] },
-      { fields: ['action_type'] },
-      { fields: ['entity_type', 'entity_id'] },
-      { fields: ['timestamp'] },
-      { fields: ['favorited_by'] },
-      { fields: ['idea_id'] },
-    ],
   }
 );
 
