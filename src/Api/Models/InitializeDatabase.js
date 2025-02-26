@@ -1,5 +1,5 @@
 const { sequelize } = require('../../Config/Database/db.config');
-const { User, UserLog, Role, Permission, RolePermissions, ApplicationProperties, Idea, UserActions, Like, Favorite, Share, IssueComment, Stats, UserConnection, Issue,  } = require('./Association');
+const { User, UserLog, Role, Permission, RolePermissions, ApplicationProperties, Idea, UserActions, Like, Favorite, Share, Stats, UserConnection, Issue, IssueComment,  } = require('./Association');
 const { BlockedUser, MediaStorage, Message, MessageReaction, Notification, Room, RoomMembers, UserSettings } = require('./Chat/ChatAssociations');
 
 module.exports = {
