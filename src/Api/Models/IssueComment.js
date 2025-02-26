@@ -14,7 +14,7 @@ const CommentAttribute = {
     allowNull: false,
     references: {
       model: Issue,
-      key: 'id',
+      key: 'issue_id',
     },
   },
   user_id: {
@@ -98,8 +98,8 @@ const CommentAttribute = {
   },
 };
 
-const IssueComment = sequelize.MAIN_DB_NAME.define('Comment', CommentAttribute, {
-  tableName: 'tbl_comments',
+const IssueComment = sequelize.MAIN_DB_NAME.define('IssueComment', CommentAttribute, {
+  tableName: 'tbl_issue_comments',
   timestamps: false,
 });
 

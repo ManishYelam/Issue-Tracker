@@ -1,5 +1,5 @@
 const { sequelize } = require('../../Config/Database/db.config');
-const { User, UserLog, Role, Permission, RolePermissions, ApplicationProperties, Idea, UserActions, Like, Favorite, Share, IssueComment, Stats, UserConnection,  } = require('./Association');
+const { User, UserLog, Role, Permission, RolePermissions, ApplicationProperties, Idea, UserActions, Like, Favorite, Share, IssueComment, Stats, UserConnection, Issue,  } = require('./Association');
 const { BlockedUser, MediaStorage, Message, MessageReaction, Notification, Room, RoomMembers, UserSettings } = require('./Chat/ChatAssociations');
 
 module.exports = {
@@ -19,6 +19,7 @@ module.exports = {
         Like.sync({ alter: false }),
         Favorite.sync({ alter: false }),
         Share.sync({ alter: false }),
+        Issue.sync({ alter: false }),
         IssueComment.sync({ alter: false }),
         Stats.sync({ alter: false }),
         UserConnection.sync({ alter: false }),

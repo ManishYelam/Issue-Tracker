@@ -26,7 +26,7 @@ const issueAttributes =
   },
   status: {
     type: DataTypes.ENUM('Pending', 'In Progress', 'On Hold', 'Resolved', 'To Be Tested', 'Tested', 'Commited', 'Rejected'),
-    defaultValue: 'Open'
+    defaultValue: 'Pending'
   },
   category: {
     type: DataTypes.STRING(100)
