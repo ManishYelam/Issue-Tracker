@@ -13,7 +13,7 @@ const issueHistoryAttributes = {
     allowNull: false,
     references: {
       model: Issue,
-      key: 'id'
+      key: 'issue_id'
     }
   },
   updatedBy: {
@@ -26,7 +26,7 @@ const issueHistoryAttributes = {
   }
 
 }
-const IssueHistory = sequelize.MAIN_DB_NAME.define('IssueHistory', issueHistoryAttributes, {
+const IssueHistory = sequelize.MAIN_DB_NAME.define('issue_histories', issueHistoryAttributes, {
   timestamps: true
 });
 

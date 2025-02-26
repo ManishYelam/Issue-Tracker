@@ -2,11 +2,11 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
 const User = require('./User');
 
-const IssueStats = sequelize.define(
+const IssueStats = sequelize.MAIN_DB_NAME.define(
   'IssueStats',
   {
     userId: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
       references: {

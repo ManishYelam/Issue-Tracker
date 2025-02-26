@@ -10,11 +10,12 @@ const UserActions = require('./UserActions');
 const Like = require('./likes');
 const Favorite = require('./Favorites');
 const Share = require('./Shares');
-const IssueComment = require('./IssueComment.JS');
 const Stats = require('./Stats');
 const UserConnection = require('./UserConnections');
 const Issue = require('./Issue');
 const IssueHistory = require('./IssueHistory');
+const IssueComment = require('./IssueComment');
+const IssueStats = require('./issueStats');
 
 // User-Role relationship: A user belongs to a role, and a role has many users.
 User.belongsTo(Role, { through: 'UserRoles', foreignKey: 'role_id' });
@@ -135,13 +136,15 @@ module.exports = {
   Organization,
   ApplicationProperties,
   Issue,
+  IssueComment,
+  IssueHistory,
+  IssueStats,
   Idea,
   UserActions,
   Idea,
   Like,
   Favorite,
   Share,
-  IssueComment,
-  Stats,
+    Stats,
   UserConnection,
 };

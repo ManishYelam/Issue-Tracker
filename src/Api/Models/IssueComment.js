@@ -33,7 +33,7 @@ const CommentAttribute = {
     type: DataTypes.INTEGER,
     allowNull: true,
     references: {
-      model: 'tbl_comments',
+      model: 'tbl_issue_comments',
       key: 'id',
     },
   },
