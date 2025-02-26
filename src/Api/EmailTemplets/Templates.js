@@ -108,7 +108,7 @@ module.exports = {
           </div>
           <div class="content">
               <p>To complete your registration, please enter the code below:</p>
-              <div class="code">${data.launchCode}</div>
+              <div class="code">${data.launchCode}</div><br/>
               <a href="${data.verificationUrl}" class="btn">Complete Registration</a>
               <p>If you didn’t request this, you can ignore this email.</p>
           </div>

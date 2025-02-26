@@ -5,7 +5,7 @@ const { User } = require('../Models/Association');
 module.exports = {
   sendLaunchCodeEmail: async (userId, userName, userEmail, verificationUrl, otp) => {
     const user_Email = userEmail;
-    const subject = 'Your Medical Service Launch Code';
+    const subject = 'Your Service Launch Code';
     const template_Name = 'LaunchCodeTemplate';
     const template_Data = {
       userId: userId, userName: userName, launchCode: otp, verificationUrl: verificationUrl
