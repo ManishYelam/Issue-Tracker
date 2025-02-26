@@ -52,9 +52,6 @@ const sendMail = async (
     );
     return info;
   } catch (error) {
-    console.error(
-      `Failed to send email to ${to} with subject "${subject}". Error: ${error.message}`
-    );
     return { success: false, message: error.message };
   }
 };
