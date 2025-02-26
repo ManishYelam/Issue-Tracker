@@ -1,32 +1,3 @@
-// const express = require('express');
-// const routeConfig = require('./Config/routeConfig');
-// const authMiddleware = require('../Middlewares/authorizationMiddleware');
-// const uploadMiddleware = require('../Middlewares/uploadMiddleware');
-
-// const middlewareMap = { authMiddleware, uploadMiddleware };
-
-// const router = express.Router();
-
-// routeConfig.forEach(route => {
-//   const { method, path, router: subRouter, handler, middleware } = route;
-//   const middlewares = [];
-//   if (middleware && middleware.length) {
-//     middleware.forEach(mw => {
-//       if (middlewareMap[mw]) {
-//         middlewares.push(middlewareMap[mw]);
-//       }
-//     });
-//   }
-//   if (subRouter) {
-//     router.use(path, ...middlewares, subRouter);
-//   }
-//   if (method && handler) {
-//     router[method](path, ...middlewares, handler);
-//   }
-// });
-
-// module.exports = router;
-
 const express = require('express');
 const authMiddleware = require('../Middlewares/authorizationMiddleware');
 const authRouter = require('./authRoutes');

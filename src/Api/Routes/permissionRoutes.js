@@ -1,22 +1,3 @@
-// const express = require('express');
-// const routeConfig = require('../Routes/Config/permissionRouteConfig');
-
-// const permissionRouter = express.Router();
-
-// routeConfig.forEach(route => {
-//     const { method, path, middlewares = [], controller } = route;
-//     if (!permissionRouter[method]) {
-//         throw new Error(`Invalid HTTP method: ${method} for path: ${path}`);
-//     }
-//     try {
-//         permissionRouter[method](path, ...middlewares, controller);
-//     } catch (error) {
-//         throw new Error(`Failed to register route for path: ${path} - ${error.message}`);
-//     }
-// });
-
-// module.exports = permissionRouter;
-
 const express = require('express');
 const permissionController = require('../Controllers/PermissionController');
 const validate = require('../Middlewares/validateMiddleware');

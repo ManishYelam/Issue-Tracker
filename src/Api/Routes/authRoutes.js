@@ -1,22 +1,3 @@
-// const express = require('express');
-// const routeConfig = require('../Routes/Config/authRouteConfig');
-
-// const authRouter = express.Router();
-
-// routeConfig.forEach(route => {
-//     const { method, path, middlewares = [], controller } = route;
-//     if (!authRouter[method]) {
-//         throw new Error(`Invalid HTTP method: ${method} for path: ${path}`);
-//     }
-//     try {
-//         authRouter[method](path, ...middlewares, controller);
-//     } catch (error) {
-//         throw new Error(`Failed to register route for path: ${path} - ${error.message}`);
-//     }
-// });
-
-// module.exports = authRouter;
-
 const express = require('express');
 const AuthController = require('../Controllers/AuthController');
 const authMiddleware = require('../Middlewares/authorizationMiddleware');
