@@ -2,7 +2,7 @@ const { hashPassword } = require('../Helpers/hashPassword');
 const { Op } = require('sequelize');
 const { generateOTPTimestamped, verifyOTPTimestamped } = require('../../Utils/OTP');
 const { sendLaunchCodeEmail, sendVerificationEmail } = require('./email.Service');
-const { User, Role, Permission  } = require('../Models/Association');
+const { User, Role, Permission } = require('../Models/Association');
 const { sequelize } = require('../../Config/Database/db.config');
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
         data.password = await hashPassword(data.password);
       }
       // Generate OTP
-      const { otp, expiryTime } = generateOTPTimestamped();
+      const { otp, expiryTime } = generateOTPTimestamped(8, 300000, true);
       data.otp = otp;
       data.expiryTime = expiryTime;
       // User object
@@ -43,7 +43,7 @@ module.exports = {
       await sendLaunchCodeEmail(newUser.id, newUser.username, newUser.email, verificationUrl, otp);
       console.log("OTP Sent:", otp);
 
-      return { newUser  };
+      return { newUser };
     } catch (error) {
       await transaction.rollback();
       throw new Error("Error creating user: " + error.message);
@@ -123,7 +123,7 @@ module.exports = {
       // Update user record
       await user.update(updatedUserData, { transaction });
       await transaction.commit();
-      return { updatedUser: user  };
+      return { updatedUser: user };
     } catch (error) {
       await transaction.rollback();
       throw new Error("Error updating user: " + error.message);
