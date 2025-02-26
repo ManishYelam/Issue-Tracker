@@ -28,8 +28,21 @@ module.exports = {
               text-align: center;
               padding: 20px;
           }
-          .header img {
-              width: 50px;
+          .logo-container {
+              width: 80px;
+              height: 80px;
+              margin: 0 auto;
+              border-radius: 50%;
+              overflow: hidden;
+              border: 2px solid #007bff;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+          }
+          .logo-container img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
           }
           .header h2 {
               font-size: 24px;
@@ -88,8 +101,10 @@ module.exports = {
   <body>
       <div class="container">
           <div class="header">
-              <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Medical Service Logo">
-              <h2>Welcome to [Medical Service Name]!</h2>
+              <div class="logo-container">
+                  <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
+              </div>
+              <h2>Welcome to ${data.appName}!</h2>
           </div>
           <div class="content">
               <p>To complete your registration, please enter the code below:</p>
@@ -98,8 +113,10 @@ module.exports = {
               <p>If you didn’t request this, you can ignore this email.</p>
           </div>
           <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} [Medical Service Name]. All rights reserved.</p>
-              <p>[Medical Service Name], 123 Medical St, Health City, HC 12345</p>
+              <p>&copy; ${new Date().getFullYear()} ${data.companyName}. All rights reserved.</p>
+              <p>${data.companyName}, 123 Medical St, Health City, HC 12345</p>
+              <p>Support Email: ${data.supportEmail}</p>
+              <p>Contact: ${data.contactNumber}</p>
           </div>
       </div>
   </body>
