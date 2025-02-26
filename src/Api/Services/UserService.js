@@ -39,7 +39,7 @@ module.exports = {
         const baseUrl = "http://localhost:5000/verify";
         return `${baseUrl}?userId=${userId}&otp=${otp}`;
       };
-      const verificationUrl = generateVerificationUrl(newUser._id, otp);
+      const verificationUrl = generateVerificationUrl(newUser.id, otp);
       await sendLaunchCodeEmail(newUser.id, newUser.username, newUser.email, verificationUrl, otp);
       console.log("OTP Sent:", otp);
 
