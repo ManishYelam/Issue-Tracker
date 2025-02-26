@@ -13,6 +13,9 @@ const axios = require('axios');
 const uploadMiddleware = require('./src/Api/Middlewares/uploadMiddleware.js');
 const authMiddleware = require('./src/Api/Middlewares/authorizationMiddleware.js');
 require('dotenv').config();
+const initializeTriggers = require("./src/Api/Models/Trigger.js");
+initializeTriggers();
+
 // require('./src/sockets/server.socket.js');
 
 const app = Middleware();

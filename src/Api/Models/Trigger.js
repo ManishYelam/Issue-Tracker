@@ -1,4 +1,5 @@
 const Issue = require("./Issue");
+const IssueStats = require("./Issue");
 
 module.exports = () => {
     // ✅ AFTER CREATE (New Issue Added)
@@ -35,7 +36,7 @@ module.exports = () => {
                 overdueIssues: issue.dueDate < new Date() ? 1 : 0
             });
         } catch (error) {
-            console.error("Error in afterCreate trigger:", error);
+            throw new Error("Error in afterCreate trigger:", error);
         }
     });
 
@@ -65,7 +66,7 @@ module.exports = () => {
                 );
             }
         } catch (error) {
-            console.error("Error in afterUpdate trigger:", error);
+            throw new Error("Error in afterUpdate trigger:", error);
         }
     });
 
@@ -81,7 +82,7 @@ module.exports = () => {
                 where: { userId: issue.assignedTo }
             });
         } catch (error) {
-            console.error("Error in afterDestroy trigger:", error);
+            throw new Error("Error in afterDestroy trigger:", error);
         }
     });
 };

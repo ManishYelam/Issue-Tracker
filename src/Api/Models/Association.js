@@ -57,6 +57,8 @@ IssueComment.belongsTo(Issue, { foreignKey: 'issueId' });
 Issue.hasMany(IssueHistory, { foreignKey: 'issueId', as: 'history' });
 IssueHistory.belongsTo(Issue, { foreignKey: 'issueId' });
 
+IssueStats.belongsTo(User, { foreignKey: 'userId' });
+
 module.exports = {
   User,
   UserLog,
