@@ -13,7 +13,6 @@ const Share = require('./Shares');
 const IssueComment = require('./IssueComment.JS');
 const Stats = require('./Stats');
 const UserConnection = require('./UserConnections');
-const Founder = require('./Founder');
 const Issue = require('./Issue');
 const IssueHistory = require('./IssueHistory');
 
@@ -145,5 +144,4 @@ module.exports = {
   IssueComment,
   Stats,
   UserConnection,
-  Founder
 };

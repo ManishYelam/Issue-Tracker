@@ -22,17 +22,6 @@ const checkUsernameDuplicate = async (value, helpers) => {
   return value;
 };
 
-const founderSchema = Joi.object({
-  startup_name: Joi.string().max(100).required(),
-  industry: Joi.string().max(100).valid("Tech", "Health", "Finance", "Education", "Retail", "Other").required(),
-  number_of_employees: Joi.number().integer().min(1).required(),
-  stage: Joi.string().valid("*-", "Ideation", "Validation", "Early Traction", "Scaling").required(),
-  nature_of_business: Joi.string().valid("Product", "Service", "Process").required(),
-  revenue_model: Joi.string().max(255).required(),
-  unique_value_proposition: Joi.string().max(500).required(),
-  pitch_deck: Joi.string().uri().required(),
-});
-
 const userSchema = Joi.object({
   username: Joi.string().max(50).required().external(checkUsernameDuplicate),
   email: Joi.string().email().max(100).required().external(checkEmailDuplicate),
@@ -45,14 +34,7 @@ const userSchema = Joi.object({
   address: Joi.string().max(500).optional(),
   status: Joi.string().valid('active', 'inactive', 'banned').default('active'),
   role_id: Joi.number().integer().optional().default(2),
-  user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional(),
-
-  // Conditionally include startup fields if role_id is 1
-  founder_info: Joi.when("role_id", {
-    is: 1,
-    then: founderSchema.required(),
-    otherwise: Joi.forbidden(),
-  }),
+  user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional()
 });
 
 const userUpdateSchema = Joi.object({
@@ -67,14 +49,7 @@ const userUpdateSchema = Joi.object({
   address: Joi.string().max(500).optional(),
   status: Joi.string().valid('active', 'inactive', 'banned').optional(),
   role_id: Joi.number().integer().optional(),
-  user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional(),
-
-  // Conditionally include startup fields if role_id is 1
-  founder_info: Joi.when("role_id", {
-    is: 1,
-    then: founderSchema.required(),
-    otherwise: Joi.forbidden(),
-  }),
+  user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional()
 });
 
 const roleSchema = Joi.object({

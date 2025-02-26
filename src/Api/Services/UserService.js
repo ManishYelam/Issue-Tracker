@@ -33,17 +33,6 @@ module.exports = {
         user_metadata: data.user_metadata,
       };
       const newUser = await User.create(user, { transaction });
-
-      // Collect founder data only if role_id is 1
-      let founderInfo = null;
-      if (data.role_id === 1 && data.founder_info) {
-        const founder = {
-          user_id: newUser.id,
-          ...data.founder_info
-        };
-        founderInfo = await Founder.create(founder, { transaction });
-      }
-      // Commit transaction if everything is successful
       await transaction.commit();
 
       const generateVerificationUrl = (userId, otp) => {
@@ -54,9 +43,8 @@ module.exports = {
       await sendLaunchCodeEmail(newUser.id, newUser.username, newUser.email, verificationUrl, otp);
       console.log("OTP Sent:", otp);
 
-      return { newUser, founderInfo };
+      return { newUser  };
     } catch (error) {
-      // Rollback if any operation fails
       await transaction.rollback();
       throw new Error("Error creating user: " + error.message);
     }
@@ -98,12 +86,6 @@ module.exports = {
         // },
       },
     });
-    if (!user) return null;
-    // If the user has a role of "Founder", fetch additional Founder data
-    if (user.Role?.name === "Founder") {
-      const founderData = await Founder.findOne({ where: { user_id: id } });
-      user.dataValues.founderData = founderData;
-    }
     return user;
   },
 
@@ -140,25 +122,8 @@ module.exports = {
       };
       // Update user record
       await user.update(updatedUserData, { transaction });
-
-      let updatedFounderInfo = null;
-      // Check if user is a Founder (role_id === 1)
-      const isFounder = (data.role_id ?? user.role_id) === 1;
-      if (isFounder && data.founder_info) {
-        const [founder, created] = await Founder.findOrCreate({
-          where: { user_id: userId },
-          defaults: { ...data.founder_info },
-          transaction
-        });
-        if (!created) {
-          Object.assign(founder, data.founder_info);
-          await founder.save({ transaction });
-        }
-        updatedFounderInfo = founder;
-      }
-
       await transaction.commit();
-      return { updatedUser: user, updatedFounderInfo };
+      return { updatedUser: user  };
     } catch (error) {
       await transaction.rollback();
       throw new Error("Error updating user: " + error.message);
