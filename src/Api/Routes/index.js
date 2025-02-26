@@ -8,7 +8,6 @@ const permissionRouter = require('./permissionRoutes');
 const userLogRouter = require('./userLogRoutes');
 const totpRouter = require('./TotpRoutes');
 const applicationRouter = require('./ApplicationPropertiesRoutes');
-const ideaRouter = require('./IdeaRoutes');
 const { userRouter, userActionsRouter } = require('./userRoutes');
 const { roomRouter, notificationRouter, messageRouter } = require('../../sockets/Route/ChatRoutes');
 
@@ -23,7 +22,6 @@ router
   .use('/user_logs', authMiddleware, userLogRouter)
   .use('/totp', authMiddleware, totpRouter)
   .use('/application', applicationRouter)
-  .use('/idea', authMiddleware, ideaRouter)
   .use('/messages', messageRouter)
   .use('/notifications', authMiddleware, notificationRouter)
   .use('/rooms', authMiddleware, roomRouter)
