@@ -3,8 +3,6 @@ const authMiddleware = require('../Middlewares/authorizationMiddleware');
 const authRouter = require('./authRoutes');
 const roleRouter = require('./roleRoutes');
 const permissionRouter = require('./permissionRoutes');
-// const userRouter = require('./userRoutes');
-// const userActionsRouter = require('./userRoutes');
 const userLogRouter = require('./userLogRoutes');
 const totpRouter = require('./TotpRoutes');
 const applicationRouter = require('./ApplicationPropertiesRoutes');
@@ -25,6 +23,5 @@ router
   .use('/messages', messageRouter)
   .use('/notifications', authMiddleware, notificationRouter)
   .use('/rooms', authMiddleware, roomRouter)
-  
 
 module.exports = router;
