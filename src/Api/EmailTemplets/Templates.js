@@ -1,5 +1,5 @@
 module.exports = {
-  medicalLaunchCodeTemplate: (data) => `
+  LaunchCodeTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
