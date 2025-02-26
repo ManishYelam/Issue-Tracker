@@ -1,6 +1,7 @@
 # Ignore logs folder
 /src/config/logs/
 /UPLOAD_DIR/
+/dist/
 
 # Logs
 
