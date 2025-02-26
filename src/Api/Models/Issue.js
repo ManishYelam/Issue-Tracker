@@ -105,6 +105,7 @@ const issueAttributes =
 }
 
 const Issue = sequelize.MAIN_DB_NAME.define('Issue', issueAttributes, {
+  tableName: 'tbl_issues',
   timestamps: true
 });
 

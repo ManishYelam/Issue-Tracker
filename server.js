@@ -13,7 +13,7 @@ const axios = require('axios');
 const uploadMiddleware = require('./src/Api/Middlewares/uploadMiddleware.js');
 const authMiddleware = require('./src/Api/Middlewares/authorizationMiddleware.js');
 require('dotenv').config();
-require('./src/sockets/server.socket.js');
+// require('./src/sockets/server.socket.js');
 
 const app = Middleware();
 app.use(cors());

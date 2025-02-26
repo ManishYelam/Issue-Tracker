@@ -10,7 +10,6 @@ const UserActions = require('./UserActions');
 const Like = require('./likes');
 const Favorite = require('./Favorites');
 const Share = require('./Shares');
-const Stats = require('./Stats');
 const UserConnection = require('./UserConnections');
 const Issue = require('./Issue');
 const IssueHistory = require('./IssueHistory');
@@ -145,6 +144,5 @@ module.exports = {
   Like,
   Favorite,
   Share,
-    Stats,
   UserConnection,
 };

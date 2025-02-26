@@ -26,7 +26,7 @@ const issueHistoryAttributes = {
   }
 
 }
-const IssueHistory = sequelize.MAIN_DB_NAME.define('issue_histories', issueHistoryAttributes, {
+const IssueHistory = sequelize.MAIN_DB_NAME.define('tbl_issue_histories', issueHistoryAttributes, {
   timestamps: true
 });
 
