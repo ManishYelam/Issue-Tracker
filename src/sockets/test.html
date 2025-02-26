@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Socket.IO Notification System</title>
+  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #status {
+      margin-top: 20px;
+    }
+    .online {
+      color: green;
+    }
+    .offline {
+      color: red;
+    }
+    .read {
+      background-color: #e0e0e0;
+      text-decoration: line-through;
+    }
+    button {
+      padding: 5px 10px;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Socket.IO Notification System</h1>
+
+  <div>
+    <label for="userId">Enter User ID:</label>
+    <input type="text" id="userId" placeholder="e.g., 1">
+    <button id="connectBtn">Connect</button>
+  </div>
+
+  <div>
+    <h3>Notifications</h3>
+    <button id="sendNotificationBtn">Send Notification</button>
+  </div>
+
+  <div id="status">
+    <h3>User Status</h3>
+    <p id="userStatus">Offline</p>
+  </div>
+
+  <div id="notificationLog">
+    <h3>Notification Log</h3>
+    <ul id="notificationsList"></ul>
+  </div>
+
+  <script>
+    const jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzM4NzI0NTMwLCJleHAiOjE3Mzg3Njc3MzB9.nURiKmQW8LTXod-qvt1z7Ou28COHaFM6xq0qOb78QHU"; // Add your JWT token here
+    
+    const socket = io('http://localhost:8000', {
+      query: { token: jwtToken }
+    });
+
+    let userId = null;
+
+    // Handle user connection
+    document.getElementById('connectBtn').addEventListener('click', () => {
+      userId = document.getElementById('userId').value;
+      if (userId) {
+        socket.emit('user_connected', userId);
+      }
+    });
+
+    // Handle sending notification
+    document.getElementById('sendNotificationBtn').addEventListener('click', () => {
+      if (userId) {
+        const notificationData = {
+          userId: userId,
+          type: 'message',
+          title: 'Test Notification',
+          message: 'This is a test notification.',
+          roomId: '1',
+          isImportant: false,
+        };
+        socket.emit('send_notification', notificationData);
+      }
+    });
+
+    socket.on('user_status_change', (data) => {
+        document.getElementById('userStatus').innerText += `${data.username} is now ${data.status}`;
+      });
+  
+    // Listen for incoming notifications
+    socket.on('receive_notification', (notification) => {
+      const notificationsList = document.getElementById('notificationsList');
+      const listItem = document.createElement('li');
+      listItem.id = `notification-${notification.id}`;
+      listItem.textContent = `${notification.from}: ${notification.title} - ${notification.message}`;
+      const markAsReadBtn = document.createElement('button');
+      markAsReadBtn.textContent = "Mark as Read";
+      markAsReadBtn.onclick = () => markAsRead(notification.id);
+      listItem.appendChild(markAsReadBtn);
+      notificationsList.appendChild(listItem);
+    });
+
+    // Mark notification as read
+    const markAsRead = (notificationId) => {
+      socket.emit('mark_as_read', notificationId);
+    };
+
+    // Listen for the 'notification_read' event to update UI
+    socket.on('notification_read', (data) => {
+      const notificationItem = document.getElementById(`notification-${data.notificationId}`);
+      if (notificationItem) {
+        notificationItem.classList.add('read'); // Add class to style it as read
+        notificationItem.innerHTML += " (Read)"; // Update text to show it's read
+      }
+    });
+
+    // Listen for socket disconnection
+    socket.on('disconnect', () => {
+      const statusElement = document.getElementById('userStatus');
+      statusElement.classList.add('offline');
+      statusElement.classList.remove('online');
+      statusElement.innerHTML = 'Offline';
+    });
+  </script>
+</body>
+</html>

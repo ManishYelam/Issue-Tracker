@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Service Test</title>
+  <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }
+    .chat-container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 10px; }
+    .messages { height: 300px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; }
+    input, button { padding: 10px; margin: 5px 0; width: 100%; box-sizing: border-box; }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <h2>Socket.IO Chat Test</h2>
+
+    <!-- Room Join Section -->
+    <input type="text" id="roomId" placeholder="Enter Room ID">
+    <button onclick="joinRoom()">Join Room</button>
+
+    <!-- Message Section -->
+    <div class="messages" id="messages"></div>
+    <input type="text" id="messageContent" placeholder="Type your message...">
+    <button onclick="sendMessage()">Send Message</button>
+
+    <!-- Reaction Section -->
+    <input type="text" id="messageId" placeholder="Enter Message ID to React">
+    <input type="text" id="reactionType" placeholder="Enter Reaction Type (like, love, etc.)">
+    <button onclick="reactToMessage()">React to Message</button>
+  </div>
+
+  <script>
+    // Connect to your Socket.IO server
+    const socket = io('http://localhost:8000', {
+      auth: {
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzM4Njg2MzA3LCJleHAiOjE3Mzg3Mjk1MDd9.KLg37fRQiJxjOkZl8hnwCxB1S-r1kDTAEb_EFaP8PNY' // Replace with actual token if authMiddleware is used
+      }
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to server:', socket.id);
+    });
+
+    socket.on('roomJoined', (message) => {
+      displayMessage(`System: ${message}`);
+    });
+
+    socket.on('newMessage', (message) => {
+      displayMessage(`Message from ${message.senderId}: ${message.content}`);
+    });
+
+    socket.on('newReaction', (data) => {
+      displayMessage(`Reaction: Message ID ${data.messageId} received a ${data.reactionType}`);
+    });
+
+    socket.on('error', (errorMessage) => {
+      displayMessage(`Error: ${errorMessage}`);
+    });
+
+    function joinRoom() {
+      const roomId = document.getElementById('roomId').value;
+      if (roomId) {
+        socket.emit('joinRoom', roomId);
+      }
+    }
+
+    function sendMessage() {
+      const roomId = document.getElementById('roomId').value;
+      const content = document.getElementById('messageContent').value;
+
+      if (roomId && content) {
+        socket.emit('sendMessage', { roomId, content });
+        document.getElementById('messageContent').value = ''; // Clear input after sending
+      }
+    }
+
+    function reactToMessage() {
+      const messageId = document.getElementById('messageId').value;
+      const reactionType = document.getElementById('reactionType').value;
+
+      if (messageId && reactionType) {
+        socket.emit('reactToMessage', { messageId, reactionType });
+      }
+    }
+
+    function displayMessage(message) {
+      const messagesContainer = document.getElementById('messages');
+      const messageElement = document.createElement('div');
+      messageElement.textContent = message;
+      messagesContainer.appendChild(messageElement);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight; // Scroll to bottom
+    }
+  </script>
+</body>
+</html>

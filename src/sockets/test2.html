@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+</head>
+<body>
+  <h1>WebSocket Connection Test</h1>
+  <div>
+    <button id="connectBtn">Connect</button>
+    <button id="disconnectBtn" disabled>Disconnect</button>
+  </div>
+  <div id="status"></div>
+  <div id="messages"></div>
+
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script>
+    let socket;
+    const user = {
+      id: '123',  // Replace with dynamic user ID
+      username: 'TestUser'  // Replace with dynamic username
+    };
+
+    document.getElementById('connectBtn').addEventListener('click', () => {
+      socket = io('http://localhost:8000', {
+        auth: {
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzM4NzI0NTMwLCJleHAiOjE3Mzg3Njc3MzB9.nURiKmQW8LTXod-qvt1z7Ou28COHaFM6xq0qOb78QHU'
+        }
+      });
+
+      socket.on('connect', () => {
+        document.getElementById('status').innerText = 'Connected to server';
+        document.getElementById('disconnectBtn').disabled = false;
+        document.getElementById('connectBtn').disabled = true;
+
+        socket.emit('user_connected', user);
+      });
+
+      socket.on('user_status_change', (data) => {
+        document.getElementById('messages').innerText = `${data.username} is now ${data.status}`;
+      });
+
+      socket.on('disconnect', () => {
+        document.getElementById('status').innerText = 'Disconnected from server';
+        document.getElementById('disconnectBtn').disabled = true;
+        document.getElementById('connectBtn').disabled = false;
+      });
+    });
+
+    document.getElementById('disconnectBtn').addEventListener('click', () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Service Test</title>
+  <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    .button {
+      margin: 5px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+    #roomInfo {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Chat Service Test</h1>
+  <button class="button" id="joinRoomButton">Join Room</button>
+  <button class="button" id="createRoomButton">Create Room</button>
+  <button class="button" id="getRoomsButton">Get Rooms</button>
+  <button class="button" id="getRoomDetailsButton">Get Room Details</button>
+  <button class="button" id="updateRoomButton">Update Room</button>
+  <button class="button" id="deleteRoomButton">Delete Room</button>
+  <button class="button" id="leaveRoomButton">Leave Room</button>
+  <button class="button" id="getRoomMembersButton">Get Room Members</button>
+
+  <div id="roomInfo"></div>
+
+  <script>
+   const socket = io('http://localhost:8000', {
+      auth: {
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzM4NzYwOTY1LCJleHAiOjE3Mzg4MDQxNjV9.TrhjWLj5VOvcqD4jFsmRMNMvPeFls7V7pCJ_vfyv9pk' // Replace with actual token if authMiddleware is used
+      }
+    });
+    document.getElementById('joinRoomButton').addEventListener('click', () => {
+      const roomId = prompt('Enter room ID to join:');
+      socket.emit('joinRoom', roomId);
+    });
+
+    document.getElementById('createRoomButton').addEventListener('click', () => {
+      const roomData = {
+        name: prompt('Enter room name:'),
+        description: prompt('Enter room description:')
+      };
+      socket.emit('createRoom', roomData);
+    });
+
+    document.getElementById('getRoomsButton').addEventListener('click', () => {
+      const page = 1; // Example
+      const limit = 10; // Example
+      const filters = {}; // Example
+      socket.emit('getRooms', { page, limit, filters });
+    });
+
+    document.getElementById('getRoomDetailsButton').addEventListener('click', () => {
+      const roomId = prompt('Enter room ID to get details:');
+      socket.emit('getRoomById', roomId);
+    });
+
+    document.getElementById('updateRoomButton').addEventListener('click', () => {
+      const roomId = prompt('Enter room ID to update:');
+      const updateData = {
+        name: prompt('Enter new room name:'),
+        description: prompt('Enter new room description:')
+      };
+      socket.emit('updateRoom', { roomId, updateData });
+    });
+
+    document.getElementById('deleteRoomButton').addEventListener('click', () => {
+      const roomId = prompt('Enter room ID to delete:');
+      socket.emit('deleteRoom', roomId);
+    });
+
+    document.getElementById('leaveRoomButton').addEventListener('click', () => {
+      const roomId = prompt('Enter room ID to leave:');
+      socket.emit('leaveRoom', roomId);
+    });
+
+    document.getElementById('getRoomMembersButton').addEventListener('click', () => {
+      const roomId = prompt('Enter room ID to get members:');
+      socket.emit('getRoomMembers', roomId);
+    });
+
+    // Listen for room joined event
+    socket.on('roomJoined', (data) => {
+      document.getElementById('roomInfo').innerHTML = `<p>${data.message} Room ID: ${data.roomId}</p>`;
+    });
+
+    // Listen for room created event
+    socket.on('roomCreated', (data) => {
+      document.getElementById('roomInfo').innerHTML = `<p>${data.message} Room ID: ${data.roomId}</p>`;
+    });
+
+    // Listen for rooms list event
+    socket.on('roomsList', (rooms) => {
+      document.getElementById('roomInfo').innerHTML = `<p>Rooms:</p><pre>${JSON.stringify(rooms, null, 2)}</pre>`;
+    });
+
+    // Listen for room details event
+    socket.on('roomDetails', (room) => {
+      document.getElementById('roomInfo').innerHTML = `<p>Room Details:</p><pre>${JSON.stringify(room, null, 2)}</pre>`;
+    });
+
+    // Listen for room updated event
+    socket.on('roomUpdated', (result) => {
+      document.getElementById('roomInfo').innerHTML = `<p>Room Updated:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
+    });
+
+    // Listen for room deleted event
+    socket.on('roomDeleted', (result) => {
+      document.getElementById('roomInfo').innerHTML = `<p>Room Deleted:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
+    });
+
+    // Listen for room left event
+    socket.on('roomLeft', (result) => {
+      document.getElementById('roomInfo').innerHTML = `<p>Room Left:</p><pre>${JSON.stringify(result, null, 2)}</pre>`;
+    });
+
+    // Listen for room members event
+    socket.on('roomMembers', (members) => {
+      document.getElementById('roomInfo').innerHTML = `<p>Room Members:</p><pre>${JSON.stringify(members, null, 2)}</pre>`;
+    });
+
+    // Listen for errors
+    socket.on('error', (errorMessage) => {
+      document.getElementById('roomInfo').innerHTML = `<p style="color: red;">Error: ${errorMessage}</p>`;
+    });
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Socket.IO Message Fetch Test</title>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Socket.IO Message Fetch Test</h1>
+    <p>Status: <span id="status">Connecting...</span></p>
+    <button id="fetchMessages">Fetch Messages</button>
+    <pre id="response"></pre>
+
+    <script>
+        // Connect to the server
+        const socket = io('http://localhost:8000', {
+      auth: {
+        token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwiaWF0IjoxNzM4NzYwOTY1LCJleHAiOjE3Mzg4MDQxNjV9.TrhjWLj5VOvcqD4jFsmRMNMvPeFls7V7pCJ_vfyv9pk' // Replace with actual token if authMiddleware is used
+      }
+    }); // Replace with your server URL
+
+        // Set up the socket connection status
+        socket.on('connect', () => {
+            document.getElementById('status').textContent = 'Connected to server!';
+        });
+
+        socket.on('disconnect', () => {
+            document.getElementById('status').textContent = 'Disconnected from server';
+        });
+
+        // Set up the event listener for the "Fetch Messages" button
+        document.getElementById('fetchMessages').addEventListener('click', () => {
+            const roomId = 15;
+            const startMessageId = 0;
+            const endMessageId = 20;
+
+            // Emit the "getMessagesByRoom" event with the roomId and message range
+            socket.emit('getMessagesByRoom', { roomId, startMessageId, endMessageId });
+
+            // Listen for the response event from the server
+            socket.on('messageGet', (data) => {
+                // Display the success message and the fetched messages
+                document.getElementById('response').textContent = JSON.stringify(data, null, 2);
+            });
+
+            // Listen for errors
+            socket.on('error', (error) => {
+                document.getElementById('response').textContent = 'Error: ' + error;
+            });
+
+            // Listen for new messages
+            socket.on('newMessage', (data) => {
+                console.log('New message received:', data);
+            });
+        });
+    </script>
+</body>
+</html>
