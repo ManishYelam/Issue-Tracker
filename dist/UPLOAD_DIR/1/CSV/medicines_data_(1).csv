@@ -1,3 +1,0 @@
-pharmacy_id,medicine_name,generic_name,description,manufacturer,price,quantity,expiry_date,side_effects,contraindications,dosage,instructions,health_issues,diseases_treated,barcode,import_source,regulatory_approvals,storage_conditions,available_in_stock
-1,Paracetamol,Acetaminophen,Pain reliever and fever reducer,ABC Pharma,10.5,100,2025-12-31,"Nausea, rash",Liver disease,500mg,Take with water after meals,"['Fever', 'Headache']","['Cold', 'Flu']",1234567890123,Local,FDA Approved,Room temperature,True
-2,Ibuprofen,Ibuprofen,Anti-inflammatory drug,XYZ Pharma,8.0,200,2024-06-30,"Stomach pain, dizziness",Stomach ulcers,400mg,Take with food,"['Pain', 'Inflammation']","['Arthritis', 'Migraine']",9876543210987,Imported,EMA Approved,"Keep in a cool, dry place",True
