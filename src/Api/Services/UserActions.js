@@ -474,6 +474,4 @@ module.exports = {
         if (!action) throw new Error('User action not found');
         return await action.update(updateData);
     },
-
-
 };
