@@ -82,7 +82,6 @@ module.exports = {
         try {
           permissionUpdateResult = await module.exports._assignPermissionsToUserInDB(userID, validPermissions);
         } catch (dbError) {
-          console.error("Error in _assignPermissionsToUserInDB:", dbError.message);
           return {
             message: "Failed to update permissions",
             validPermissions,
@@ -90,7 +89,7 @@ module.exports = {
             error: dbError.message
           };
         }
-      }  
+      }
       return {
         updatedPermissions: permissionUpdateResult,
         validPermissions,
@@ -98,7 +97,10 @@ module.exports = {
       };
 
     } catch (error) {
-      console.error("Error in assignPermissionsToUser:", error.message);
+      return {
+        message: "Failed to update permissions",
+        error: error.message
+      };
     }
   },
 

@@ -30,10 +30,7 @@ module.exports = {
     try {
       const { userID } = req.params;
       const { permissionIds } = req.body;
-      console.log(permissionIds);      
-      const result = await roleService.assignPermissionsToUser(userID, permissionIds);
-      console.log(result);
-      
+      const result = await roleService.assignPermissionsToUser(userID, permissionIds);   
       res.status(200).json({ result });
     } catch (error) {
       res.status(500).json({ error: error.message });
