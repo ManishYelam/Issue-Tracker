@@ -8,21 +8,17 @@ const { sequelize } = require('../../Config/Database/db.config');
 module.exports = {
   createUser: async (data) => {
     try {
-      const generate_password = generateStrongPassword(16)
-      const password = await hashPassword(generate_password);
       const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
-      
-      Object.assign(data, { password, otp, expiryTime });
-
+      Object.assign(data, { otp, expiryTime });
       const newUser = await User.create(data);
 
-      const verificationUrl = `http://localhost:5173/verify?userId=${newUser.id}&otp=${otp}`;
+      const verificationUrl = `http://localhost:5000/api/users/verify?userId=${newUser.id}&otp=${otp}`;
       const userName = `${newUser.first_name} ${newUser.last_name}`;
       await sendLaunchCodeEmail(newUser.id, userName, newUser.email, verificationUrl, otp);
 
       return newUser;
     } catch (error) {
-      return { success: false, message: "Error creating user: " + error.message };
+      throw new Error(`Error creating user: ${error.message}`);
     }
   },
 
@@ -31,24 +27,28 @@ module.exports = {
       const user = await User.findByPk(userId);
       if (!user) throw new Error('User not found');
 
-      const { launchCode: otp, expiryTime } = user;
+      const { otp, expiryTime } = user;
       if (!otp || !expiryTime) throw new Error('Launch code is missing or expired');
 
       const { isValid, message } = verifyOTPTimestamped(launchCode, otp, expiryTime);
       if (!isValid) throw new Error(message);
 
+      const generate_password = generateStrongPassword(16)
+      const password = await hashPassword(generate_password);
+
       // Update user verification status
       user.isVerified = true;
-      user.launchCode = null;
-      user.launchCodeExpiry = null;
+      user.otp = null;
+      user.expiryTime = null;
+      user.password = password;
       await user.save();
 
       const userName = `${user.first_name} ${user.last_name}`;
-      await sendVerificationEmail(userName, user.email);
+      await sendVerificationEmail(userName, user.email, generate_password);
 
       return user;
     } catch (error) {
-      throw new Error(`Verification failed: ${error.message}`);
+      throw new Error(`${error.message}`);
     }
   },
 

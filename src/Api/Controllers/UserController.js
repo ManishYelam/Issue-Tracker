@@ -7,21 +7,17 @@ module.exports = {
       const newUser = await userService.createUser(req.body);
       res.status(201).json({ success: true, message: "User created successfully", user: newUser });
     } catch (error) {
-      res.status(500).json({ message: error });
+      res.status(500).json({ message: error.message });
     }
   },
 
   verifyCreateUser: async (req, res) => {
     try {
-      const { userId, launchCode } = req.query;
-      const newUser = await userService.verifyCreateUser(userId, launchCode);
-      res
-        .status(200)
-        .json({ message: 'Account verified successfully!', user: newUser });
+      const { userId, otp } = req.query;
+      const newUser = await userService.verifyCreateUser(userId, otp);
+      res.status(200).json({ message: 'Account verified successfully!', user: newUser });
     } catch (error) {
-      res
-        .status(500)
-        .json({ message: 'Verification failed: ' + error.message });
+      res.status(500).json({ message: 'Verification failed: ' + error.message });
     }
   },
 

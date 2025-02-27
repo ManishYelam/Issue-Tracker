@@ -3,21 +3,29 @@ const { registrationTemplate, passwordChangeTemplate, performanceTrackingTemplat
 const { User } = require('../Models/Association');
 
 module.exports = {
-  sendLaunchCodeEmail: async (userId, userName, userEmail, verificationUrl, otp) => {
+  sendLaunchCodeEmail: async (userId, userName, userEmail, verificationUrl, otp, password) => {
     const user_Email = userEmail;
     const subject = 'Your Service Launch Code';
     const template_Name = 'LaunchCodeTemplate';
     const template_Data = {
-      userId: userId, userName: userName, launchCode: otp, verificationUrl: verificationUrl
+      userId: userId,
+      userName: userName,
+      launchCode: otp,
+      verificationUrl: verificationUrl,
+      password: password
     };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
 
-  sendVerificationEmail: async (userName, userEmail) => {
+  sendVerificationEmail: async (userName, userEmail, password) => {
     const user_Email = userEmail;
     const subject = 'Email Verification Successful';
     const template_Name = 'verificationTemplate';
-    const template_Data = { userName: userName };
+    const template_Data = {
+      email: userEmail,
+      userName: userName,
+      password: password
+    };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
 

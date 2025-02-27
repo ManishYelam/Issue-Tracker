@@ -1,142 +1,19 @@
 module.exports = {
   LaunchCodeTemplate: (data) => `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-          /* Universal Styles */
-          body {
-              font-family: Arial, sans-serif;
-              background-color: #f4f4f9;
-              margin: 0;
-              padding: 0;
-              color: #333;
-              line-height: 1.6;
-          }
-          .container {
-              max-width: 600px;
-              margin: 40px auto;
-              padding: 20px;
-              background-color: #fff;
-              border-radius: 8px;
-              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-              border: 1px solid #ddd;
-          }
-          .header {
-              text-align: center;
-              padding: 20px;
-          }
-          .logo-container {
-              width: 80px;
-              height: 80px;
-              margin: 0 auto;
-              border-radius: 50%;
-              overflow: hidden;
-              border: 2px solid #007bff;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-          }
-          .logo-container img {
-              width: 100%;
-              height: 100%;
-              object-fit: cover;
-          }
-          .header h2 {
-              font-size: 24px;
-              margin: 10px 0;
-              color: #007bff;
-          }
-          .content {
-              text-align: center;
-              padding: 20px;
-              font-size: 16px;
-              color: #555;
-          }
-          .content p {
-              margin-bottom: 15px;
-          }
-          .code {
-              font-size: 32px;
-              font-weight: bold;
-              background-color: #f1f1f1;
-              padding: 10px 20px;
-              color: #007bff;
-              border-radius: 4px;
-              display: inline-block;
-              letter-spacing: 2px;
-              margin: 20px 0;
-          }
-          .btn {
-              background-color: #28a745;
-              color: white;
-              padding: 10px 20px;
-              font-size: 16px;
-              border-radius: 4px;
-              text-decoration: none;
-              display: inline-block;
-              margin-top: 20px;
-          }
-          .footer {
-              text-align: center;
-              font-size: 12px;
-              color: #888;
-              padding: 20px 0;
-              border-top: 1px solid #eee;
-          }
-          /* Responsive Styles */
-          @media (max-width: 600px) {
-              .container {
-                  width: 95%;
-                  margin: 20px auto;
-              }
-              .content {
-                  padding: 15px;
-              }
-          }
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <div class="header">
-              <div class="logo-container">
-                  <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
-              </div>
-              <h2>Welcome to ${data.appName}!</h2>
-          </div>
-          <div class="content">
-              <p>To complete your registration, please enter the code below:</p>
-              <div class="code">${data.launchCode}</div><br/>
-              <a href="${data.verificationUrl}" class="btn">Complete Registration</a>
-              <p>If you didn’t request this, you can ignore this email.</p>
-          </div>
-          <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} ${data.companyName}. All rights reserved.</p>
-              <p>${data.companyName}, 123 Medical St, Health City, HC 12345</p>
-              <p>Support Email: ${data.supportEmail}</p>
-              <p>Contact: ${data.contactNumber}</p>
-          </div>
-      </div>
-  </body>
-  </html>
-`,
-
-  verificationTemplate: (data) => `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
+            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
             color: #333;
+            line-height: 1.6;
         }
         .container {
             max-width: 600px;
@@ -144,15 +21,173 @@ module.exports = {
             padding: 20px;
             background-color: #fff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border: 1px solid #ddd;
+            text-align: center;
         }
         .header {
-            background-color: #4CAF50;
+            padding: 20px;
+        }
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #007bff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header h2 {
+            font-size: 24px;
+            margin: 10px 0;
+            color: #007bff;
+        }
+        .content {
+            padding: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .code {
+            font-size: 28px;
+            font-weight: bold;
+            background-color: #f1f1f1;
+            padding: 10px 20px;
+            color: #007bff;
+            border-radius: 4px;
+            display: inline-block;
+            letter-spacing: 2px;
+            margin: 20px 0;
+        }
+        .btn {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .btn-manual {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .warning {
+            color: #d9534f;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #888;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
+            </div>
+            <h2>Welcome to ${data.appName}!</h2>
+        </div>
+        <div class="content">
+            <p>To verify your email, click the button below:</p>
+            <a href="http://localhost:5000/api/users/verify?userId=${data.userId}&otp=${data.launchCode}" class="btn">Verify Email</a>
+
+            <p><strong>OR</strong></p>
+
+            <p>Enter your OTP manually by clicking below:</p>
+            <a href="http://localhost:5173/verify?userId=${data.userId}" class="btn-manual">Enter OTP Manually</a>
+
+            <p><b>Note:</b> This OTP is valid for <strong>1 hour</strong>. If you do not verify your email within 1 hour, your account will be deleted automatically.</p>
+
+            <p>If you didn’t request this, you can ignore this email.</p>
+        </div>
+        <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} ${data.companyName}. All rights reserved.</p>
+            <p>${data.companyName}, 123 Medical St, Health City, HC 12345</p>
+            <p>Support Email: ${data.supportEmail}</p>
+            <p>Contact: ${data.contactNumber}</p>
+        </div>
+    </div>
+</body>
+</html>
+`,
+
+  verificationTemplate: (data) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verified Successfully</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .header {
+            background-color: #28a745;
             color: white;
             padding: 15px;
             text-align: center;
             border-radius: 8px 8px 0 0;
+        }
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         .header h2 {
             margin: 0;
@@ -163,27 +198,105 @@ module.exports = {
             color: #555;
             font-size: 16px;
         }
+        .credentials-container {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px auto;
+            text-align: left;
+            font-size: 16px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            max-width: 400px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .credentials-container p {
+            margin: 5px 0;
+            color: #333;
+        }
+        .credentials-container span {
+            display: block;
+            color: #007bff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .btn-reset {
+            background-color: #ff9800;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
         .footer {
-            text-align: center;
             font-size: 12px;
             color: #888;
             padding: 20px 0;
             border-top: 1px solid #eee;
         }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+            .credentials-container {
+                max-width: 100%;
+                padding: 12px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Header Section -->
         <div class="header">
-            <h2>Email Verification Successful</h2>
+            <div class="logo-container">
+                <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
+            </div>
+            <h2>Welcome to ${data.appName}!</h2>
         </div>
+
+        <!-- Main Content -->
         <div class="content">
-            <p>Hi ${data.userName},</p>
-            <p>Your email has been successfully verified! You can now log in to your account and enjoy our services.</p>
-            <p>If you have any questions or need assistance, feel free to reach out to us.</p>
+            <h2 style="color: #28a745;">✅ Email Verification Successful</h2>
+            <p>Hi <strong>${data.userName}</strong>,</p>
+            <p>Your email has been successfully verified! You can now log in using the credentials below:</p>
+
+            <!-- Credentials Box -->
+            <div class="credentials-container">
+                <p>Email: <span>${data.userEmail}</span></p>
+                <p>Password: <span>${data.password}</span></p>
+            </div>
+
+            <p>You can now log in to your account:</p>
+            <a href="http://localhost:5173/login" class="btn">Login Now</a>
+
+            <p><strong>OR</strong></p>
+
+            <p>For security reasons, we highly recommend updating your password immediately.</p>
+            <a href="${data.resetPasswordUrl}" class="btn-reset">Reset Password</a>
+
+            <p>If you didn’t request this, you can ignore this email.</p>
         </div>
+
+        <!-- Footer Section -->
         <div class="footer">
-            <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
+            <p>&copy; ${new Date().getFullYear()} ${data.companyName}. All rights reserved.</p>
+            <p>${data.companyName}, 123 Medical St, Health City, HC 12345</p>
+            <p>Support Email: ${data.supportEmail}</p>
+            <p>Contact: ${data.contactNumber}</p>
         </div>
     </div>
 </body>
