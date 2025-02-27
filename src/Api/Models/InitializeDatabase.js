@@ -1,5 +1,5 @@
 const { sequelize } = require('../../Config/Database/db.config');
-const { User, UserLog, Role, Permission, RolePermissions, ApplicationProperties, Like, UserConnection, Issue, IssueComment, IssueHistory, IssueStats, } = require('./Association');
+const { User, UserLog, Role, Permission, RolePermissions, ApplicationProperties, Like, UserConnection, Issue, IssueComment, IssueHistory, IssueStats, ListOfValues, } = require('./Association');
 const { BlockedUser, MediaStorage, Message, MessageReaction, Notification, Room, RoomMembers, UserSettings } = require('./Chat/ChatAssociations');
 
 module.exports = {
@@ -29,6 +29,8 @@ module.exports = {
         Room.sync({ alter: false }),
         RoomMembers.sync({ alter: false }),
         UserSettings.sync({ alter: false }),
+
+        ListOfValues.sync({ alter: false }),
       ]);
     } catch (error) {
       console.error('Error syncing database:', error);

@@ -11,6 +11,7 @@ const Issue = require('./Issue');
 const IssueHistory = require('./IssueHistory');
 const IssueComment = require('./IssueComment');
 const IssueStats = require('./issueStats');
+const ListOfValues = require('./List.Of.values');
 
 // User-Role relationship: A user belongs to a role, and a role has many users.
 User.belongsTo(Role, { through: 'UserRoles', foreignKey: 'role_id' });
@@ -72,4 +73,5 @@ module.exports = {
   IssueStats,
   Like,
   UserConnection,
+  ListOfValues
 };

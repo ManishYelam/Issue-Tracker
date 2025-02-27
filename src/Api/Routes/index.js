@@ -8,6 +8,7 @@ const totpRouter = require('./TotpRoutes');
 const applicationRouter = require('./ApplicationPropertiesRoutes');
 const { userRouter, userActionsRouter } = require('./userRoutes');
 const { roomRouter, notificationRouter, messageRouter } = require('../../sockets/Route/ChatRoutes');
+const genericRouter = require('./GenericRoutes');
 
 const router = express.Router();
 
@@ -23,5 +24,6 @@ router
   .use('/messages', messageRouter)
   .use('/notifications', authMiddleware, notificationRouter)
   .use('/rooms', authMiddleware, roomRouter)
+  .use('/generics', authMiddleware, genericRouter)
 
 module.exports = router;
