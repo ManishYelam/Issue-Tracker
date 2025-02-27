@@ -36,7 +36,7 @@ module.exports = {
       await transaction.commit();
 
       const generateVerificationUrl = (userId, otp) => {
-        const baseUrl = "http://localhost:5000/verify";
+        const baseUrl = "http://localhost:5173/verify";
         return `${baseUrl}?userId=${userId}&otp=${otp}`;
       };
       const verificationUrl = generateVerificationUrl(newUser.id, otp);
