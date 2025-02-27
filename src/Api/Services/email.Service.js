@@ -22,7 +22,7 @@ module.exports = {
     const subject = 'Email Verification Successful';
     const template_Name = 'verificationTemplate';
     const template_Data = {
-      email: userEmail,
+      userEmail: userEmail,
       userName: userName,
       password: password
     };
