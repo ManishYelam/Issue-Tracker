@@ -43,11 +43,9 @@ const verifyOTPTimestamped = (inputOtp, savedOtp, expiryTime) => {
   if (Date.now() > expiryTime) {
     return { isValid: false, message: 'OTP has expired' };
   }
-
   if (inputOtp === savedOtp) {
     return { isValid: true, message: 'OTP is valid' };
   }
-
   return { isValid: false, message: 'Invalid OTP' };
 };
 
