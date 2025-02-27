@@ -5,7 +5,6 @@ const Permission = require('./Permission');
 const RolePermissions = require('./RolePermissions');
 const Organization = require('./Organization');
 const ApplicationProperties = require('./Application.Prop');
-const UserActions = require('./UserActions');
 const Like = require('./likes');
 const UserConnection = require('./UserConnections');
 const Issue = require('./Issue');
@@ -54,8 +53,8 @@ Issue.hasMany(IssueComment, { foreignKey: 'issueId', as: 'comments' });
 IssueComment.belongsTo(Issue, { foreignKey: 'issueId' });
 
 // Issue has many History records
-Issue.hasMany(IssueHistory, { foreignKey: 'issueId', as: 'history' });
-IssueHistory.belongsTo(Issue, { foreignKey: 'issueId' });
+Issue.hasMany(IssueHistory, { foreignKey: 'issue_id', as: 'history' });
+IssueHistory.belongsTo(Issue, { foreignKey: 'issue_id' });
 
 IssueStats.belongsTo(User, { foreignKey: 'userId' });
 
@@ -71,7 +70,6 @@ module.exports = {
   IssueComment,
   IssueHistory,
   IssueStats,
-  UserActions,
   Like,
   UserConnection,
 };
