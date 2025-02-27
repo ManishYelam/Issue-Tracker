@@ -9,11 +9,13 @@ module.exports = {
   createUser: async (data) => {
     try {
       // Hash password if provided
-      if (data.password) { data.password = await hashPassword(data.password); }
+      if (data.password) data.password = await hashPassword(data.password);
+
       // Generate OTP
       const { otp, expiryTime } = generateOTPTimestamped(8, 300000, true);
       data.otp = otp;
       data.expiryTime = expiryTime;
+
       // Create user
       const newUser = await User.create({
         password: data.password,
@@ -21,9 +23,11 @@ module.exports = {
         expiryTime,
         ...data
       });
+
       // Generate verification URL
       const verificationUrl = `http://localhost:5173/verify?userId=${newUser.id}&otp=${otp}`;
       await sendLaunchCodeEmail(newUser.id, newUser.username, newUser.email, verificationUrl, otp);
+
       console.log(`OTP Sent: ${otp} & Expiry: ${expiryTime}`);
       return { success: true, message: "User created successfully", user: newUser };
     } catch (error) {
@@ -31,25 +35,29 @@ module.exports = {
     }
   },
 
-  verifyCreateUser: async (data) => {
+  verifyCreateUser: async (userId, launchCode) => {
     try {
-      const user = await User.findByPk(data);
+      const user = await User.findByPk(userId);
       if (!user) throw new Error('User not found');
-      const { launchCode: savedCode, launchCodeExpiry } = user;
-      const { isValid, message } = verifyOTPTimestamped(
-        data.launchCode,
-        savedCode,
-        launchCodeExpiry
-      );
+
+      const { launchCode: otp, expiryTime } = user;
+      if (!otp || !expiryTime) throw new Error('Launch code is missing or expired');
+
+      const { isValid, message } = verifyOTPTimestamped(launchCode, otp, expiryTime);
       if (!isValid) throw new Error(message);
+      
+      // Update user verification status
       user.isVerified = true;
       user.launchCode = null;
       user.launchCodeExpiry = null;
       await user.save();
-      await sendVerificationEmail(user.username, user.email);
+
+      const userName = `${user.first_name} ${user.last_name}`;
+      await sendVerificationEmail(userName, user.email);
+
       return user;
     } catch (error) {
-      throw new Error('Error creating user: ' + error.message);
+      throw new Error(`Verification failed: ${error.message}`);
     }
   },
 
