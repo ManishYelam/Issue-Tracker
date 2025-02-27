@@ -57,6 +57,27 @@ const timeRemaining = (expiryTime) => {
   return `${minutes} min ${seconds} sec remaining`;
 };
 
+const generateStrongPassword = (length = 12) => {
+  const upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const specialChars = '!@#$%^&*()-_=+[]{}|;:,.<>?/';
+
+  const allChars = upperCase + lowerCase + numbers + specialChars;
+  const getRandomChar = (chars) => chars[crypto.randomInt(0, chars.length)];
+
+  // Ensure at least one character from each category
+  const passwordArray = [
+    getRandomChar(upperCase),
+    getRandomChar(lowerCase),
+    getRandomChar(numbers),
+    getRandomChar(specialChars),
+    ...Array.from({ length: length - 4 }, () => getRandomChar(allChars)) // Fill remaining
+  ];
+
+  return passwordArray.sort(() => 0.5 - Math.random()).join(''); // Shuffle and return
+};
+
 // Exporting all functions to be used in other modules
 module.exports = {
   generateOTP,
@@ -64,4 +85,5 @@ module.exports = {
   generateOTPTimestamped,
   verifyOTPTimestamped,
   timeRemaining,
+  generateStrongPassword
 };

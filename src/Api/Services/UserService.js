@@ -1,6 +1,6 @@
 const { hashPassword } = require('../Helpers/hashPassword');
 const { Op } = require('sequelize');
-const { generateOTPTimestamped, verifyOTPTimestamped } = require('../../Utils/OTP');
+const { generateOTPTimestamped, verifyOTPTimestamped, generateStrongPassword } = require('../../Utils/OTP');
 const { sendLaunchCodeEmail, sendVerificationEmail } = require('./email.Service');
 const { User, Role, Permission } = require('../Models/Association');
 const { sequelize } = require('../../Config/Database/db.config');
@@ -8,29 +8,19 @@ const { sequelize } = require('../../Config/Database/db.config');
 module.exports = {
   createUser: async (data) => {
     try {
-      // Hash password if provided
-      if (data.password) data.password = await hashPassword(data.password);
+      const generate_password = generateStrongPassword(16)
+      const password = await hashPassword(generate_password);
+      const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
+      
+      Object.assign(data, { password, otp, expiryTime });
 
-      // Generate OTP
-      const { otp, expiryTime } = generateOTPTimestamped(8, 300000, true);
-      data.otp = otp;
-      data.expiryTime = expiryTime;
+      const newUser = await User.create(data);
 
-      // Create user
-      const newUser = await User.create({
-        password: data.password,
-        otp,
-        expiryTime,
-        ...data
-      });
-
-      // Generate verification URL
       const verificationUrl = `http://localhost:5173/verify?userId=${newUser.id}&otp=${otp}`;
       const userName = `${newUser.first_name} ${newUser.last_name}`;
       await sendLaunchCodeEmail(newUser.id, userName, newUser.email, verificationUrl, otp);
 
-      console.log(`OTP Sent: ${otp} & Expiry: ${expiryTime}`);
-      return { success: true, message: "User created successfully", user: newUser };
+      return newUser;
     } catch (error) {
       return { success: false, message: "Error creating user: " + error.message };
     }

@@ -7,17 +7,13 @@ const userAttribute = {
     autoIncrement: true,
     primaryKey: true,
   },
-  username: {
-    type: DataTypes.STRING(50),
-    allowNull: false,
-  },
-  email: {
+    email: {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
   password: {
     type: DataTypes.STRING(255),
-    allowNull: false,
+    allowNull: true,
   },
   first_name: {
     type: DataTypes.STRING(50),
@@ -32,10 +28,6 @@ const userAttribute = {
     allowNull: true,
   },
   phone_number: {
-    type: DataTypes.STRING(15),
-    allowNull: true,
-  },
-  whatsapp_number: {
     type: DataTypes.STRING(15),
     allowNull: true,
   },
