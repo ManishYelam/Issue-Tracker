@@ -7,46 +7,27 @@ const { sequelize } = require('../../Config/Database/db.config');
 
 module.exports = {
   createUser: async (data) => {
-    const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
       // Hash password if provided
-      if (data.password) {
-        data.password = await hashPassword(data.password);
-      }
+      if (data.password) { data.password = await hashPassword(data.password); }
       // Generate OTP
       const { otp, expiryTime } = generateOTPTimestamped(8, 300000, true);
       data.otp = otp;
       data.expiryTime = expiryTime;
-      // User object
-      const user = {
-        username: data.username,
-        email: data.email,
+      // Create user
+      const newUser = await User.create({
         password: data.password,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        date_of_birth: data.date_of_birth,
-        phone_number: data.phone_number,
-        whatsapp_number: data.whatsapp_number,
-        address: data.address,
-        status: data.status || "active",
-        role_id: data.role_id || 2,
-        user_metadata: data.user_metadata,
-      };
-      const newUser = await User.create(user, { transaction });
-      await transaction.commit();
-
-      const generateVerificationUrl = (userId, otp) => {
-        const baseUrl = "http://localhost:5173/verify";
-        return `${baseUrl}?userId=${userId}&otp=${otp}`;
-      };
-      const verificationUrl = generateVerificationUrl(newUser.id, otp);
+        otp,
+        expiryTime,
+        ...data
+      });
+      // Generate verification URL
+      const verificationUrl = `http://localhost:5173/verify?userId=${newUser.id}&otp=${otp}`;
       await sendLaunchCodeEmail(newUser.id, newUser.username, newUser.email, verificationUrl, otp);
-      console.log("OTP Sent:", otp);
-
-      return { newUser };
+      console.log(`OTP Sent: ${otp} & Expiry: ${expiryTime}`);
+      return { success: true, message: "User created successfully", user: newUser };
     } catch (error) {
-      await transaction.rollback();
-      throw new Error("Error creating user: " + error.message);
+      return { success: false, message: "Error creating user: " + error.message };
     }
   },
 
