@@ -48,7 +48,7 @@ const authMiddleware = async (socket, next) => {
 
     socket.user = {
       id: user.id,
-      username: user.username,
+      username: `${user.first_name} ${user.last_name}`,
       email: user.email,
     };
     socket.token = token;

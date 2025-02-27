@@ -7,53 +7,24 @@ const { sendResetPasswordCodeEmail, sendPasswordChangeEmail } = require('../Serv
 const { User, UserLog, Role, Permission, Organization, } = require('../Models/Association');
 
 const AuthService = {
-  login: async (usernameOrEmail, password, req, res) => {
+  login: async (email, password, req, res) => {
     const user = await User.findOne({
-      where: {
-        [Op.or]: [{ email: usernameOrEmail }, { username: usernameOrEmail }],
-      },
-      attributes: [
-        'id',
-        'username',
-        'email',
-        'password',
-        'first_name',
-        'last_name',
-        'date_of_birth',
-        'phone_number',
-        'address',
-        'status',
-      ],
-      include: [
-        {
-          model: Role,
-          attributes: ['id', 'name', 'description'],
-          // include: [
-          //   {
-          //     model: Permission,
-          //   },
-          // ],
-        },
-      ],
+      where: { email: email },
+      attributes: ['id', 'email', 'password', 'first_name', 'last_name', 'date_of_birth', 'phone_number', 'address', 'status',],
+      include: [{
+        model: Role,
+        attributes: ['id', 'name', 'description'],
+        // include: [{ model: Permission, }],
+      },],
     });
+
     if (!user) throw new Error('Invalid credentials');
 
     const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) throw new Error('Invalid credentials');
 
-    // const role = user.Role;
-    // if (!role || !role.Permissions) {
-    //   throw new Error('User role or permissions not found');
-    // }
-    // const permissionsArray = role.Permissions.map((permission) => ({
-    //   id: permission.id,
-    //   name: permission.name,
-    // }));
     const token = generateToken(user, req, res);
-
-    return { token, user, 
-      // permissions: permissionsArray 
-    };
+    return { token, user, };
   },
 
   logout: async (userId, token, ip) => {
@@ -88,7 +59,8 @@ const AuthService = {
         { password: newHashedPassword },
         { where: { id: userId } }
       );
-      await sendPasswordChangeEmail(userId, user.email, user.username);
+      const userName = `${user.first_name} ${user.last_name}`;
+      await sendPasswordChangeEmail(userId, user.email, userName);
       return { message: 'Password changed successfully' };
     } catch (error) {
       throw new Error('Password change failed', error);
@@ -109,14 +81,8 @@ const AuthService = {
     };
     const verificationLink = generateVerificationUrl(user.id, otp);
     const resetVerificationLink = `http://localhost:5000/reset-password?userId=${user.id}&token=${otp}`;
-    await sendResetPasswordCodeEmail(
-      user.id,
-      user.username,
-      user.email,
-      verificationLink,
-      resetVerificationLink,
-      otp
-    );
+    const userName = `${user.first_name} ${user.last_name}`;
+    await sendResetPasswordCodeEmail(user.id, userName, user.email, verificationLink, resetVerificationLink, otp);
     await user.save();
     return { message: 'OTP sent to your email' };
   },

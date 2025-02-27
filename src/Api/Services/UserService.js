@@ -26,7 +26,8 @@ module.exports = {
 
       // Generate verification URL
       const verificationUrl = `http://localhost:5173/verify?userId=${newUser.id}&otp=${otp}`;
-      await sendLaunchCodeEmail(newUser.id, newUser.username, newUser.email, verificationUrl, otp);
+      const userName = `${newUser.first_name} ${newUser.last_name}`;
+      await sendLaunchCodeEmail(newUser.id, userName, newUser.email, verificationUrl, otp);
 
       console.log(`OTP Sent: ${otp} & Expiry: ${expiryTime}`);
       return { success: true, message: "User created successfully", user: newUser };
@@ -45,7 +46,7 @@ module.exports = {
 
       const { isValid, message } = verifyOTPTimestamped(launchCode, otp, expiryTime);
       if (!isValid) throw new Error(message);
-      
+
       // Update user verification status
       user.isVerified = true;
       user.launchCode = null;
@@ -80,11 +81,6 @@ module.exports = {
 
   checkExistsEmail: async (email) => {
     const user = await User.findOne({ where: { email } });
-    return user;
-  },
-
-  checkExistsUsername: async (username) => {
-    const user = await User.findOne({ where: { username } });
     return user;
   },
 

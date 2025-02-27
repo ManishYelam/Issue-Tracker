@@ -3,13 +3,8 @@ const AuthService = require('../Services/AuthServices');
 module.exports = {
   login: async (req, res) => {
     try {
-      const { usernameOrEmail, password } = req.body;
-      const { token, data, user, permissions } = await AuthService.login(
-        usernameOrEmail,
-        password
-      );
-      // Store Health ID in session after successful login
-      req.session.healthID = user.health_id;
+      const { email, password } = req.body;
+      const { token, data, user, permissions } = await AuthService.login(email, password);
       res.status(200).json({ token, user, permissions, data });
     } catch (error) {
       res.status(400).json({ error: error.message });

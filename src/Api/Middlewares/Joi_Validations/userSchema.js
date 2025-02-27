@@ -1,5 +1,5 @@
 const Joi = require('joi');
-const { checkExistsEmail, checkExistsUsername, } = require('../../Services/UserService');
+const { checkExistsEmail } = require('../../Services/UserService');
 const { prefixes } = require('../../../Config/Database/Data');
 
 const checkEmailDuplicate = async (value, helpers) => {
@@ -12,42 +12,24 @@ const checkEmailDuplicate = async (value, helpers) => {
   return value;
 };
 
-const checkUsernameDuplicate = async (value, helpers) => {
-  const user = await checkExistsUsername(value);
-  if (user) {
-    return helpers.message(
-      `Duplicate username found. Please provide a unique username. Username - ${value}`
-    );
-  }
-  return value;
-};
-
 const userSchema = Joi.object({
-  username: Joi.string().max(50).required().external(checkUsernameDuplicate),
   email: Joi.string().email().max(100).required().external(checkEmailDuplicate),
-  password: Joi.string().min(8).max(255).required(),
   first_name: Joi.string().max(50).required(),
   last_name: Joi.string().max(50).required(),
   date_of_birth: Joi.date().iso().optional(),
   phone_number: Joi.string().max(15).optional(),
-  whatsapp_number: Joi.string().max(15).optional(),
   address: Joi.string().max(500).optional(),
-  status: Joi.string().valid('active', 'inactive', 'banned').default('active'),
   role_id: Joi.number().integer().optional().default(2),
   user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional()
 });
 
 const userUpdateSchema = Joi.object({
-  username: Joi.string().max(50).optional(),
   email: Joi.string().email().max(100).optional(),
-  password: Joi.string().min(8).max(255).forbidden(),
   first_name: Joi.string().max(50).optional(),
   last_name: Joi.string().max(50).optional(),
   date_of_birth: Joi.date().iso().optional(),
   phone_number: Joi.string().max(15).optional(),
-  whatsapp_number: Joi.string().max(15).optional(),
   address: Joi.string().max(500).optional(),
-  status: Joi.string().valid('active', 'inactive', 'banned').optional(),
   role_id: Joi.number().integer().optional(),
   user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional()
 });
