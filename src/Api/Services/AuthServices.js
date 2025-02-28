@@ -20,10 +20,6 @@ const AuthService = {
 
     if (!user) throw new Error('Invalid credentials');
 
-    // if (user.logged_in_status === true) {
-    //   throw new Error('User is already logged In');
-    // }
-
     const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) throw new Error('Invalid credentials');
 
