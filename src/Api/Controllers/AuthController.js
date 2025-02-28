@@ -52,24 +52,6 @@ module.exports = {
     }
   },
 
-  resetPassword: async (req, res) => {
-    try {
-      await AuthService.resetPassword(req.user.id, req.body.newPassword);
-      res.status(200).json({ message: 'Password reset successfully' });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-
-  refreshToken: async (req, res) => {
-    try {
-      const newToken = await AuthService.refreshToken(req.body.token);
-      res.status(200).json({ token: newToken });
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-
   upsertOrganization: async (req, res) => {
     try {
       const data = req.body;

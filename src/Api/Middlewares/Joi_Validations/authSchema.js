@@ -19,13 +19,7 @@ const changePasswordSchema = Joi.object({
   new_password: passwordValidation, // Reusing the password validation schema
 });
 
-const resetPasswordSchema = Joi.object({
-  token: Joi.string().required(),
-  new_password: passwordValidation, // Reusing the password validation schema
-});
-
 module.exports = {
   loginSchema,
   changePasswordSchema,
-  resetPasswordSchema,
 };
