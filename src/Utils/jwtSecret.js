@@ -45,7 +45,7 @@ const decodeToken = (token) => {
     if (!decoded) {
       throw new Error('Invalid token format');
     }
-    console.log('JWT decoded without verification:', { decoded });
+    // console.log('JWT decoded without verification:', { decoded });
     return {
       id: decoded.id,
       role: decoded.role,
