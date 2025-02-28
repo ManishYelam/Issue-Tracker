@@ -100,7 +100,8 @@ const blacklistToken = async (token) => {
     
     user.logged_in_status = false;
     user.token = null;
-    user.expiresAt = new Date();
+    user.expiresAt = null;
+    user.expiredAt = new Date();
     await user.save();
 
     return { success: true, message: 'User found or logedout successfully', user };

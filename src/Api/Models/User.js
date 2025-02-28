@@ -70,6 +70,10 @@ const userAttribute = {
     type: DataTypes.DATE,
     allowNull: true,
   },
+  expiredAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
  
 };
 
