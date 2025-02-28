@@ -1,7 +1,7 @@
 const { Op } = require('sequelize');
 const { JWT_CONFIG } = require('../../Utils/constants');
 const { comparePassword, hashPassword } = require('../Helpers/hashPassword');
-const { generateToken, verifyToken } = require('../../Utils/jwtSecret');
+const { generateToken, verifyToken, blacklistToken } = require('../../Utils/jwtSecret');
 const { generateOTPTimestamped } = require('../../Utils/OTP');
 const { sendResetPasswordCodeEmail, sendPasswordChangeEmail } = require('../Services/email.Service');
 const { User, UserLog, Role, Permission, Organization, } = require('../Models/Association');
@@ -24,6 +24,12 @@ const AuthService = {
     if (!isValidPassword) throw new Error('Invalid credentials');
 
     const token = generateToken(user, req, res);
+
+    user.logged_in_status = true;
+    user.token = token;
+    user.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    await user.save();
+
     return { token, user, };
   },
 
@@ -32,7 +38,7 @@ const AuthService = {
       throw new Error('No token provided for logout');
     }
     // Optionally, blacklist the JWT if using a blacklist mechanism
-    // await blacklistToken(token);
+    const logout = await blacklistToken(token);
     // Log the logout event in the UserLog table
     await UserLog.create({
       userId,
@@ -41,7 +47,7 @@ const AuthService = {
       logoffAt: new Date(),
       jwtToken: token,
     });
-    return { message: 'Successfully logged out' };
+    return { logout };
   },
 
   changePassword: async (userId, oldPassword, newPassword) => {

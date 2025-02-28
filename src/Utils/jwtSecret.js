@@ -3,6 +3,8 @@ const { JWT_CONFIG } = require('./constants');
 const UserLog = require('../Api/Models/user_logs');
 const Role = require('../Api/Models/Role');
 const Permission = require('../Api/Models/Permission');
+const User = require('../Api/Models/User');
+const { Op } = require('sequelize');
 
 const generateToken = (user, secret = JWT_CONFIG.SECRET) => {
   const role = Role.findByPk(user.role_id, {
@@ -81,10 +83,37 @@ const isTokenExpired = (token) => {
   }
 };
 
+const blacklistToken = async (token) => {
+  try {
+    const decoded = decodeToken(token);  
+    if (!decoded) {
+      throw new Error('Invalid token format');
+    }
+    
+    const user = await User.findOne({
+      where: {
+        id: decoded.id,
+        logged_in_status: true,
+        token: { [Op.ne]: null } // Ensures token is not null
+      }
+    });
+    
+    user.logged_in_status = false;
+    user.token = null;
+    user.expiresAt = new Date();
+    await user.save();
+
+    return { success: true, message: 'User found or logedout successfully', user };
+  } catch (error) {
+    return { success: false, error: error.message };
+  }
+};
+
 module.exports = {
   generateToken,
   verifyToken,
   decodeToken,
   refreshToken,
   isTokenExpired,
+  blacklistToken
 };

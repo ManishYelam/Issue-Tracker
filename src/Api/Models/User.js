@@ -58,6 +58,18 @@ const userAttribute = {
     type: DataTypes.JSON,
     allowNull: true,
   },
+  token: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  logged_in_status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
+  expiresAt: {
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
  
 };
 
