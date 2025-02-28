@@ -3,6 +3,7 @@ const Joi = require('joi');
 const roleCreateSchema = Joi.array()
   .items(
     Joi.object({
+      code: Joi.string().max(100).required(),
       name: Joi.string().max(100).required(),
       description: Joi.string().max(500).optional(),
       created_by: Joi.string().required(),
@@ -12,6 +13,7 @@ const roleCreateSchema = Joi.array()
   .min(1);
 
 const roleUpdateSchema = Joi.object({
+  code: Joi.string().max(100).required(),
   name: Joi.string().max(100).optional(),
   description: Joi.string().max(500).optional(),
   updated_by: Joi.string().required(),
