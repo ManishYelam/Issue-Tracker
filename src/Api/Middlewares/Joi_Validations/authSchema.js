@@ -1,53 +1,31 @@
 const Joi = require('joi');
 
+// Define a reusable password validation schema
+const passwordValidation = Joi.string()
+  .pattern(new RegExp(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,16}$/))
+  .required()
+  .messages({
+    'string.pattern.base': 'Password must be 8-16 characters long, include at least one uppercase letter, one lowercase letter, one number, and one special character.',
+    'any.required': 'Password is required.',
+  });
+
 const loginSchema = Joi.object({
   email: Joi.string().required(),
   password: Joi.string().min(8).max(255).required(),
 });
 
 const changePasswordSchema = Joi.object({
-  oldPassword: Joi.string().min(8).max(255).required().messages({
-    'string.base': 'Old password must be a string.',
-    'string.empty': 'Old password is required.',
-    'string.min': 'Old password must be at least 8 characters long.',
-    'string.max': 'Old password must be at most 255 characters long.',
-    'any.required': 'Old password is required.',
-  }),
-  newPassword: Joi.string().min(8).max(255).required().messages({
-    'string.base': 'New password must be a string.',
-    'string.empty': 'New password is required.',
-    'string.min': 'New password must be at least 8 characters long.',
-    'string.max': 'New password must be at most 255 characters long.',
-    'any.required': 'New password is required.',
-  }),
+  old_password: Joi.string().min(8).max(255).required(),
+  new_password: passwordValidation, // Reusing the password validation schema
 });
 
 const resetPasswordSchema = Joi.object({
-  token: Joi.string().required().messages({
-    'string.base': 'Token must be a string.',
-    'string.empty': 'Token is required.',
-    'any.required': 'Token is required.',
-  }),
-  newPassword: Joi.string().min(8).max(255).required().messages({
-    'string.base': 'New password must be a string.',
-    'string.empty': 'New password is required.',
-    'string.min': 'New password must be at least 8 characters long.',
-    'string.max': 'New password must be at most 255 characters long.',
-    'any.required': 'New password is required.',
-  }),
-});
-
-const refreshTokenSchema = Joi.object({
-  token: Joi.string().required().messages({
-    'string.base': 'Token must be a string.',
-    'string.empty': 'Token is required.',
-    'any.required': 'Token is required.',
-  }),
+  token: Joi.string().required(),
+  new_password: passwordValidation, // Reusing the password validation schema
 });
 
 module.exports = {
   loginSchema,
   changePasswordSchema,
   resetPasswordSchema,
-  refreshTokenSchema,
 };

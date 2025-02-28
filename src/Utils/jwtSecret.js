@@ -97,6 +97,10 @@ const blacklistToken = async (token) => {
         token: { [Op.ne]: null } // Ensures token is not null
       }
     });
+
+    if (!user) {
+      throw new Error('User not found or already logged out');
+    }
     
     user.logged_in_status = false;
     user.token = null;
@@ -104,7 +108,7 @@ const blacklistToken = async (token) => {
     user.expiredAt = new Date();
     await user.save();
 
-    return { success: true, message: 'User retrieved or logged out successfully', user };
+    return { success: true, message: 'Logout successful. Your session has been securely ended.', user };
   } catch (error) {
     return { success: false, error: error.message };
   }

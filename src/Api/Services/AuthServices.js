@@ -51,26 +51,34 @@ const AuthService = {
     return { logout };
   },
 
-  changePassword: async (userId, oldPassword, newPassword) => {
+  changePassword: async (userId, old_password, new_password) => {
     try {
-      const user = await models.MAIN.User.findByPk(userId);
+      const user = await User.findByPk(userId);
       if (!user) {
         throw new Error('User not found');
       }
-      const isMatch = await comparePassword(oldPassword, user.password);
+
+      const isMatch = await comparePassword(old_password, user.password);
       if (!isMatch) {
         throw new Error('Old password is incorrect');
       }
-      const newHashedPassword = await hashPassword(newPassword, 10);
-      await models.MAIN.User.update(
-        { password: newHashedPassword },
-        { where: { id: userId } }
-      );
+
+      const isSameAsOld = await comparePassword(new_password, user.password);
+      if (isSameAsOld) {
+        throw new Error('New password cannot be the same as the old password');
+      }
+
+      const newHashedPassword = await hashPassword(new_password, 10);
+
+      user.password = newHashedPassword;
+      await user.save();
+
       const userName = `${user.first_name} ${user.last_name}`;
       await sendPasswordChangeEmail(userId, user.email, userName);
-      return { message: 'Password changed successfully' };
+
+      return { message: 'Your password has been updated successfully! For security, please log in again with your new password.' };
     } catch (error) {
-      throw new Error('Password change failed', error);
+      throw new Error(`Password update failed. Please try again or contact support if the issue persists. Error: ${error.message}`);
     }
   },
 
