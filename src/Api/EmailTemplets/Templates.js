@@ -597,6 +597,128 @@ module.exports = {
 </body>
 </html>
 `,
+    // ✅ 🚀
+    welcomeTemplate: (data) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to ${data.appName}!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .header {
+            background-color: #28a745;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            color: #555;
+            font-size: 16px;
+        }
+        .cta-button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .cta-button:hover {
+            background-color: #0056b3;
+        }
+        .footer {
+            font-size: 12px;
+            color: #888;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
+            </div>
+            <h2>Welcome to ${data.appName}!</h2>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h2 style="color: #28a745;">🎉 Welcome, ${data.name}!</h2>
+            <p>We’re excited to have you join <strong>${data.appName}</strong>! Our goal is to provide you with an amazing experience and help you get started effortlessly.</p>
+            
+            <p>Click the button below to explore your dashboard:</p>
+            <a href="${data.appUrl}" class="cta-button">Get Started</a>
+
+            <p>If you have any questions, feel free to reach out to our support team. We’re here to help!</p>
+
+            <p>Happy exploring! 🚀</p>
+            <p>Best regards,<br/><strong>The ${data.appName} Team</strong></p>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} ${data.appName}. All rights reserved.</p>
+            <p>${data.appName}, 123 Innovation Street, Tech City, TC 45678</p>
+            <p>Support Email: ${data.supportEmail}</p>
+            <p>Contact: ${data.contactNumber}</p>
+        </div>
+    </div>
+</body>
+</html>
+`,
 
     registrationTemplate: (data) => `
     <!DOCTYPE html>
@@ -1287,111 +1409,6 @@ module.exports = {
               <p>Hi [Recipient's Name],</p>
               <p>${data.content}</p>
               <p>If you have any questions, please contact our support team.</p>
-          </div>
-          <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
-          </div>
-      </div>
-  </body>
-  </html>
-`,
-
-    welcomeTemplate: (data) => `
-  <!DOCTYPE html>
-  <html>
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-          /* Universal styles */
-          body {
-              font-family: Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              margin: 0;
-              padding: 0;
-              background-color: #f4f4f4;
-          }
-          .container {
-              max-width: 600px;
-              margin: 20px auto;
-              padding: 20px;
-              background-color: #fff;
-              border-radius: 10px;
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-              border: 1px solid #ddd;
-          }
-          .header {
-              background-color: #4CAF50;
-              color: white;
-              text-align: center;
-              padding: 20px;
-              border-radius: 10px 10px 0 0;
-          }
-          .content {
-              padding: 20px;
-              font-size: 16px;
-              color: #555;
-          }
-          .content p {
-              margin: 1em 0;
-          }
-          .footer {
-              text-align: center;
-              font-size: 12px;
-              color: #888;
-              margin-top: 20px;
-              padding: 10px 0;
-              border-top: 1px solid #eee;
-          }
-          .cta-button {
-              display: inline-block;
-              background-color: #4CAF50;
-              color: white;
-              padding: 10px 20px;
-              text-align: center;
-              text-decoration: none;
-              font-size: 16px;
-              margin-top: 20px;
-              border-radius: 5px;
-          }
-          .cta-button:hover {
-              background-color: #45a049;
-          }
-          /* Responsive styles */
-          @media (max-width: 600px) {
-              .container {
-                  width: 95%;
-              }
-              .content {
-                  padding: 10px;
-              }
-          }
-          /* Hidden preview text for inbox summary */
-          .preheader {
-              display: none;
-              visibility: hidden;
-              opacity: 0;
-              color: transparent;
-              height: 0;
-              width: 0;
-          }
-      </style>
-  </head>
-  <body>
-      <span class="preheader">Welcome to [Your App Name], ${data.name}! We are thrilled to have you with us.</span>
-      <div class="container">
-          <div class="header">
-              <h2>Welcome to [Your App Name]!</h2>
-          </div>
-          <div class="content">
-              <p>Hi ${data.name},</p>
-              <p>We are thrilled to have you join our community! At [Your App Name], we are committed to providing you with the best experience possible.</p>
-              <p>You can start exploring right away and make the most of our services.</p>
-              <p>To get started, click the button below:</p>
-              <a href="[Your App URL]" class="cta-button">Get Started</a>
-              <p>If you have any questions, feel free to reach out to our support team. We're here to help!</p>
-              <p>Best regards,<br/>The [Your App Name] Team</p>
           </div>
           <div class="footer">
               <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
