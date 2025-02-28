@@ -121,7 +121,7 @@ module.exports = {
 
             <p>To verify your email, click the button below:</p>
             
-            <a href="http://localhost:5000/api/users/verify?userId=${data.userId}&otp=${data.launchCode}" class="btn">Verify Email</a>
+            <a href="${data.verificationUrl}" class="btn">Verify Email</a>
 
             <p><strong>OR</strong></p>
 
