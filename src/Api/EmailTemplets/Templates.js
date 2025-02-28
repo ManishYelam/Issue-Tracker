@@ -1,5 +1,5 @@
 module.exports = {
-  LaunchCodeTemplate: (data) => `
+    LaunchCodeTemplate: (data) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -143,7 +143,7 @@ module.exports = {
 </html>
 `,
 
-  verificationTemplate: (data) => `
+    verificationTemplate: (data) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -307,7 +307,160 @@ module.exports = {
 </html>
 `,
 
-  registrationTemplate: (data) => `
+    passwordChangeTemplate: (data) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Changed Successfully</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            color: #555;
+            font-size: 16px;
+        }
+        .alert {
+            background-color: #ffe6e6;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dc3545;
+            color: #dc3545;
+            font-weight: bold;
+            margin: 20px auto;
+            max-width: 400px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .btn {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .btn-reset {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .footer {
+            font-size: 12px;
+            color: #888;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+            .alert {
+                max-width: 100%;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
+            </div>
+            <h2>Password Updated Successfully!</h2>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h2 style="color: #dc3545;">🔒 Your Password Has Been Changed</h2>
+            <p>Hi <strong>${data.userName}</strong>,</p>
+            <p>Your account password was successfully updated. If this was you, no further action is needed.</p>
+
+            <!-- Security Alert -->
+            <div class="alert">
+                If you did not request this change, please reset your password immediately or contact support.
+            </div>
+
+            <p><strong>User ID:</strong> ${data.userId}</p>
+            <p>You can securely log in here:</p>
+            <a href="http://localhost:5173/login" class="btn">Login Now</a>
+
+            <p><strong>OR</strong></p>
+
+            <p>To ensure maximum security, we recommend updating your password regularly.</p>
+            <a href="${data.resetPasswordUrl}" class="btn-reset">Reset Password</a>
+
+            <p>If you have any concerns, please reach out to our support team.</p>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} ${data.companyName}. All rights reserved.</p>
+            <p>${data.companyName}, 123 Secure Lane, Safety City, SC 45678</p>
+            <p>Support Email: ${data.supportEmail}</p>
+            <p>Contact: ${data.contactNumber}</p>
+        </div>
+    </div>
+</body>
+</html>
+`,
+
+    registrationTemplate: (data) => `
     <!DOCTYPE html>
     <html>
     <head>
@@ -428,7 +581,7 @@ module.exports = {
     </html>
 `,
 
-  otpTemplate: (data) => `
+    otpTemplate: (data) => `
   <!DOCTYPE html>
   <html>
   <head>
@@ -456,7 +609,7 @@ module.exports = {
   </html>
 `,
 
-  sendResetPasswordTemplate: (data) => `
+    sendResetPasswordTemplate: (data) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -564,111 +717,7 @@ module.exports = {
 </html>
 `,
 
-  passwordChangeTemplate: (data) => `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-          /* Universal Styles */
-          body {
-              font-family: 'Arial', sans-serif;
-              background-color: #f4f4f9;
-              margin: 0;
-              padding: 0;
-              color: #333;
-              line-height: 1.6;
-          }
-          .container {
-              max-width: 600px;
-              margin: 40px auto;
-              padding: 20px;
-              background-color: #fff;
-              border-radius: 10px;
-              box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-              border: 1px solid #ddd;
-          }
-          .header {
-              background-color: #4CAF50;
-              color: white;
-              padding: 20px;
-              text-align: center;
-              border-radius: 10px 10px 0 0;
-          }
-          .header h2 {
-              margin: 0;
-              font-size: 26px;
-              font-weight: bold;
-          }
-          .content {
-              padding: 20px;
-              font-size: 16px;
-              color: #555;
-              line-height: 1.5;
-          }
-          .content p {
-              margin-bottom: 15px;
-          }
-          .alert {
-              color: #d9534f;
-              font-weight: bold;
-              background-color: #ffeef0;
-              padding: 10px;
-              border-left: 4px solid #d9534f;
-              border-radius: 4px;
-          }
-          .footer {
-              text-align: center;
-              font-size: 12px;
-              color: #888;
-              padding: 20px 0;
-              border-top: 1px solid #eee;
-          }
-          /* Responsive Styles */
-          @media (max-width: 600px) {
-              .container {
-                  width: 95%;
-                  margin: 20px auto;
-              }
-              .content {
-                  padding: 15px;
-              }
-          }
-          /* Hidden Preheader */
-          .preheader {
-              display: none;
-              visibility: hidden;
-              opacity: 0;
-              color: transparent;
-              height: 0;
-              width: 0;
-          }
-      </style>
-  </head>
-  <body>
-      <span class="preheader">Your password has been changed, ${data.userName}. If this wasn't you, please take action immediately.</span>
-      <div class="container">
-          <div class="header">
-              <h2>Password Changed Successfully</h2>
-          </div>
-          <div class="content">
-              <p>Hi ${data.userName},</p>
-              <p>Your password has been successfully updated. If you initiated this request, no further action is required.</p>
-              <div class="alert">
-                  If you did not make this change, please contact our support team immediately to secure your account.
-              </div>
-              <p><strong>User ID:</strong> ${data.userId}</p>
-          </div>
-          <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
-          </div>
-      </div>
-  </body>
-  </html>
-`,
-
-  documentUploadTemplate: (data) => `
+    documentUploadTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -768,9 +817,9 @@ module.exports = {
   </html>
 `,
 
-  sendResetEmail: (data) => {
-    const resetLink = `http://13.127.13.10:5000/reset-password?token=${data.token}`;
-    const resetEmail = `
+    sendResetEmail: (data) => {
+        const resetLink = `http://13.127.13.10:5000/reset-password?token=${data.token}`;
+        const resetEmail = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -851,9 +900,9 @@ module.exports = {
 </body>
 </html>
 `;
-  },
+    },
 
-  performanceTrackingTemplate: (data) => `
+    performanceTrackingTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -965,14 +1014,14 @@ module.exports = {
                       <th>Duration</th>
                   </tr>
                   ${data
-                    .map(
-                      (item) => `
+            .map(
+                (item) => `
                   <tr>
                       <td>${item.Action}</td>
                       <td>${item.Duration}</td>
                   </tr>`
-                    )
-                    .join('')}
+            )
+            .join('')}
               </table>
               <p>If you have any questions about this report, please contact our support team.</p>
           </div>
@@ -984,7 +1033,7 @@ module.exports = {
   </html>
 `,
 
-  systemLogsTemplate: (data) => `
+    systemLogsTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1097,15 +1146,15 @@ module.exports = {
                       <th>Message</th>
                   </tr>
                   ${data
-                    .map(
-                      (log) => `
+            .map(
+                (log) => `
                   <tr>
                       <td>${log.timestamp}</td>
                       <td>${log.level}</td>
                       <td>${log.message}</td>
                   </tr>`
-                    )
-                    .join('')}
+            )
+            .join('')}
               </table>
               <p>For any questions or further details, please reach out to support.</p>
           </div>
@@ -1117,7 +1166,7 @@ module.exports = {
   </html>
 `,
 
-  notificationTemplate: (data) => `
+    notificationTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1216,7 +1265,7 @@ module.exports = {
   </html>
 `,
 
-  welcomeTemplate: (data) => `
+    welcomeTemplate: (data) => `
   <!DOCTYPE html>
   <html>
   <head>
@@ -1321,7 +1370,7 @@ module.exports = {
   </html>
 `,
 
-  eventInvitationTemplate: (data) => `
+    eventInvitationTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1423,7 +1472,7 @@ module.exports = {
   </html>
 `,
 
-  downloadProjectTemplate: (data) => `
+    downloadProjectTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1516,7 +1565,7 @@ module.exports = {
   </html>
 `,
 
-  eventCancellationTemplate: (data) => `
+    eventCancellationTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1592,7 +1641,7 @@ module.exports = {
   </html>
 `,
 
-  termsAndConditionsTemplate: (data) => `
+    termsAndConditionsTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1678,7 +1727,7 @@ module.exports = {
   </html>
 `,
 
-  sendLocationTemplate: (data) => `
+    sendLocationTemplate: (data) => `
   <!DOCTYPE html>
   <html lang="en">
   <head>

@@ -6,7 +6,7 @@ module.exports = {
   // ✅ 
   sendLaunchCodeEmail: async (userId, userName, userEmail, verificationUrl, otp, password) => {
     const user_Email = userEmail;
-    const subject = 'Your Service Launch Code';
+    const subject = '🚀 Your Exclusive Service Launch Code is Here!';
     const template_Name = 'LaunchCodeTemplate';
     const template_Data = {
       userId: userId,
@@ -20,12 +20,23 @@ module.exports = {
   // ✅ 
   sendVerificationEmail: async (userName, userEmail, password) => {
     const user_Email = userEmail;
-    const subject = 'Email Verification Successful';
+    const subject = '✅ Email Verified Successfully – Welcome Aboard!';
     const template_Name = 'verificationTemplate';
     const template_Data = {
       userEmail: userEmail,
       userName: userName,
       password: password
+    };
+    sendMail(user_Email, subject, template_Name, template_Data);
+  },
+  // ✅ 
+  sendPasswordChangeEmail: async (userId, userEmail, userName) => {
+    const user_Email = userEmail;
+    const subject = '🔒 Password Update Confirmation – Your Account is Secure';
+    const template_Name = 'passwordChangeTemplate';
+    const template_Data = {
+      userId: userId,
+      userName: userName
     };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
@@ -35,14 +46,6 @@ module.exports = {
     const subject = 'Reset Your Password';
     const template_Name = 'sendResetPasswordTemplate';
     const template_Data = { userId, userName, launchCode: otp, verificationUrl, resetLink, };
-    sendMail(user_Email, subject, template_Name, template_Data);
-  },
-
-  sendPasswordChangeEmail: async (userId, userEmail, userName) => {
-    const user_Email = userEmail;
-    const subject = 'Your Password has been Changed';
-    const template_Name = 'passwordChangeTemplate';
-    const template_Data = { userId: userId, userName: userName };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
 
