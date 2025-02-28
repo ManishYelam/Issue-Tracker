@@ -719,6 +719,128 @@ module.exports = {
 </body>
 </html>
 `,
+    // ✅ 🚀
+    notificationTemplate: (data) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Notification from ${data.appName}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            color: #555;
+            font-size: 16px;
+        }
+        .cta-button {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .cta-button:hover {
+            background-color: #218838;
+        }
+        .footer {
+            font-size: 12px;
+            color: #888;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
+            </div>
+            <h2>${data.title}</h2>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h2 style="color: #007bff;">📢 New Notification</h2>
+            <p>Hi <strong>${data.recipientName}</strong>,</p>
+            <p>${data.content}</p>
+
+            ${data.link ? `<p>Click the button below for more details:</p>
+            <a href="${data.link}" class="cta-button">View Notification</a>` : ''}
+
+            <p>If you have any questions, feel free to reach out to our support team.</p>
+
+            <p>Best regards,<br/><strong>The ${data.appName} Team</strong></p>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} ${data.appName}. All rights reserved.</p>
+            <p>${data.appName}, 123 Innovation Street, Tech City, TC 45678</p>
+            <p>Support Email: ${data.supportEmail}</p>
+            <p>Contact: ${data.contactNumber}</p>
+        </div>
+    </div>
+</body>
+</html>
+`,
 
     registrationTemplate: (data) => `
     <!DOCTYPE html>
@@ -868,7 +990,6 @@ module.exports = {
   </body>
   </html>
 `,
-
 
     documentUploadTemplate: (data) => `
   <!DOCTYPE html>
@@ -1310,105 +1431,6 @@ module.exports = {
             .join('')}
               </table>
               <p>For any questions or further details, please reach out to support.</p>
-          </div>
-          <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
-          </div>
-      </div>
-  </body>
-  </html>
-`,
-
-    notificationTemplate: (data) => `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-          /* CSS Variables for easy customization */
-          :root {
-              --primary-color: #4CAF50;
-              --header-bg: #f4f4f4;
-              --footer-color: #888;
-              --border-color: #ddd;
-              --text-color: #333;
-              --highlight-color: #f9f9f9;
-          }
-          body {
-              font-family: Arial, sans-serif;
-              background-color: #f7f7f7;
-              margin: 0;
-              padding: 0;
-              color: var(--text-color);
-              line-height: 1.6;
-          }
-          .container {
-              max-width: 600px;
-              margin: 40px auto;
-              padding: 20px;
-              background-color: #fff;
-              border-radius: 8px;
-              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-              border: 1px solid var(--border-color);
-          }
-          .header {
-              background-color: var(--header-bg);
-              color: var(--primary-color);
-              padding: 15px;
-              text-align: center;
-              border-radius: 8px 8px 0 0;
-          }
-          .header h2 {
-              margin: 0;
-              font-size: 24px;
-          }
-          .content {
-              padding: 20px;
-              font-size: 16px;
-              color: var(--text-color);
-          }
-          .content p {
-              margin-bottom: 20px;
-          }
-          .footer {
-              text-align: center;
-              font-size: 12px;
-              color: var(--footer-color);
-              padding: 20px 0;
-              border-top: 1px solid #eee;
-          }
-          /* Responsive Styles */
-          @media (max-width: 600px) {
-              .container {
-                  width: 95%;
-                  margin: 20px auto;
-              }
-              .content {
-                  padding: 10px;
-              }
-          }
-          /* Hidden Preheader */
-          .preheader {
-              display: none;
-              visibility: hidden;
-              opacity: 0;
-              color: transparent;
-              height: 0;
-              width: 0;
-          }
-      </style>
-  </head>
-  <body>
-      <span class="preheader">You have a new notification from [Your App Name].</span>
-      <div class="container">
-          <div class="header">
-              <h2>${data.title}</h2>
-          </div>
-          <div class="content">
-              <p>Hi [Recipient's Name],</p>
-              <p>${data.content}</p>
-              <p>If you have any questions, please contact our support team.</p>
           </div>
           <div class="footer">
               <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
