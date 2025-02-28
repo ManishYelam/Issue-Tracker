@@ -460,7 +460,6 @@ module.exports = {
 </body>
 </html>
 `,
-
     // ✅ 
     sendResetPasswordTemplate: (data) => `
 <!DOCTYPE html>
