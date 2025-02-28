@@ -32,6 +32,7 @@ const AuthService = {
     user.logged_in_status = true;
     user.token = token;
     user.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+    user.expiresAt = null;
     await user.save();
 
     return { token, user, };
