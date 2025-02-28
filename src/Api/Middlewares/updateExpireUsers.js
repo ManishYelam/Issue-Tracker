@@ -13,6 +13,7 @@ const updateExpireUsers = async () => {
     for (const user of users) {
       console.log(`🔄 Updating User ID: ${user.id}, Expired At: ${user.expiresAt}`);
 
+      user.logged_in_status = false;
       user.expiredAt = new Date(); // Set expiredAt to now
       user.expiresAt = null; // Reset expiresAt
 
