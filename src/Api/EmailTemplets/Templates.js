@@ -116,7 +116,11 @@ module.exports = {
             <h2>Welcome to ${data.appName}!</h2>
         </div>
         <div class="content">
+            <p>To complete your registration, please enter the code below:</p>
+            <div class="code">${data.launchCode}</div>
+
             <p>To verify your email, click the button below:</p>
+            
             <a href="http://localhost:5000/api/users/verify?userId=${data.userId}&otp=${data.launchCode}" class="btn">Verify Email</a>
 
             <p><strong>OR</strong></p>
