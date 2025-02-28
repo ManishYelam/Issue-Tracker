@@ -20,9 +20,9 @@ const AuthService = {
 
     if (!user) throw new Error('Invalid credentials');
 
-    if (user.logged_in_status === true) {
-      throw new Error('User is already logged In');
-    }
+    // if (user.logged_in_status === true) {
+    //   throw new Error('User is already logged In');
+    // }
 
     const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) throw new Error('Invalid credentials');
@@ -32,7 +32,7 @@ const AuthService = {
     user.logged_in_status = true;
     user.token = token;
     user.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    user.expiresAt = null;
+    user.expiredAt = null;
     await user.save();
 
     return { token, user, };
