@@ -35,7 +35,7 @@ const issueAttributes =
     type: DataTypes.STRING(255)
   },
   reproducibility: {
-    type: DataTypes.ENUM('Always', 'Sometimes', 'Rarely', 'Cannot Reproduce'),
+    type: DataTypes.ENUM("Always", "Sometimes", "Rarely", "Cannot Reproduce", "Unknown", "Only Once"),
     defaultValue: 'Always'
   },
   rootCause: {

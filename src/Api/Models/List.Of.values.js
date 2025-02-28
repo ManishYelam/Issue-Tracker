@@ -16,7 +16,6 @@ const ListOfValues = sequelize.MAIN_DB_NAME.define(
     code: {
       type: DataTypes.STRING(50),
       allowNull: false,
-      unique: true,
     },
     description: {
       type: DataTypes.STRING(255),
