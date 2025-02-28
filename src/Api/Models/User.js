@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
+const Role = require('./Role');
 
 const userAttribute = {
   id: {
@@ -22,6 +23,14 @@ const userAttribute = {
   last_name: {
     type: DataTypes.STRING(50),
     allowNull: false,
+  },
+  role:{
+    type: DataTypes.STRING(50),
+    allowNull: false,
+    references: {
+      model: Role, 
+      key: 'code', 
+    },
   },
   date_of_birth: {
     type: DataTypes.DATEONLY,

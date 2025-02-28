@@ -17,6 +17,19 @@ const ListOfValues = require('./List.Of.values');
 User.belongsTo(Role, { through: 'UserRoles', foreignKey: 'role_id' });
 Role.hasMany(User, { foreignKey: 'role_id' });
 
+// Define Association: User.belongsTo(Role) using role from User and code from Role
+User.belongsTo(Role, {
+  foreignKey: 'role', // `User.role` references `Role.code`
+  targetKey: 'code',   // `code` is the primary field in Role
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE',
+});
+
+Role.hasMany(User, {
+  foreignKey: 'role',
+  sourceKey: 'code',
+});
+
 // User-UserLog relationship: A user can have many logs.
 User.hasMany(UserLog, { foreignKey: 'user_id' });
 UserLog.belongsTo(User, { foreignKey: 'user_id' });

@@ -19,6 +19,7 @@ const userSchema = Joi.object({
   date_of_birth: Joi.date().iso().optional(),
   phone_number: Joi.string().max(15).optional(),
   address: Joi.string().max(500).optional(),
+  role: Joi.string().optional(),
   role_id: Joi.number().integer().optional().default(2),
   user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional()
 });
