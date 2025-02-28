@@ -41,11 +41,16 @@ module.exports = {
     sendMail(user_Email, subject, template_Name, template_Data);
   },
 
-  sendResetPasswordCodeEmail: async (userId, userName, userEmail, verificationUrl, resetLink, otp) => {
+  sendResetPasswordCodeEmail: async (userId, userName, userEmail, resetLink, otp) => {     
     const user_Email = userEmail;
-    const subject = 'Reset Your Password';
+    const subject = '🔑 Password Reset Request – Secure Your Account';
     const template_Name = 'sendResetPasswordTemplate';
-    const template_Data = { userId, userName, launchCode: otp, verificationUrl, resetLink, };
+    const template_Data = {
+      userId,
+      userName,
+      otp,
+      resetLink,
+    };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
 

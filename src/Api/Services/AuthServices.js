@@ -83,23 +83,31 @@ const AuthService = {
   },
 
   forgetPassword: async (email) => {
-    const user = await models.MAIN.User.findOne({ where: { email } });
-    if (!user) {
-      throw new Error('User not found');
+    try {
+      const user = await User.findOne({ where: { email, status: 'active' } });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      // Generate OTP & expiry time
+      const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
+      user.otp = otp;
+      user.expiryTime = expiryTime;
+
+      // Save the OTP before sending email
+      await user.save();
+
+      // Generate verification and reset password links
+      const resetVerificationLink = `http://localhost:5000/verify-reset-password?userId=${user.id}&token=${otp}`;
+
+      // Send OTP email
+      const userName = `${user.first_name} ${user.last_name}`;     
+      await sendResetPasswordCodeEmail(user.id, userName, user.email, resetVerificationLink, otp);
+
+      return { message: 'An OTP has been sent to your email. Please verify to proceed with password reset.' };
+    } catch (error) {
+      throw new Error(`Forgot password request failed: ${error.message}`);
     }
-    const { otp, expiryTime } = generateOTPTimestamped();
-    user.otp = otp;
-    user.expiryTime = expiryTime;
-    const generateVerificationUrl = (userId, otp) => {
-      const baseUrl = 'http://localhost:5000/verify';
-      return `${baseUrl}?userId=${userId}&otp=${otp}`;
-    };
-    const verificationLink = generateVerificationUrl(user.id, otp);
-    const resetVerificationLink = `http://localhost:5000/reset-password?userId=${user.id}&token=${otp}`;
-    const userName = `${user.first_name} ${user.last_name}`;
-    await sendResetPasswordCodeEmail(user.id, userName, user.email, verificationLink, resetVerificationLink, otp);
-    await user.save();
-    return { message: 'OTP sent to your email' };
   },
 
   upsertOrganization: async (data) => {
