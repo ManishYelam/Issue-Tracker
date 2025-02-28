@@ -841,6 +841,128 @@ module.exports = {
 </body>
 </html>
 `,
+    // ✅ 🚀
+    downloadProjectTemplate: (data) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Project is Ready for Download!</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .header {
+            background-color: #3F51B5;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+        .logo-container {
+            width: 80px;
+            height: 80px;
+            margin: 10px auto;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fff;
+        }
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 20px;
+            color: #555;
+            font-size: 16px;
+        }
+        .download-btn {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+        .download-btn:hover {
+            background-color: #218838;
+        }
+        .footer {
+            font-size: 12px;
+            color: #888;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header">
+            <div class="logo-container">
+                <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
+            </div>
+            <h2>Your Project is Ready!</h2>
+        </div>
+
+        <!-- Main Content -->
+        <div class="content">
+            <h2 style="color: #3F51B5;">📂 Download Your Project</h2>
+            <p>Hi <strong>${data.userName}</strong>,</p>
+            <p>We’re excited to inform you that your project, <strong>"${data.projectName}"</strong>, is now available for download. Click the button below to get your files:</p>
+
+            <a href="${data.downloadLink}" class="download-btn">Download Project</a>
+
+            <p>If you encounter any issues with the download, feel free to reach out to our support team for assistance.</p>
+
+            <p>Best regards,<br/><strong>The ${data.appName} Team</strong></p>
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>&copy; ${new Date().getFullYear()} ${data.appName}. All rights reserved.</p>
+            <p>${data.appName}, 123 Development Lane, Tech City, TC 45678</p>
+            <p>Support Email: ${data.supportEmail}</p>
+            <p>Contact: ${data.contactNumber}</p>
+        </div>
+    </div>
+</body>
+</html>
+`,
+
 
     registrationTemplate: (data) => `
     <!DOCTYPE html>
@@ -1534,99 +1656,6 @@ module.exports = {
               <p>We hope to see you there!</p>
               <a href="${data.eventLink}" class="cta-button" target="_blank">RSVP Now</a>
           </div>
-          <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
-          </div>
-      </div>
-  </body>
-  </html>
-`,
-
-    downloadProjectTemplate: (data) => `
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <style>
-          :root {
-              --primary-color: #3F51B5;
-              --button-color: #4CAF50;
-              --secondary-color: #f7f7f7;
-              --text-color: #333;
-              --footer-color: #888;
-              --border-color: #ddd;
-          }
-          body {
-              font-family: Arial, sans-serif;
-              background-color: var(--secondary-color);
-              margin: 0;
-              padding: 20px;
-              color: var(--text-color);
-          }
-          .container {
-              max-width: 600px;
-              margin: 40px auto;
-              background-color: #fff;
-              padding: 20px;
-              border-radius: 8px;
-              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-              border: 1px solid var(--border-color);
-          }
-          h2 {
-              color: var(--primary-color);
-              font-size: 24px;
-              margin-bottom: 20px;
-              text-align: center;
-          }
-          p {
-              font-size: 16px;
-              line-height: 1.6;
-              margin-bottom: 20px;
-          }
-          .download-btn {
-              display: block;
-              width: 100%;
-              text-align: center;
-              background-color: var(--button-color);
-              color: white;
-              padding: 12px 0;
-              font-size: 16px;
-              text-decoration: none;
-              border-radius: 5px;
-              margin: 20px 0;
-              transition: background-color 0.3s;
-          }
-          .download-btn:hover {
-              background-color: #388E3C;
-          }
-          .footer {
-              text-align: center;
-              font-size: 12px;
-              color: var(--footer-color);
-              padding: 20px 0;
-              border-top: 1px solid var(--border-color);
-              margin-top: 40px;
-          }
-          @media screen and (max-width: 600px) {
-              .container {
-                  padding: 10px;
-              }
-              h2 {
-                  font-size: 20px;
-              }
-              p {
-                  font-size: 14px;
-              }
-          }
-      </style>
-  </head>
-  <body>
-      <div class="container">
-          <h2>Hi ${data.userName},</h2>
-          <p>Your project "<strong>${data.projectName}</strong>" is now ready for download! Click the button below to download your project files.</p>
-          <a href="${data.downloadLink}" class="download-btn">Download Project</a>
-          <p>If you encounter any issues with the download, feel free to reach out to our support team for assistance.</p>
           <div class="footer">
               <p>&copy; ${new Date().getFullYear()} [Your App Name]. All rights reserved.</p>
           </div>
