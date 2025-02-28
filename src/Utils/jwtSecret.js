@@ -104,7 +104,7 @@ const blacklistToken = async (token) => {
     user.expiredAt = new Date();
     await user.save();
 
-    return { success: true, message: 'User found or logedout successfully', user };
+    return { success: true, message: 'User retrieved or logged out successfully', user };
   } catch (error) {
     return { success: false, error: error.message };
   }
