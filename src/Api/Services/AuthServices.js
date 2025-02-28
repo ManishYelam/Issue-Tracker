@@ -10,7 +10,7 @@ const AuthService = {
   login: async (email, password, req, res) => {
     const user = await User.findOne({
       where: { email: email },
-      attributes: ['id', 'email', 'password', 'first_name', 'last_name', 'date_of_birth', 'phone_number', 'address', 'status',],
+      attributes: ['id', 'email', 'password', 'first_name', 'last_name', 'date_of_birth', 'phone_number', 'address', 'status', 'logged_in_status'],
       include: [{
         model: Role,
         attributes: ['id', 'name', 'description'],
@@ -19,6 +19,10 @@ const AuthService = {
     });
 
     if (!user) throw new Error('Invalid credentials');
+
+    if (user.logged_in_status === true) {
+      throw new Error('User is already logged In');
+    }
 
     const isValidPassword = await comparePassword(password, user.password);
     if (!isValidPassword) throw new Error('Invalid credentials');
