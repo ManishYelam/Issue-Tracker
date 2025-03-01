@@ -7,6 +7,7 @@ const createUpsertIssueSchema = async () => {
   const statusLOVs = await getAllLOVs(["task_status"], true);
   const priorityLOVs = await getAllLOVs(["priority"], true);
   const issueTypeLOVs = await getAllLOVs(["issue_type"], true);
+  const taskCategoryTypeLOVs = await getAllLOVs(["task_category"], true);
   const reproducibilityTypeLOVs = await getAllLOVs(["reproducibility"], true);
   const escalationLevelTypeLOVs = await getAllLOVs(["EscalationLevel"], true); 
 
@@ -14,6 +15,7 @@ const createUpsertIssueSchema = async () => {
   const statusCodes = statusLOVs.map((lov) => lov.code);
   const priorityCodes = priorityLOVs.map((lov) => lov.code);
   const issueTypeCodes = issueTypeLOVs.map((lov) => lov.code);
+  const taskCategoryTypeCodes = taskCategoryTypeLOVs.map((lov) => lov.code);
   const reproducibilityCodes = reproducibilityTypeLOVs.map((lov) => lov.code);
   const escalationLevelCodes = escalationLevelTypeLOVs.map((lov) => lov.code);
 
@@ -24,7 +26,7 @@ const createUpsertIssueSchema = async () => {
     issueType: Joi.string().valid(...issueTypeCodes).required(),
     priority: Joi.string().valid(...priorityCodes).default("Medium"),
     status: Joi.string().valid(...statusCodes).default("Pending"),
-    category: Joi.string().max(100).allow(null, ""),
+    category: Joi.string().valid(...taskCategoryTypeCodes).allow(null, ""),
     impactArea: Joi.string().max(255).allow(null, ""),
     reproducibility: Joi.string().valid(...reproducibilityCodes).default("Always"),
     rootCause: Joi.string().allow(null, ""),
