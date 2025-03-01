@@ -9,9 +9,18 @@ module.exports = {
   },
 
   // Get all List of Values (Optional: Filter by category)
-  getAllLOVs: async (categories) => { 
-    const whereClause = categories?.length ? { category: { [Op.in]: categories } } : {};
-    return await ListOfValues.findAll({ where: whereClause });
+  getAllLOVs: async (categories, isActive) => {
+    const whereClause = {};
+    if (categories?.length) {
+      whereClause.category = { [Op.in]: categories };
+    }
+    if (typeof isActive === 'boolean') {
+      whereClause.isActive = isActive;
+    }
+    return await ListOfValues.findAll({
+      where: whereClause,
+      order: [['category', 'ASC']] 
+    });
   },
 
   // Get a List of Value by ID
