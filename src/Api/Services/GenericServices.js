@@ -8,8 +8,8 @@ module.exports = {
   },
 
   // Get all List of Values (Optional: Filter by category)
-  getAllLOVs: async (category) => {
-    const whereClause = category ? { category } : {};
+  getAllLOVs: async (categories) => { 
+    const whereClause = categories?.length ? { category: { [Op.in]: categories } } : {};
     return await ListOfValues.findAll({ where: whereClause });
   },
 

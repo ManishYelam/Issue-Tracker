@@ -16,8 +16,8 @@ module.exports = {
   // Get all LOVs (Optional: Filter by category)
   getAllLOVs: async (req, res) => {
     try {
-      const { category } = req.query;
-      const lovs = await listOfValuesService.getAllLOVs(category);
+      const { categories } = req.body;
+      const lovs = await listOfValuesService.getAllLOVs(categories);
       res.json({ success: true, data: lovs });
     } catch (error) {
       res.status(500).json({ success: false, message: "Error fetching LOVs", error: error.message });
