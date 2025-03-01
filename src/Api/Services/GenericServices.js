@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const ListOfValues = require("../Models/List.Of.values");
 
 module.exports = {
