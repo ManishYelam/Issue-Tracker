@@ -1,4 +1,4 @@
-const upsertIssueSchema = require("../Middlewares/Joi_Validations/issueSchema");
+const { upsertIssueSchema, updateStatusSchema } = require("../Middlewares/Joi_Validations/issueSchema");
 const issueService = require("../Services/IssueService");
 
 const issuesController = async (req, res) => {
@@ -41,7 +41,14 @@ const issuesController = async (req, res) => {
       updateStatus: async () => {
         if (IssueID === null) throw new Error(`⚠️ Cannot update status!  
         👉 A valid Issue ID is required.`);
-        if (!status) throw new Error(`🚦 Please specify a valid status before updating the issue.`);
+        const { error } = updateStatusSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+          return res.status(400).json({
+            success: false,
+            message: "❌ Validation failed!",
+            errors: error.details.map((err) => err.message) // Return all validation errors
+          });
+        }
         return await issueService.updateIssueStatus(IssueID, status);
       },
     };

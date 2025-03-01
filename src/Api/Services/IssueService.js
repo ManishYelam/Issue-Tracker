@@ -47,7 +47,7 @@ module.exports = {
       const { count, rows: issues } = await Issue.findAndCountAll({
         where: whereConditions,
         order: [[orderBy, sortOrder]],
-        limit: limitNum,
+        limit: limit,
         offset: offset,
       });
 
@@ -66,7 +66,7 @@ module.exports = {
 
   getIssueById: async (issue_id) => {
     try {
-      const issue = await Issue.findByPk({ where: { issue_id } });
+      const issue = await Issue.findOne({ where: { issue_id } });
       if (!issue) {
         return { success: false, message: "Issue not found" };
       }
