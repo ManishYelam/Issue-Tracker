@@ -1,4 +1,4 @@
-const { upsertIssueSchema, updateStatusSchema } = require("../Middlewares/Joi_Validations/issueSchema");
+const { createUpsertIssueSchema, createUpdateStatusSchema, validateWithLOVs } = require("../Middlewares/Joi_Validations/issueSchema");
 const issueService = require("../Services/IssueService");
 
 const issuesController = async (req, res) => {
@@ -9,18 +9,13 @@ const issuesController = async (req, res) => {
     // Convert issue_id to number if valid, otherwise set to null
     const IssueID = issue_id && !isNaN(issue_id) ? parseInt(issue_id, 10) : null;
 
-    // console.log(`📩 Received Request: { action: ${action}, IssueID: ${IssueID}, status: ${status} }`);
-    // console.log(`📌 Data Types: { action: ${typeof action}, issue_id: ${typeof IssueID}, status: ${typeof status} }`);
-
-    // Define actions with backtick messages
+    // Define actions with async validation
     const actions = {
       upsert: async () => {
-        const { error } = upsertIssueSchema.validate(req.body, { abortEarly: false });
+        const { error } = await validateWithLOVs(createUpsertIssueSchema, req.body);
         if (error) {
           return res.status(400).json({
-            success: false,
-            message: "❌ Validation failed!",
-            errors: error.details.map((err) => err.message) // Return all validation errors
+            success: false, message: "❌ Validation failed!", errors: error.details.map((err) => err.message),
           });
         }
         return await issueService.upsertIssue(req.body);
@@ -41,12 +36,10 @@ const issuesController = async (req, res) => {
       updateStatus: async () => {
         if (IssueID === null) throw new Error(`⚠️ Cannot update status!  
         👉 A valid Issue ID is required.`);
-        const { error } = updateStatusSchema.validate(req.body, { abortEarly: false });
+        const { error } = await validateWithLOVs(createUpdateStatusSchema, req.body);
         if (error) {
           return res.status(400).json({
-            success: false,
-            message: "❌ Validation failed!",
-            errors: error.details.map((err) => err.message) // Return all validation errors
+            success: false, message: "❌ Validation failed!", errors: error.details.map((err) => err.message),
           });
         }
         return await issueService.updateIssueStatus(IssueID, status);
@@ -56,8 +49,7 @@ const issuesController = async (req, res) => {
     // Check if action is valid
     if (!actions[action]) {
       return res.status(400).json({
-        success: false,
-        message: `❌ Invalid action!  
+        success: false, message: `❌ Invalid action!  
         👉 Please use a valid action such as 'get', 'delete', 'upsert', 'updateStatus', or 'getAll'.`,
       });
     }
@@ -74,10 +66,8 @@ const issuesController = async (req, res) => {
 
     if (!res.headersSent) {
       return res.status(500).json({
-        success: false,
-        message: `❗ Something went wrong on our end.  
-        🔧 Please try again later or contact support.`,
-        error: err.message, // Optional: Remove this in production
+        success: false, message: `❗ Something went wrong on our end.  
+        🔧 Please try again later or contact support.`, error: err.message, // Optional: Remove this in production
       });
     }
   }
