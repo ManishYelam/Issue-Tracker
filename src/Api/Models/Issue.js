@@ -17,16 +17,16 @@ const issueAttributes =
     allowNull: false
   },
   issueType: {
-    type: DataTypes.ENUM('Bug', 'Feature Request', 'Task', 'Security', 'Performance'),
+    type: DataTypes.STRING,
     allowNull: false
   },
   priority: {
-    type: DataTypes.ENUM('Low', 'Medium', 'High', 'Critical'),
-    defaultValue: 'Medium'
+    type: DataTypes.STRING,
+    defaultValue: 'MEDIUM'
   },
   status: {
-    type: DataTypes.ENUM('Pending', 'In Progress', 'On Hold', 'Resolved', 'To Be Tested', 'Tested', 'Commited', 'Rejected'),
-    defaultValue: 'Pending'
+    type: DataTypes.STRING,
+    defaultValue: 'PENDING'
   },
   category: {
     type: DataTypes.STRING(100)
@@ -35,8 +35,8 @@ const issueAttributes =
     type: DataTypes.STRING(255)
   },
   reproducibility: {
-    type: DataTypes.ENUM("Always", "Sometimes", "Rarely", "Cannot Reproduce", "Unknown", "Only Once"),
-    defaultValue: 'Always'
+    type: DataTypes.STRING,
+    defaultValue: 'ALWAYS'
   },
   rootCause: {
     type: DataTypes.TEXT,
@@ -79,7 +79,7 @@ const issueAttributes =
     allowNull: true
   },
   escalationLevel: {
-    type: DataTypes.ENUM('None', 'L1', 'L2', 'L3', 'Critical'),
+    type: DataTypes.STRING,
     defaultValue: 'None'
   },
   escalatedTo: {

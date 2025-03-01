@@ -4,7 +4,7 @@ const { getAllLOVs } = require("../../Services/GenericServices");
 // Dynamic Joi Schema for Upserting Issues
 const createUpsertIssueSchema = async () => {
   // Fetch LOVs dynamically
-  const statusLOVs = await getAllLOVs(["status"], true);
+  const statusLOVs = await getAllLOVs(["task_status"], true);
   const priorityLOVs = await getAllLOVs(["priority"], true);
   const issueTypeLOVs = await getAllLOVs(["issue_type"], true);
   const reproducibilityTypeLOVs = await getAllLOVs(["reproducibility"], true);
