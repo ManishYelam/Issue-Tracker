@@ -31,9 +31,9 @@ const authMiddleware = async (req, res, next) => {
     const role = user.Role;
     const permissions = role.Permissions
       ? role.Permissions.map((permission) => ({
-          id: permission.id,
-          name: permission.name,
-        }))
+        id: permission.id,
+        name: permission.name,
+      }))
       : [];
 
     // Extract user-agent details (browser, OS, device type)
@@ -57,22 +57,12 @@ const authMiddleware = async (req, res, next) => {
     req.token = token;
     req.ip = ip;
     req.user_info = user;
-    req.authDetails = {
+    req.auth_details = {
       ip_address: ip || '127.0.0.1',
       user_agent: userAgent || 'unknown',
       device_type: deviceType || 'desktop',
       location: location || 'unknown',
     };
-
-    // Log user authentication
-    const logData = { userId: user.id, sourceIp: ip, jwtToken: token, loginAt: new Date(), createdAt: new Date(), };
-    const existingLog = await UserLogService.getUserLogById(user.id);
-
-    if (!existingLog) {
-      await UserLogService.createUserLog(logData);
-    } else {
-      await UserLogService.updateUserLog(existingLog.id, { sourceIp: ip, loginAt: new Date(), jwtToken: token, });
-    }
 
     next();
   } catch (error) {

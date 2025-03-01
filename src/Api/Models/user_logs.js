@@ -17,40 +17,33 @@ const userlogAttribute = {
       key: 'id', // Reference the id field in the User table
     },
   },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: DataTypes.NOW, // Set default as current timestamp
-  },
-  sourceIp: {
+  source_ip: {
     type: DataTypes.STRING(45),
     allowNull: false, // IP address must be provided
   },
-  relatedInfo: {
+  device: {
+    type: DataTypes.STRING(45),
+    allowNull: false, // IP address must be provided
+  },
+  related_info: {
     type: DataTypes.TEXT,
     allowNull: true, // Additional info related to the log can be optional
   },
-  logoffBy: {
+  logoff_by: {
     type: DataTypes.ENUM('SYSTEM', 'USER'), // Logoff triggered by system or user
     allowNull: true,
   },
-  logoffAt: {
+  logoff_at: {
     type: DataTypes.DATE, // Logoff time
     allowNull: true,
   },
-  loginAt: {
+  login_at: {
     type: DataTypes.DATE, // Login time
     allowNull: true,
-    defaultValue: DataTypes.NOW,
   },
-  jwtToken: {
+  jwt_token: {
     type: DataTypes.TEXT, // Store JWT token
     allowNull: false,
-  },
-  createdAt: {
-    type: DataTypes.DATE, // Record creation time
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
   },
 };
 // Define the UserLog model

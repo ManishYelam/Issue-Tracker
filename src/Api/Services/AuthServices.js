@@ -5,9 +5,10 @@ const { generateToken, verifyToken, blacklistToken } = require('../../Utils/jwtS
 const { generateOTPTimestamped } = require('../../Utils/OTP');
 const { sendResetPasswordCodeEmail, sendPasswordChangeEmail } = require('../Services/email.Service');
 const { User, UserLog, Role, Permission, Organization, } = require('../Models/Association');
+const { createUserLog } = require('./UserLogService');
 
 const AuthService = {
-  login: async (email, password) => {
+  login: async (email, password, clientIp, userAgent) => {
     try {
       // Fetch user with associated role
       const user = await User.findOne({
@@ -57,6 +58,24 @@ const AuthService = {
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
         expiredAt: null,
       });
+
+      const logData = {
+        user_id: user.id,
+        source_ip: clientIp,
+        device: userAgent,
+        related_info: `LOGIN`,
+        logoff_by: `USER`,
+        jwt_token: token,
+        login_at: new Date(),
+      };
+
+      const allValuesPresent = Object.values(logData).every(value => value !== null && value !== undefined);
+
+      if (allValuesPresent) {
+        await createUserLog(logData);
+      } else {
+        console.warn('Skipping user log creation due to missing data:', logData);
+      }
 
       return { token, user };
     } catch (error) {

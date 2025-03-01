@@ -4,7 +4,9 @@ module.exports = {
   login: async (req, res) => {
     try {
       const { email, password } = req.body;
-      const { token, user } = await AuthService.login(email, password);
+      const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
+      const userAgent = req.get('User-Agent');
+      const { token, user } = await AuthService.login(email, password, clientIp, userAgent);
       res.status(200).json({ token, user });
     } catch (error) {
       res.status(400).json({ error: error.message });
