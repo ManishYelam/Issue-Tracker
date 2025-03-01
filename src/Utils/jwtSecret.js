@@ -6,39 +6,15 @@ const Permission = require('../Api/Models/Permission');
 const User = require('../Api/Models/User');
 const { Op } = require('sequelize');
 
-const generateToken = (user, secret = JWT_CONFIG.SECRET) => {
-  try {    
-    return jwt.sign({
-      id: user.id,
-      email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name,
-      role: user.role,
-      date_of_birth: user.date_of_birth,
-      phone_number: user.phone_number,
-      address: user.address,
-      status: user.status,
-      isVerified: user.isVerified,
-      permission_ids: user.permission_ids ?? [],
-      user_metadata: user.user_metadata ?? {},
-      role_info: user.Role
-        ? {
-          id: user.Role?.id,
-          code: user.Role?.code,
-          name: user.Role?.name,
-          description: user.Role?.description,
-          created_by: user.Role?.created_by,
-          updated_by: user.Role?.updated_by,
-          createdAt: user.Role?.createdAt,
-          updatedAt: user.Role?.updatedAt,
-        }
-        : null,
-    }, 
-    secret, 
-    {
-      expiresIn: JWT_CONFIG.EXPIRATION,
-      algorithm: 'HS256',
-    });
+const generateToken = (user_info, secret = JWT_CONFIG.SECRET) => {
+  try {
+    return jwt.sign(
+      user_info,
+      secret,
+      {
+        expiresIn: JWT_CONFIG.EXPIRATION,
+        algorithm: 'HS256',
+      });
   } catch (error) {
     throw new Error('Token generation failed');
   }

@@ -7,46 +7,94 @@ const { sendResetPasswordCodeEmail, sendPasswordChangeEmail } = require('../Serv
 const { User, UserLog, Role, Permission, Organization, } = require('../Models/Association');
 
 const AuthService = {
-  login: async (email, password, req, res) => {
-    const user = await User.findOne({
-      where: { email: email },     
-      include: [{
-        model: Role,
-        // include: [{ model: Permission, }],
-      },],
-    });
+  login: async (email, password) => {
+    try {
+      // Fetch user with associated role
+      const user = await User.findOne({
+        where: { email },
+        include: [{ model: Role }],
+      });
 
-    if (!user) throw new Error('Invalid credentials');
+      if (!user) throw new Error('Invalid credentials');
 
-    const isValidPassword = await comparePassword(password, user.password);
-    if (!isValidPassword) throw new Error('Invalid credentials');
+      // Validate password
+      const isValidPassword = await comparePassword(password, user.password);
+      if (!isValidPassword) throw new Error('Invalid credentials');
 
-    const token = generateToken(user, req, res);
+      // Extract necessary user data for the token
+      const user_info = {
+        id: user.id,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        role: user.role,
+        date_of_birth: user.date_of_birth,
+        phone_number: user.phone_number,
+        address: user.address,
+        status: user.status,
+        isVerified: user.isVerified,
+        permission_ids: user.permission_ids ?? [],
+        user_metadata: user.user_metadata ?? {},
+        role_info: user.Role && {
+          id: user.Role.id,
+          code: user.Role.code,
+          name: user.Role.name,
+          description: user.Role.description,
+          created_by: user.Role.created_by,
+          updated_by: user.Role.updated_by,
+          createdAt: user.Role.createdAt,
+          updatedAt: user.Role.updatedAt,
+        },
+      };
 
-    user.logged_in_status = true;
-    user.token = token;
-    user.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-    user.expiredAt = null;
-    await user.save();
+      // Generate JWT token
+      const token = generateToken(user_info); // Fixed function call
 
-    return { token, user };
+      // Update user login status in a single database query
+      await user.update({
+        logged_in_status: true,
+        token,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+        expiredAt: null,
+      });
+
+      return { token, user };
+    } catch (error) {
+      console.error('Login error:', error.message);
+      throw new Error('Login failed. Please try again.');
+    }
   },
 
   logout: async (userId, token, ip) => {
     if (!token) {
       throw new Error('No token provided for logout');
     }
-    // Optionally, blacklist the JWT if using a blacklist mechanism
-    const logout = await blacklistToken(token);
-    // Log the logout event in the UserLog table
-    await UserLog.create({
-      userId,
-      sourceIp: ip,
-      logoffBy: 'USER',
-      logoffAt: new Date(),
-      jwtToken: token,
-    });
-    return { logout };
+
+    if (!userId || !ip) {
+      throw new Error('User ID and IP address are required for logout');
+    }
+
+    try {
+      // Blacklist the token (if a mechanism is used)
+      const blacklistPromise = blacklistToken ? blacklistToken(token) : Promise.resolve(null);
+
+      // Log the logout event
+      const logPromise = UserLog.create({
+        userId,
+        sourceIp: ip,
+        logoffBy: 'USER',
+        logoffAt: new Date(),
+        jwtToken: token,
+      });
+
+      // Execute both operations in parallel
+      const [logout] = await Promise.all([blacklistPromise, logPromise]);
+
+      return { logout };
+    } catch (error) {
+      console.error('Logout error:', error.message);
+      throw new Error('Logout failed. Please try again.');
+    }
   },
 
   changePassword: async (userId, old_password, new_password) => {
@@ -61,15 +109,15 @@ const AuthService = {
         throw new Error('Old password is incorrect');
       }
 
-      const isSameAsOld = await comparePassword(new_password, user.password);
-      if (isSameAsOld) {
+      // Ensure new password is different (direct string comparison before hashing)
+      if (old_password === new_password) {
         throw new Error('New password cannot be the same as the old password');
       }
 
       const newHashedPassword = await hashPassword(new_password, 10);
 
-      user.password = newHashedPassword;
-      await user.save();
+      // Update the password in a single database query
+      await user.update({ password: newHashedPassword });
 
       const userName = `${user.first_name} ${user.last_name}`;
       await sendPasswordChangeEmail(userId, user.email, userName);
@@ -89,17 +137,16 @@ const AuthService = {
 
       // Generate OTP & expiry time
       const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
-      user.otp = otp;
-      user.expiryTime = expiryTime;
-
-      // Save the OTP before sending email
-      await user.save();
+      await user.update({
+        otp: hashedOtp,
+        expiryTime,
+      });
 
       // Generate verification and reset password links
       const resetVerificationLink = `http://localhost:5000/verify-reset-password?userId=${user.id}&token=${otp}`;
 
       // Send OTP email
-      const userName = `${user.first_name} ${user.last_name}`;     
+      const userName = `${user.first_name} ${user.last_name}`;
       await sendResetPasswordCodeEmail(user.id, userName, user.email, resetVerificationLink, otp);
 
       return { message: 'An OTP has been sent to your email. Please verify to proceed with password reset.' };
