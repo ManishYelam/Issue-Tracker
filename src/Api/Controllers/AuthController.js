@@ -16,9 +16,10 @@ module.exports = {
   logout: async (req, res) => {
     const userId = req.user.id;
     const token = req.token;
-    const ip = req.headers['x-forwarded-for'] || req.ip;
+    const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
+    const userAgent = req.get('User-Agent');
     try {
-      const response = await AuthService.logout(userId, token, ip);
+      const response = await AuthService.logout(userId, token, clientIp, userAgent);
       req.session.destroy((err) => {
         if (err) {
           return res

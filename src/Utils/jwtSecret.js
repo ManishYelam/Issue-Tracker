@@ -5,6 +5,7 @@ const Role = require('../Api/Models/Role');
 const Permission = require('../Api/Models/Permission');
 const User = require('../Api/Models/User');
 const { Op } = require('sequelize');
+const { createUserLog } = require('../Api/Services/UserLogService');
 
 const generateToken = (user_info, secret = JWT_CONFIG.SECRET) => {
   try {
@@ -74,33 +75,45 @@ const isTokenExpired = (token) => {
   }
 };
 
-const blacklistToken = async (token) => {
+const blacklistToken = async (token, logData) => {
   try {
     const decoded = decodeToken(token);
     if (!decoded) {
       throw new Error('Invalid token format');
     }
 
-    const user = await User.findOne({
-      where: {
-        id: decoded.id,
-        logged_in_status: true,
-        token: { [Op.ne]: null } // Ensures token is not null
+    // Update user status in a single query
+    const [updatedRows] = await User.update(
+      {
+        logged_in_status: false,
+        token: null,
+        expiresAt: null,
+        expiredAt: new Date(),
+      },
+      {
+        where: {
+          id: decoded.id,
+          logged_in_status: true,
+          token: { [Op.ne]: null }, // Ensures token is not null
+        },
       }
-    });
+    );
 
-    if (!user) {
+    if (updatedRows === 0) {
       throw new Error('User not found or already logged out');
     }
 
-    user.logged_in_status = false;
-    user.token = null;
-    user.expiresAt = null;
-    user.expiredAt = new Date();
-    await user.save();
+    const allValuesPresent = Object.values(logData).every(value => value !== null && value !== undefined);
 
-    return { success: true, message: 'Logout successful. Your session has been securely ended.', user };
+    if (allValuesPresent) {
+      await createUserLog(logData);
+    } else {
+      console.warn('Skipping user log creation due to missing data:', logData);
+    }
+
+    return { success: true, message: 'Logout successful. Your session has been securely ended.' };
   } catch (error) {
+    console.error('Blacklist Token Error:', error.message);
     return { success: false, error: error.message };
   }
 };

@@ -64,7 +64,6 @@ const AuthService = {
         source_ip: clientIp,
         device: userAgent,
         related_info: `LOGIN`,
-        logoff_by: `USER`,
         jwt_token: token,
         login_at: new Date(),
       };
@@ -84,30 +83,28 @@ const AuthService = {
     }
   },
 
-  logout: async (userId, token, ip) => {
+  logout: async (userId, token, clientIp, userAgent) => {
     if (!token) {
       throw new Error('No token provided for logout');
     }
 
-    if (!userId || !ip) {
-      throw new Error('User ID and IP address are required for logout');
+    if (!userId || !clientIp || !userAgent) {
+      throw new Error('User ID, IP address and device are required for logout');
     }
 
     try {
-      // Blacklist the token (if a mechanism is used)
-      const blacklistPromise = blacklistToken ? blacklistToken(token) : Promise.resolve(null);
-
-      // Log the logout event
-      const logPromise = UserLog.create({
-        userId,
-        sourceIp: ip,
-        logoffBy: 'USER',
-        logoffAt: new Date(),
-        jwtToken: token,
-      });
+      const logData = {
+        user_id: userId,
+        source_ip: clientIp,
+        device: userAgent,
+        related_info: 'LOGOUT',
+        logoff_by: 'USER',
+        jwt_token: token,
+        logoff_at: new Date(),
+      };
 
       // Execute both operations in parallel
-      const [logout] = await Promise.all([blacklistPromise, logPromise]);
+      const logout = await blacklistToken(token, logData)
 
       return { logout };
     } catch (error) {
