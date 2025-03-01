@@ -7,23 +7,38 @@ const User = require('../Api/Models/User');
 const { Op } = require('sequelize');
 
 const generateToken = (user, secret = JWT_CONFIG.SECRET) => {
-  const role = Role.findByPk(user.role_id, {
-    include: {
-      model: Permission,
-      through: { attributes: ['id', 'name'] },
-    },
-  });
-  const payload = {
-    id: user.id,
-    role: user.role,
-    permissions: role.Permissions,
-  };
-  try {
-    const token = jwt.sign(payload, secret, {
+  try {    
+    return jwt.sign({
+      id: user.id,
+      email: user.email,
+      first_name: user.first_name,
+      last_name: user.last_name,
+      role: user.role,
+      date_of_birth: user.date_of_birth,
+      phone_number: user.phone_number,
+      address: user.address,
+      status: user.status,
+      isVerified: user.isVerified,
+      permission_ids: user.permission_ids ?? [],
+      user_metadata: user.user_metadata ?? {},
+      role_info: user.Role
+        ? {
+          id: user.Role?.id,
+          code: user.Role?.code,
+          name: user.Role?.name,
+          description: user.Role?.description,
+          created_by: user.Role?.created_by,
+          updated_by: user.Role?.updated_by,
+          createdAt: user.Role?.createdAt,
+          updatedAt: user.Role?.updatedAt,
+        }
+        : null,
+    }, 
+    secret, 
+    {
       expiresIn: JWT_CONFIG.EXPIRATION,
       algorithm: 'HS256',
     });
-    return token;
   } catch (error) {
     throw new Error('Token generation failed');
   }
@@ -85,11 +100,11 @@ const isTokenExpired = (token) => {
 
 const blacklistToken = async (token) => {
   try {
-    const decoded = decodeToken(token);  
+    const decoded = decodeToken(token);
     if (!decoded) {
       throw new Error('Invalid token format');
     }
-    
+
     const user = await User.findOne({
       where: {
         id: decoded.id,
@@ -101,7 +116,7 @@ const blacklistToken = async (token) => {
     if (!user) {
       throw new Error('User not found or already logged out');
     }
-    
+
     user.logged_in_status = false;
     user.token = null;
     user.expiresAt = null;

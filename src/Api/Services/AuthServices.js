@@ -9,11 +9,9 @@ const { User, UserLog, Role, Permission, Organization, } = require('../Models/As
 const AuthService = {
   login: async (email, password, req, res) => {
     const user = await User.findOne({
-      where: { email: email },
-      attributes: ['id', 'email', 'password', 'first_name', 'last_name', 'date_of_birth', 'phone_number', 'address', 'status', 'logged_in_status'],
+      where: { email: email },     
       include: [{
         model: Role,
-        attributes: ['id', 'name', 'description'],
         // include: [{ model: Permission, }],
       },],
     });
@@ -31,7 +29,7 @@ const AuthService = {
     user.expiredAt = null;
     await user.save();
 
-    return { token, user, };
+    return { token, user };
   },
 
   logout: async (userId, token, ip) => {
