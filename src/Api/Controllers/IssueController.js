@@ -1,3 +1,4 @@
+const upsertIssueSchema = require("../Middlewares/Joi_Validations/issueSchema");
 const issueService = require("../Services/IssueService");
 
 const issuesController = async (req, res) => {
@@ -14,6 +15,14 @@ const issuesController = async (req, res) => {
     // Define actions with backtick messages
     const actions = {
       upsert: async () => {
+        const { error } = upsertIssueSchema.validate(req.body, { abortEarly: false });
+        if (error) {
+          return res.status(400).json({
+            success: false,
+            message: "❌ Validation failed!",
+            errors: error.details.map((err) => err.message) // Return all validation errors
+          });
+        }
         return await issueService.upsertIssue(req.body);
       },
       get: async () => {
