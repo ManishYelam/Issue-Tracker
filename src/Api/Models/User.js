@@ -24,6 +24,14 @@ const userAttribute = {
     type: DataTypes.STRING(50),
     allowNull: false,
   },
+  role_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true, // Will be set automatically
+    references: {
+      model: Role,
+      key: 'id',
+    },
+  },
   role:{
     type: DataTypes.STRING(50),
     allowNull: false,
