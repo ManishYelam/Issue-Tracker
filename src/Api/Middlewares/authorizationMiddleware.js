@@ -23,12 +23,17 @@ const authMiddleware = async (req, res, next) => {
           through: { attributes: [] },
         },
       }],
-    });
+    });   
 
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized: User not found' });
     }
-
+    if (user.logged_in_status === false) {
+      return res.status(401).json({
+        error: "Oh, come on! 🤨 You’re not logged in, yet you’re trying to access this? Nice try, but no access for you! Go log in first. 🔑"
+      });
+    }
+    
     // Extract public IPv4 address
     const getPublicIP = () => {
       const interfaces = os.networkInterfaces();

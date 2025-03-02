@@ -14,19 +14,23 @@ module.exports = {
   },
 
   logout: async (req, res) => {
-    const userId = req.user_info.id;
+    const userId = req.user_info?.id;
     const token = req.token;
     const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
     const userAgent = req.get('User-Agent');
+    if (!token) {
+      return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    }
     try {
       const response = await AuthService.logout(userId, token, clientIp, userAgent);
+      req.token = null;
+      req.user_info = null;
       req.session.destroy((err) => {
-        if (err) {
-          return res.status(500).json({ message: 'Logout failed: Session error' });
-        }
-        req.token = null;
+        req.session.regenerate();
         res.clearCookie('connect.sid');
-        return res.status(200).json(response);
+        res.setHeader('Authorization', '');
+        res.setHeader('Cache-Control', 'no-store');
+        return res.status(200).json({ message: 'Logout successful', response });
       });
     } catch (error) {
       return res.status(500).json({ error: error.message });
