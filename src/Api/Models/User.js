@@ -99,4 +99,28 @@ const User = sequelize.MAIN_DB_NAME.define('User', userAttribute, {
   timestamps: true,
 });
 
+// ✅ **Hook to Automatically Set Role on Create**
+User.beforeCreate(async (user, options) => {
+  if (user.role) {
+    const role = await Role.findOne({ where: { code: user.role } });
+    if (role) {
+      user.role_id = role.id; // Assigning role ID
+    } else {
+      throw new Error(`Role with code "${user.role}" not found`);
+    }
+  }
+});
+
+// ✅ **Hook to Automatically Update Role on Update**
+User.beforeUpdate(async (user, options) => {
+  if (user.role) {
+    const role = await Role.findOne({ where: { code: user.role } });
+    if (role) {
+      user.role_id = role.id; // Updating role ID
+    } else {
+      throw new Error(`Role with code "${user.role}" not found`);
+    }
+  }
+});
+
 module.exports = User;

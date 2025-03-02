@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize');
+const { DataTypes, Op } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
 const { User } = require('./Association');
 
@@ -49,5 +49,25 @@ const ApplicationProperties = sequelize.MAIN_DB_NAME.define(
     timestamps: true,
   }
 );
+
+// ✅ **Hook to Automatically Set Others to Inactive**
+ApplicationProperties.beforeCreate(async (instance, options) => {
+  if (instance.property_name === 'app_email' && instance.status === 'active') {
+    await ApplicationProperties.update(
+      { status: 'inactive' }, // Set others to inactive
+      { where: { property_name: 'app_email', status: 'active' } }
+    );
+  }
+});
+
+ApplicationProperties.beforeUpdate(async (instance, options) => {
+  if (instance.property_name === 'app_email' && instance.status === 'active') {
+    await ApplicationProperties.update(
+      { status: 'inactive' }, // Deactivate others
+      { where: { property_name: 'app_email', status: 'active', id: { [Op.ne]: instance.id } } }
+    );
+  }
+});
+
 
 module.exports = ApplicationProperties;

@@ -6,19 +6,11 @@ const { User, Role, Permission } = require('../Models/Association');
 const { sequelize } = require('../../Config/Database/db.config');
 
 module.exports = {
-  updateUserRole: async (userId, roleCode) => {
-    const role = await Role.findOne({ where: { code: roleCode } });
-    if (!role) throw new Error(`Role with code "${roleCode}" not found`);
-    await User.update({ role_id: role.id }, { where: { id: userId } });
-  },
-
   createUser: async (data) => {
     try {
       const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
       Object.assign(data, { otp, expiryTime });
       const newUser = await User.create(data);
-
-      module.exports.updateUserRole(newUser.id, newUser.role)
       
       const verificationUrl = `http://localhost:5000/api/users/verify?userId=${newUser.id}&otp=${otp}`;
       const userName = `${newUser.first_name} ${newUser.last_name}`;
