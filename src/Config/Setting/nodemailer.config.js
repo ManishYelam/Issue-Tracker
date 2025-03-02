@@ -21,7 +21,7 @@ const sendMail = async (
 ) => {
   try {
     const app_email = await ApplicationProperties.findOne({
-      where: { property_name: 'app_email' },
+      where: { property_name: 'app_email', status: 'active' },
     });
     const settings = app_email ? app_email.toJSON() : null;
 
