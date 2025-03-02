@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const { checkExistsEmail } = require('../../Services/UserService');
 const { prefixes } = require('../../../Config/Database/Data');
+const { getAllLOVs } = require('../../Services/GenericServices');
 
 const checkEmailDuplicate = async (value, helpers) => {
   const user = await checkExistsEmail(value);
@@ -19,7 +20,7 @@ const userSchema = Joi.object({
   date_of_birth: Joi.date().iso().optional(),
   phone_number: Joi.string().max(15).optional(),
   address: Joi.string().max(500).optional(),
-  role: Joi.string().optional(),
+  role: Joi.string().required().valid(),
   role_id: Joi.number().integer().optional().default(2),
   user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional()
 });
@@ -63,3 +64,28 @@ module.exports = {
   permissionSchema,
   userLogSchema,
 };
+
+const generateUserSchema = async (isUpdate = false) => {
+  const userRoleLOVs = await getAllLOVs(["UserRole"], true);
+  const userRoleCodes = userRoleLOVs.map((lov) => lov.code);
+
+  return Joi.object({
+    ...(isUpdate
+      ? {} // Don't include email for updates
+      : { email: Joi.string().email().max(100).required().external(checkEmailDuplicate) }
+    ),
+    first_name: Joi.string().max(50)[isUpdate ? 'optional' : 'required'](),
+    last_name: Joi.string().max(50)[isUpdate ? 'optional' : 'required'](),
+    date_of_birth: Joi.date().iso().optional(),
+    phone_number: Joi.string().max(15).optional(),
+    address: Joi.string().max(500).optional(),
+    role: Joi.string().valid(...userRoleCodes)[isUpdate ? 'optional' : 'required'](),
+    role_id: Joi.number().integer().optional(),
+    user_metadata: Joi.object().pattern(Joi.string(), Joi.any()).optional(),
+  });
+};
+
+const createUserSchema = () => generateUserSchema(false);
+const updateUserSchema = () => generateUserSchema(true);
+
+module.exports = { createUserSchema, updateUserSchema };

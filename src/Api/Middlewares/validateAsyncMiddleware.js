@@ -1,30 +1,11 @@
-// const Joi = require('joi');
-
-// const validateAsync = (schema) => {
-//   return async (req, res, next) => {
-//     try {
-//       await schema.validateAsync(req.body);
-//       next();
-//     } catch (error) {
-//       return res.status(400).json({ message: error.details[0].message });
-//     }
-//   };
-// };
-
-// module.exports = validateAsync;
-
-const validateAsync = (schema) => async (req, res, next) => {
-  try {
-    await schema.validateAsync(req.body, { abortEarly: false });
-    next();
+const validateAsync = (schemaFunction) => async (req, res, next) => {
+  try {   
+    const schema = await schemaFunction(); // Retrieve schema dynamically
+    await schema.validateAsync(req.body, { abortEarly: false }); // Validate request body
+    next(); // Proceed if validation is successful
   } catch (error) {
-    // Check if error.details exists and has at least one entry
-    const errorMessage = error.details?.[0]?.message || 'Validation failed';
-
-    // Log error details for debugging
-    console.error('Validation Error Details:', error.details);
-
-    // Return a standardized error message
+    const errorMessage = error.details?.map(err => err.message).join(', ') || 'Validation failed';
+    console.error('Validation Error:', error);
     return res.status(400).json({ message: errorMessage });
   }
 };
