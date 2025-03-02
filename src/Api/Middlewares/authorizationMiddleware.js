@@ -62,9 +62,9 @@ const authMiddleware = async (req, res, next) => {
 
     req.user_info = decoded;
     req.token = token;
+    req.ip = ip;
     req.operating_system = operating_system;
     req.auth_details = {
-      ip_address: ip || '127.0.0.1',
       user_agent: user_agent,
       device_info,
     };
