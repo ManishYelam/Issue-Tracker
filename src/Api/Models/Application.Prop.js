@@ -29,6 +29,10 @@ const ApplicationPropAttribute = {
     allowNull: true,
     defaultValue: {},
   },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'active',
+  }
 };
 
 const ApplicationProperties = sequelize.MAIN_DB_NAME.define(
