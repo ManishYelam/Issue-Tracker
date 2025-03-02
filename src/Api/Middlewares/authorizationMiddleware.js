@@ -2,7 +2,6 @@ const os = require('os');
 const { verifyToken } = require('../../Utils/jwtSecret');
 const { User, Role, Permission } = require('../Models/Association');
 const useragent = require('useragent');
-const geoip = require('geoip-lite');
 
 const authMiddleware = async (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
@@ -30,8 +29,6 @@ const authMiddleware = async (req, res, next) => {
       return res.status(401).json({ message: 'Unauthorized: User not found' });
     }
 
-    const deviceType = agent.device.family || 'desktop';
-
     const operating_system = {
       hostname: os.hostname(), // System name
       platform: os.platform(), // 'linux', 'darwin' (Mac), 'win32'
@@ -50,7 +47,6 @@ const authMiddleware = async (req, res, next) => {
       ip_address: ip || '127.0.0.1',
       user_agent: user_agent || 'unknown',
       agent: agent,
-      // location: location || 'unknown',
     };
 
     next();
