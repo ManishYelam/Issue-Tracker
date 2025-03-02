@@ -59,6 +59,10 @@ const AuthService = {
         expiredAt: null,
       });
 
+      // Remove token field from the user object before returning
+      const userResponse = { ...user.get({ plain: true }) };
+      delete userResponse.token; // Remove token from response
+
       const logData = {
         user_id: user.id,
         source_ip: clientIp,
@@ -76,7 +80,7 @@ const AuthService = {
         console.warn('Skipping user log creation due to missing data:', logData);
       }
 
-      return { token, user };
+      return { token, user: userResponse };
     } catch (error) {
       console.error('Login error:', error.message);
       throw new Error('Login failed. Please try again.');
