@@ -3,9 +3,7 @@ const permissionService = require('../Services/PermissionService');
 module.exports = {
   createPermissions: async (req, res) => {
     try {
-      const newPermission = await permissionService.createPermission(
-        req.body
-      );
+      const newPermission = await permissionService.createPermission(req.body);
       res.status(201).json(newPermission);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -23,11 +21,7 @@ module.exports = {
 
   getPermissionById: async (req, res) => {
     try {
-      const health_id = req.user.health_id;
-      const permission = await permissionService.getPermissionById(
-        health_id,
-        req.params.id
-      );
+      const permission = await permissionService.getPermissionById(req.params.id);
       if (!permission)
         return res.status(404).json({ message: 'Permission not found' });
       res.status(200).json(permission);
@@ -38,12 +32,7 @@ module.exports = {
 
   updatePermission: async (req, res) => {
     try {
-      const health_id = req.user.health_id;
-      const updatedPermission = await permissionService.updatePermission(
-        health_id,
-        req.params.id,
-        req.body
-      );
+      const updatedPermission = await permissionService.updatePermission(req.params.id, req.body);
       if (updatedPermission[0] === 0)
         return res.status(404).json({ message: 'Permission not found' });
       res.status(200).json({ message: 'Permission updated successfully' });
@@ -54,11 +43,7 @@ module.exports = {
 
   deletePermission: async (req, res) => {
     try {
-      const health_id = req.user.health_id;
-      const deleted = await permissionService.deletePermission(
-        health_id,
-        req.params.id
-      );
+      const deleted = await permissionService.deletePermission(req.params.id);
       if (!deleted)
         return res.status(404).json({ message: 'Permission not found' });
       res.status(200).json({ message: 'Permission deleted successfully' });
@@ -70,8 +55,7 @@ module.exports = {
   getAllPermissionsTree: async (req, res) => {
     try {
       console.log(req);
-      const permissionTree =
-        await permissionService.getAllPermissionsTree();
+      const permissionTree = await permissionService.getAllPermissionsTree();
       res.status(200).json({ permissionTree });
     } catch (error) {
       res.status(500).json({
@@ -84,8 +68,7 @@ module.exports = {
   getUserPermissionTree: async (req, res) => {
     try {
       const { id } = req.params;
-      const permissionTree =
-        await permissionService.getUserPermissionTree(id);
+      const permissionTree =  await permissionService.getUserPermissionTree(id);
       res.status(200).json({ permissionTree });
     } catch (error) {
       res.status(500).json({

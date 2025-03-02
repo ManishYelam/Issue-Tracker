@@ -14,7 +14,7 @@ module.exports = {
   },
 
   logout: async (req, res) => {
-    const userId = req.user.id;
+    const userId = req.user_info.id;
     const token = req.token;
     const clientIp = req.headers['x-forwarded-for']?.split(',')[0] || req.ip;
     const userAgent = req.get('User-Agent');
@@ -22,9 +22,7 @@ module.exports = {
       const response = await AuthService.logout(userId, token, clientIp, userAgent);
       req.session.destroy((err) => {
         if (err) {
-          return res
-            .status(500)
-            .json({ message: 'Logout failed: Session error' });
+          return res.status(500).json({ message: 'Logout failed: Session error' });
         }
         req.token = null;
         res.clearCookie('connect.sid');
@@ -48,7 +46,7 @@ module.exports = {
   changePassword: async (req, res) => {
     const { old_password, new_password } = req.body;
     try {
-      const result = await AuthService.changePassword(req.user.id, old_password, new_password);
+      const result = await AuthService.changePassword(req.user_info.id, old_password, new_password);
       res.status(200).json(result);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -57,9 +55,7 @@ module.exports = {
 
   upsertOrganization: async (req, res) => {
     try {
-      const data = req.body;
-
-      const organization = await AuthService.upsertOrganization(data);
+      const organization = await AuthService.upsertOrganization(req.body);
 
       res.status(organization.isNewRecord ? 201 : 200).json({
         message: organization.isNewRecord

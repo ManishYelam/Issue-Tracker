@@ -7,10 +7,10 @@ const { deleteFile } = require('../Helpers/fileHelper');
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    if (!req.user || !req.user.id) {
+    if (!req.user_info || !req.user_info.id) {
       return cb(new multer.MulterError('LIMIT_UNEXPECTED_FILE', 'Unauthorized access! User not authenticated.'));
     }
-    const uploadPath = getUploadPath(file, req.user.id);
+    const uploadPath = getUploadPath(file, req.user_info.id);
     fs.mkdirSync(uploadPath, { recursive: true });
     cb(null, uploadPath);
   },
@@ -50,7 +50,7 @@ const uploadMiddleware = (req, res, next) => {
     req.uploadedFiles = validFiles.map((file, index) => ({
       id: index + 1,
       file,
-      url: generateFileUrl(file.filename, path.basename(getUploadPath(file)), req.user.id),
+      url: generateFileUrl(file.filename, path.basename(getUploadPath(file)), req.user_info.id),
     }));
 
     next();

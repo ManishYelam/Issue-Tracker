@@ -3,7 +3,7 @@ const roomService = require('../Service/RoomService');
 module.exports = {
   createRoom: async (req, res) => {
     try {
-      const room = await roomService.createRoom(req.body, req.user.id);
+      const room = await roomService.createRoom(req.body, req.user_info.id);
       res.status(201).json(room);
     } catch (error) {
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -31,7 +31,7 @@ module.exports = {
 
   joinRoom: async (req, res) => {
     try {
-      const response = await roomService.joinRoom(req.user.id, req.params.roomId);
+      const response = await roomService.joinRoom(req.user_info.id, req.params.roomId);
       res.status(200).json(response);
     } catch (error) {
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -40,7 +40,7 @@ module.exports = {
 
   updateRoom: async (req, res) => {
     try {
-      const response = await roomService.updateRoom(req.params.roomId, req.body, req.user.id);
+      const response = await roomService.updateRoom(req.params.roomId, req.body, req.user_info.id);
       res.status(200).json(response);
     } catch (error) {
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -49,7 +49,7 @@ module.exports = {
 
   deleteRoom: async (req, res) => {
     try {
-      const response = await roomService.deleteRoom(req.params.roomId, req.user.id);
+      const response = await roomService.deleteRoom(req.params.roomId, req.user_info.id);
       res.status(200).json(response);
     } catch (error) {
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -58,7 +58,7 @@ module.exports = {
 
   leaveRoom: async (req, res) => {
     try {
-      const response = await roomService.leaveRoom(req.user.id, req.params.roomId);
+      const response = await roomService.leaveRoom(req.user_info.id, req.params.roomId);
       res.status(200).json(response);
     } catch (error) {
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -67,7 +67,7 @@ module.exports = {
 
   removeUserFromRoom: async (req, res) => {
     try {
-      const response = await roomService.removeUserFromRoom(req.user.id, req.params.roomId, req.params.userId);
+      const response = await roomService.removeUserFromRoom(req.user_info.id, req.params.roomId, req.params.userId);
       res.status(200).json(response);
     } catch (error) {
       res.status(error.statusCode || 500).json({ message: error.message });
@@ -76,7 +76,7 @@ module.exports = {
 
   updateUserRole: async (req, res) => {
     try {
-      const response = await roomService.updateUserRole(req.user.id, req.params.roomId, req.params.userId, req.body.newRole);
+      const response = await roomService.updateUserRole(req.user_info.id, req.params.roomId, req.params.userId, req.body.newRole);
       res.status(200).json(response);
     } catch (error) {
       res.status(error.statusCode || 500).json({ message: error.message });

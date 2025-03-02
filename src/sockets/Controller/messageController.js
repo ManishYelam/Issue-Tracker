@@ -10,8 +10,8 @@ exports.sendMessage = async (req, res) => {
       mediaStorageId = savedMedia.id;
     }
 
-    const message = await Message.create({ roomId, senderId: req.user.id, content, mediaStorageId });
-    await Notification.create({ userId: req.user.id, message: `New message in room: ${roomId}`, type: 'NEW_MESSAGE' });
+    const message = await Message.create({ roomId, senderId: req.user_info.id, content, mediaStorageId });
+    await Notification.create({ userId: req.user_info.id, message: `New message in room: ${roomId}`, type: 'NEW_MESSAGE' });
 
     res.status(201).json({ success: true, message });
   } catch (error) {

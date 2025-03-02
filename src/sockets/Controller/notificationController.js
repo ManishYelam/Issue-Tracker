@@ -3,7 +3,7 @@ const NotificationService = require('../Service/NotificationService');
 module.exports = {
   getNotifications: async (req, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user_info.id;
       const { page, limit, sortBy, order, search, ...filters } = req.query;
 
       const notificationData = await NotificationService.getNotification(userId, {
@@ -33,7 +33,7 @@ module.exports = {
 
   deleteNotification: async (req, res) => {
     try {
-      const userId = req.user.id;
+      const userId = req.user_info.id;
       const { notificationId } = req.query;
       const result = await NotificationService.deleteNotification(userId, notificationId);
       res.status(200).json(result);
