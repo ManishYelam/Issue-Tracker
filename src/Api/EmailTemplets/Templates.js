@@ -6,7 +6,7 @@ module.exports = {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Email Verification</title>
+    <title>Verify Your Email - ${data.appName}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,22 +20,26 @@ module.exports = {
             max-width: 600px;
             margin: 40px auto;
             padding: 20px;
-            background-color: #fff;
+            background-color: #ffffff;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border: 1px solid #ddd;
             text-align: center;
         }
         .header {
+            background: linear-gradient(to right, #218838, #dac5c5);
+            color: white;
             padding: 20px;
+            border-radius: 8px 8px 0 0;
         }
         .logo-container {
             width: 80px;
             height: 80px;
-            margin: 0 auto;
+            margin: 10px auto;
             border-radius: 50%;
             overflow: hidden;
-            border: 2px solid #007bff;
+            background: white;
+            border: 3px solid white;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -47,8 +51,7 @@ module.exports = {
         }
         .header h2 {
             font-size: 24px;
-            margin: 10px 0;
-            color: #007bff;
+            margin-top: 10px;
         }
         .content {
             padding: 20px;
@@ -62,32 +65,47 @@ module.exports = {
             font-size: 28px;
             font-weight: bold;
             background-color: #f1f1f1;
-            padding: 10px 20px;
+            padding: 12px 25px;
             color: #007bff;
-            border-radius: 4px;
+            border-radius: 6px;
             display: inline-block;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             margin: 20px 0;
+            border: 2px dashed #007bff;
         }
         .btn {
             background-color: #28a745;
             color: white;
-            padding: 12px 25px;
+            padding: 14px 30px;
             font-size: 16px;
-            border-radius: 4px;
+            font-weight: bold;
+            border-radius: 6px;
             text-decoration: none;
             display: inline-block;
-            margin-top: 15px;
+            margin-top: 20px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
         }
         .btn-manual {
             background-color: #007bff;
             color: white;
             padding: 12px 25px;
             font-size: 16px;
-            border-radius: 4px;
+            font-weight: bold;
+            border-radius: 6px;
             text-decoration: none;
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 15px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .btn-manual:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
         }
         .warning {
             color: #d9534f;
@@ -110,18 +128,20 @@ module.exports = {
 </head>
 <body>
     <div class="container">
+        <!-- Header Section -->
         <div class="header">
             <div class="logo-container">
                 <img src="https://res.cloudinary.com/dhbkxhxsy/image/upload/v1735644524/fkw33za6df1tejmc9zxy.jpg" alt="Company Logo">
             </div>
             <h2>Welcome to ${data.appName}!</h2>
         </div>
+
+        <!-- Main Content -->
         <div class="content">
-            <p>To complete your registration, please enter the code below:</p>
+            <p>To complete your registration, please use the verification code below:</p>
             <div class="code">${data.launchCode}</div>
 
-            <p>To verify your email, click the button below:</p>
-            
+            <p>Click the button below to verify your email:</p>
             <a href="${data.verificationUrl}" class="btn">Verify Email</a>
 
             <p><strong>OR</strong></p>
@@ -129,14 +149,16 @@ module.exports = {
             <p>Enter your OTP manually by clicking below:</p>
             <a href="http://localhost:5173/verify?userId=${data.userId}" class="btn-manual">Enter OTP Manually</a>
 
-            <p><b>Note:</b> This OTP is valid for <strong>1 hour</strong>. If you do not verify your email within 1 hour, your account will be deleted automatically.</p>
+            <p><b>Note:</b> This OTP is valid for <strong>1 hour</strong>. If you do not verify your email within this time, your account may be deleted automatically.</p>
 
             <p>If you didn’t request this, you can ignore this email.</p>
         </div>
+
+        <!-- Footer Section -->
         <div class="footer">
             <p>&copy; ${new Date().getFullYear()} ${data.companyName}. All rights reserved.</p>
             <p>${data.companyName}, 123 Medical St, Health City, HC 12345</p>
-            <p>Support Email: ${data.supportEmail}</p>
+            <p>Support Email: <a href="mailto:${data.supportEmail}" style="color: #007bff;">${data.supportEmail}</a></p>
             <p>Contact: ${data.contactNumber}</p>
         </div>
     </div>
