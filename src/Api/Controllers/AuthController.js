@@ -26,7 +26,6 @@ module.exports = {
       req.token = null;
       req.user_info = null;
       req.session.destroy((err) => {
-        req.session.regenerate();
         res.clearCookie('connect.sid');
         res.setHeader('Authorization', '');
         res.setHeader('Cache-Control', 'no-store');
