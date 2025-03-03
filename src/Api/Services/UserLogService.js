@@ -60,8 +60,45 @@ module.exports = {
     }
   },
 
-  getAllUserLogs: async () => {
-    return await UserLog.findAll();
+  getAllUserLogs: async ({ page = 1, limit = 10, filters = {}, search = '' }) => {
+    try {      
+      const offset = (page - 1) * limit; 
+
+      let whereConditions = {};
+      // Apply filters dynamically
+      if (filters.user_id) whereConditions.user_id = filters.user_id;
+      if (filters.source_ip) whereConditions.source_ip = filters.source_ip;
+      if (filters.device) whereConditions.device = filters.device;
+      if (filters.logoff_at) whereConditions.logoff_at = { [Op.gte]: new Date(filters.logoff_at) };
+      if (filters.login_at) whereConditions.login_at = { [Op.gte]: new Date(filters.login_at) };
+
+      // Apply search across multiple fields (like `user_id`, `device`, `jwt_token`)
+      if (search) {
+        whereConditions[Op.or] = [
+          { user_id: { [Op.like]: `%${search}%` } },
+          { source_ip: { [Op.like]: `%${search}%` } },
+          { device: { [Op.like]: `%${search}%` } },
+          { jwt_token: { [Op.like]: `%${search}%` } },
+        ];
+      }
+
+      // Fetch logs with pagination, filters, and search applied
+      const { rows, count } = await UserLog.findAndCountAll({
+        where: whereConditions,
+        limit,
+        offset,
+        order: [['createdAt', 'DESC']],
+      });
+      return {
+        message: '✅ User logs fetched successfully.',
+        totalRecords: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        data: rows,
+      };
+    } catch (error) {
+      throw new Error(`❌ Error in getAllUserLogs: ${error.message}`);
+    }
   },
 
   getUserLogById: async (id) => {

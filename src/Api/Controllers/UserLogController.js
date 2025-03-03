@@ -4,15 +4,11 @@ module.exports = {
   // Get all user logs
   getAllUserLogs: async (req, res) => {
     try {
-      const userLogs = await userLogService.getAllUserLogs();
-      if (userLogs && userLogs.length > 0) {
-        res.json({ success: true, data: userLogs });
-      } else {
-        res.json({ success: false, message: 'No user logs found for this health_id.', });
-      }
+      const { page = 1, limit = 10, filters = {}, search = '' } = req.body; 
+      const result = await userLogService.getAllUserLogs({ page, limit, filters, search });
+      return res.status(200).json(result); 
     } catch (error) {
-      console.error('Error fetching user logs:', error.message);
-      res.status(500).json({ success: false, message: error.message });
+      return res.status(500).json({ message: `❌ Error: ${error.message}` });
     }
   },
 
