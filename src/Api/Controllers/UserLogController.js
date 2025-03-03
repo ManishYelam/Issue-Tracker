@@ -1,16 +1,6 @@
 const userLogService = require('../Services/UserLogService');
 
 module.exports = {
-  // Create a new user log
-  createUserLog: async (req, res) => {
-    try {
-      const newUserLog = await userLogService.createUserLog(req.body);
-      res.status(201).json(newUserLog);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-
   // Get all user logs
   getAllUserLogs: async (req, res) => {
     try {
@@ -33,16 +23,6 @@ module.exports = {
       if (!userLog)
         return res.status(404).json({ error: 'User Log not found' });
       res.status(200).json(userLog);
-    } catch (error) {
-      res.status(400).json({ error: error.message });
-    }
-  },
-
-  // Update a user log by ID
-  updateUserLog: async (req, res) => {
-    try {
-      const updatedUserLog = await userLogService.updateUserLog(req.params.id, req.body);
-      res.status(200).json(updatedUserLog);
     } catch (error) {
       res.status(400).json({ error: error.message });
     }

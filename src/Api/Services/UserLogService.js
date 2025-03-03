@@ -77,7 +77,7 @@ module.exports = {
   deleteLogsInRange: async (startDate, endDate) => {
     return UserLog.destroy({
       where: {
-        login_at: {
+        created_at: {
           [Op.between]: [new Date(startDate), new Date(endDate)],
         },
       },
