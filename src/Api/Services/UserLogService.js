@@ -60,8 +60,8 @@ module.exports = {
     }
   },
 
-  getAllUserLogs: async ({ page = 1, limit = 10, filters = {}, search = '' }) => {
-    try {      
+  getAllUserLogs: async ({ page = 1, limit = 10, filters = {}, search = '', searchFields = [] }) => {
+    try {
       const offset = (page - 1) * limit; 
 
       let whereConditions = {};
@@ -72,14 +72,11 @@ module.exports = {
       if (filters.logoff_at) whereConditions.logoff_at = { [Op.gte]: new Date(filters.logoff_at) };
       if (filters.login_at) whereConditions.login_at = { [Op.gte]: new Date(filters.login_at) };
 
-      // Apply search across multiple fields (like `user_id`, `device`, `jwt_token`)
-      if (search) {
-        whereConditions[Op.or] = [
-          { user_id: { [Op.like]: `%${search}%` } },
-          { source_ip: { [Op.like]: `%${search}%` } },
-          { device: { [Op.like]: `%${search}%` } },
-          { jwt_token: { [Op.like]: `%${search}%` } },
-        ];
+      // Apply dynamic search on specified fields
+      if (search && searchFields.length > 0) {
+        whereConditions[Op.or] = searchFields.map(field => ({
+          [field]: { [Op.like]: `%${search}%` }
+        }));
       }
 
       // Fetch logs with pagination, filters, and search applied
@@ -89,6 +86,7 @@ module.exports = {
         offset,
         order: [['createdAt', 'DESC']],
       });
+
       return {
         message: '✅ User logs fetched successfully.',
         totalRecords: count,

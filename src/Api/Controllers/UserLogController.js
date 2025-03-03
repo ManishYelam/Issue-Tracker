@@ -4,9 +4,9 @@ module.exports = {
   // Get all user logs
   getAllUserLogs: async (req, res) => {
     try {
-      const { page = 1, limit = 10, filters = {}, search = '' } = req.body; 
-      const result = await userLogService.getAllUserLogs({ page, limit, filters, search });
-      return res.status(200).json(result); 
+      const { page = 1, limit = 10, filters = {}, search = '', searchFields = [] } = req.body;
+      const result = await userLogService.getAllUserLogs({ page, limit, filters, search, searchFields });
+      return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({ message: `❌ Error: ${error.message}` });
     }
