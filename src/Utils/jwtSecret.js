@@ -5,7 +5,7 @@ const Role = require('../Api/Models/Role');
 const Permission = require('../Api/Models/Permission');
 const User = require('../Api/Models/User');
 const { Op } = require('sequelize');
-const { createUserLog } = require('../Api/Services/UserLogService');
+const { upsertUserLog } = require('../Api/Services/UserLogService');
 
 const generateToken = (user_info, secret = JWT_CONFIG.SECRET) => {
   try {
@@ -106,7 +106,7 @@ const blacklistToken = async (token, logData) => {
     const allValuesPresent = Object.values(logData).every(value => value !== null && value !== undefined);
 
     if (allValuesPresent) {
-      await createUserLog(logData);
+      await upsertUserLog(logData);
     } else {
       console.warn('Skipping user log creation due to missing data:', logData);
     }

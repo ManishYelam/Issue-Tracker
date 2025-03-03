@@ -45,16 +45,11 @@ const userlogAttribute = {
     type: DataTypes.TEXT, // Store JWT token
     allowNull: false,
   },
-  createdAt: {
-    type: DataTypes.DATE, // Record creation time
-    allowNull: false,
-    defaultValue: DataTypes.NOW,
-  },
 };
 // Define the UserLog model
 const UserLog = sequelize.MAIN_DB_NAME.define('UserLog', userlogAttribute, {
   tableName: 'tbl_user_log', // Table name in the database
-  timestamps: false, // Disable automatic timestamps
+  timestamps: true, // Disable automatic timestamps
   underscored: true, // Use snake_case in column names
 });
 
