@@ -20,13 +20,20 @@ const issuesController = async (req, res) => {
         }
         return await issueService.upsertIssue(req.body);
       },
+      bulkIssue: async () => {               
+          const result = await issueService.bulkIssue(req.body);
+          if (!result.success) {
+            return res.status(400).json(result);
+          }
+          return res.status(201).json(result);
+      },
       get: async () => {
         if (IssueID === null) throw new Error(`🔍 Oops! Issue ID is missing.  
         👉 Please provide a valid Issue ID to fetch details.`);
         return await issueService.getIssueById(IssueID);
       },
       getAll: async () => {
-        return await issueService.getIssues(req.query);
+        return await issueService.getAllIssues(req.body);
       },
       delete: async () => {
         if (IssueID === null) throw new Error(`🗑️ Deletion failed!  
