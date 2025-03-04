@@ -22,13 +22,10 @@ module.exports = {
       if (filters.action_type) whereConditions.action_type = { [Op.like]: `%${filters.action_type}%` };
       if (filters.permission_group_id) whereConditions.permission_group_id = filters.permission_group_id;
 
-      // **Apply Dynamic Search on Specified Fields**
-      let searchConditions = [];
-      if (search && searchFields.length > 0) {
-        searchFields.forEach((field) => {
-          searchConditions.push({ [field]: { [Op.like]: `%${search}%` } });
-        });
-      }
+      // **Apply Dynamic Search Using `.map()`**
+      let searchConditions = search && searchFields.length > 0
+        ? searchFields.map((field) => ({ [field]: { [Op.like]: `%${search}%` } }))
+        : [];
 
       // **Final WHERE condition combining filters & search**
       let finalWhereCondition = { ...whereConditions };
