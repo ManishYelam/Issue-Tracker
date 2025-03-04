@@ -34,7 +34,8 @@ module.exports = {
 
   getAllRoles: async (req, res) => {
     try {
-      const roles = await roleService.getAllRoles();
+      const { page = 1, limit = 10, search = "", searchFields = [], filters = {} } = req.body;
+      const roles = await roleService.getAllRoles({ page, limit, search, searchFields, filters });
       res.status(200).json(roles);
     } catch (error) {
       res.status(500).json({ message: error.message });

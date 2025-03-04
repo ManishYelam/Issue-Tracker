@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const Permission = require("../Models/Permission");
 const Role = require("../Models/Role");
 const RolePermissions = require("../Models/RolePermissions");
@@ -104,8 +105,60 @@ module.exports = {
     }
   },
 
-  getAllRoles: async () => {
-    return Role.findAll({ include: Permission });
+  getAllRoles: async ({ page = 1, limit = 10, search = "", searchFields = [], filters = {} }) => {
+    try {
+      const offset = (page - 1) * limit;
+      let whereConditions = {};
+      let permissionWhereConditions = {};
+
+      // **Apply Role Filters Dynamically**
+      if (filters.status) whereConditions.status = filters.status;
+      if (filters.created_by) whereConditions.created_by = filters.created_by;
+      if (filters.updated_by) whereConditions.updated_by = filters.updated_by;
+      if (filters.name) whereConditions.name = { [Op.like]: `%${filters.name}%` };
+      if (filters.code) whereConditions.code = { [Op.like]: `%${filters.code}%` };
+
+      // **Apply Permission Filters Dynamically**
+      if (filters.permission_name) permissionWhereConditions.name = { [Op.like]: `%${filters.permission_name}%` };
+      if (filters.permission_level) permissionWhereConditions.level = filters.permission_level;
+      if (filters.permission_status) permissionWhereConditions.status = filters.permission_status;
+
+      // **Apply Dynamic Search on Roles and Permissions**
+      let searchConditions = [];
+      if (search && searchFields.length > 0) {
+        searchFields.forEach((field) => {
+          searchConditions.push({ [field]: { [Op.like]: `%${search}%` } });
+        });
+      }
+
+      // **Fetch Roles with Filters, Pagination & Include Permissions**
+      const { rows, count } = await Role.findAndCountAll({
+        where: {
+          ...whereConditions,
+          [Op.or]: searchConditions.length > 0 ? searchConditions : [{}], // Apply search if provided
+        },
+        include: [
+          {
+            model: Permission,
+            where: permissionWhereConditions, // Apply filters on permissions
+            required: false, // Allows roles with no permissions
+          },
+        ],
+        limit,
+        offset,
+        order: [["createdAt", "DESC"]],
+      });
+
+      return {
+        message: "✅ Roles fetched successfully.",
+        totalRecords: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        data: rows,
+      };
+    } catch (error) {
+      throw new Error(`❌ Error in getAllRoles: ${error.message}`);
+    }
   },
 
   getRoleById: async (id) => {
