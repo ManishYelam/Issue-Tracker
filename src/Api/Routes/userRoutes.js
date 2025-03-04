@@ -1,7 +1,7 @@
 const express = require('express');
 const validateAsync = require('../Middlewares/validateAsyncMiddleware');
 const authMiddleware = require('../Middlewares/authorizationMiddleware');
-const { userSchema, userUpdateSchema, createUserSchema, updateUserSchema } = require('../Middlewares/Joi_Validations/userSchema');
+const { createUserSchema, updateUserSchema } = require('../Middlewares/Joi_Validations/userSchema');
 const userController = require('../Controllers/UserController');
 
 const userRouter = express.Router();
