@@ -21,6 +21,16 @@ module.exports = {
     }
   },
 
+  getAllUsersV2: async (req, res) => {
+    try {
+      const { page, limit, search, searchFields, ...filters } = req.body;
+      const users = await userService.getAllUsersV2({ page, limit, search, searchFields, ...filters });
+      res.status(200).json({ message: 'Fetch all users successfully', user: users });
+    } catch (error) {
+      res.status(500).json({ message: error || 'Internal Server Error' });
+    }
+  },
+
   getAllUsers: async (req, res) => {
     try {
       const users = await userService.getAllUsers();

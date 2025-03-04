@@ -56,6 +56,60 @@ module.exports = {
     return User.findAll({ include: [Role] });
   },
 
+  getAllUsersV2: async ({ page = 1, limit = 10, search = "", searchFields = [], filters = {} }) => {
+    try {
+      const offset = (page - 1) * limit;
+      let whereConditions = {};
+      let roleWhereConditions = {};
+
+      // **Apply Filters Dynamically**
+      if (filters.status) whereConditions.status = filters.status;
+      if (filters.role) roleWhereConditions.code = filters.role;
+      if (filters.isVerified) whereConditions.isVerified = filters.isVerified;
+      if (filters.logged_in_status) whereConditions.logged_in_status = filters.logged_in_status;
+      if (filters.phone_number) whereConditions.phone_number = { [Op.like]: `%${filters.phone_number}%` };
+      if (filters.email) whereConditions.email = { [Op.like]: `%${filters.email}%` };
+
+      // **Apply Dynamic Search Using `.map()`**
+      let searchConditions = search && searchFields.length > 0
+        ? searchFields.map((field) => ({ [field]: { [Op.like]: `%${search}%` } }))
+        : [];
+
+      // **Final WHERE condition combining filters & search**
+      let finalWhereCondition = { ...whereConditions };
+      if (searchConditions.length > 0) {
+        finalWhereCondition[Op.or] = searchConditions;
+      }
+
+      // **Fetch Users with Filters, Pagination & Sorting**
+      const { rows, count } = await User.findAndCountAll({
+        where: finalWhereCondition,
+        include: [
+          {
+            model: Role,
+            as: "Role",
+            where: roleWhereConditions,
+            required: false,
+          },
+        ],
+        limit,
+        offset,
+        order: [["createdAt", "DESC"]],
+      });
+
+      return {
+        message: "✅ Users fetched successfully.",
+        totalRecords: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        data: rows,
+      };
+    } catch (error) {
+      console.error("❌ Error in getAllUsers:", error.message);
+      throw new Error(`❌ Error in getAllUsers: ${error.message}`);
+    }
+  },
+
   getUserById: async (id) => {
     const user = await User.findByPk(id, {
       include: {
