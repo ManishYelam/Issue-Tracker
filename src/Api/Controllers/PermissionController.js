@@ -12,7 +12,8 @@ module.exports = {
 
   getAllPermissions: async (req, res) => {
     try {
-      const permissions = await permissionService.getAllPermissions();
+      const { page, limit, search, searchFields, ...filters } = req.body;
+      const permissions = await permissionService.getAllPermissions({ page, limit, search, searchFields, ...filters });
       res.status(200).json(permissions);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -68,7 +69,7 @@ module.exports = {
   getUserPermissionTree: async (req, res) => {
     try {
       const { id } = req.params;
-      const permissionTree =  await permissionService.getUserPermissionTree(id);
+      const permissionTree = await permissionService.getUserPermissionTree(id);
       res.status(200).json({ permissionTree });
     } catch (error) {
       res.status(500).json({
