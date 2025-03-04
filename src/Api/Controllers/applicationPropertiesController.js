@@ -32,7 +32,8 @@ module.exports = {
   // Get all properties
   getAllProperties: async (req, res) => {
     try {
-      const properties = await ApplicationPropertiesService.getAllProperties();
+      const { page, limit, search, searchFields, ...filters } = req.body;
+      const properties = await ApplicationPropertiesService.getAllProperties({ page, limit, search, searchFields, ...filters });
       res.status(200).json(properties);
     } catch (error) {
       res.status(500).json({ message: error.message });

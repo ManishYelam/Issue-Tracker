@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { ApplicationProperties } = require('../Models/Association');
 
 module.exports = {
@@ -65,13 +66,45 @@ module.exports = {
     }
   },
 
-  getAllProperties: async () => {
+  getAllProperties: async ({ page = 1, limit = 10, search = "", searchFields = [], filters = {} }) => {
     try {
-      return await ApplicationProperties.findAll();
+      const offset = (page - 1) * limit;
+      let whereConditions = {};
+
+      // **Apply Filters Dynamically**
+      if (filters.status) whereConditions.status = filters.status;
+      if (filters.property_name) whereConditions.property_name = { [Op.like]: `%${filters.property_name}%` };
+      if (filters.property_value) whereConditions.property_value = { [Op.like]: `%${filters.property_value}%` };
+      if (filters.user_id) whereConditions.user_id = filters.user_id;
+
+      // **Apply Dynamic Search Using `.map()`**
+      let searchConditions = search && searchFields.length > 0
+        ? searchFields.map((field) => ({ [field]: { [Op.like]: `%${search}%` } }))
+        : [];
+
+      // **Final WHERE condition combining filters & search**
+      let finalWhereCondition = { ...whereConditions };
+      if (searchConditions.length > 0) {
+        finalWhereCondition[Op.or] = searchConditions;
+      }
+
+      // **Fetch Application Properties with Filters, Pagination & Sorting**
+      const { rows, count } = await ApplicationProperties.findAndCountAll({
+        where: finalWhereCondition,
+        limit,
+        offset,
+        order: [["createdAt", "DESC"]],
+      });
+
+      return {
+        message: "✅ Application properties fetched successfully.",
+        totalRecords: count,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+        data: rows,
+      };
     } catch (error) {
-      throw new Error(
-        'Error while fetching application properties: ' + error.message
-      );
+      throw new Error(`❌ Error in getAllApplicationProperties: ${error.message}`);
     }
   },
 
