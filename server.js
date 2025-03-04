@@ -1,17 +1,12 @@
 const http = require('http');
-const fs = require("fs");
 const path = require('path');
 const express = require("express");
 const cors = require('cors');
 const moment = require('moment');
 const Middleware = require('./src/Api/Middlewares/index.middleware.js');
 const routes = require('./src/Api/Routes/index.js');
-const sendMail = require('./src/Config/Setting/nodemailer.config.js');
 const { InitializeDatabase } = require('./src/Api/Models/InitializeDatabase');
 const { TestSequelizeConnection, TestMySQLConnection, } = require('./src/Config/Database/db.config.js');
-const axios = require('axios');
-const uploadMiddleware = require('./src/Api/Middlewares/uploadMiddleware.js');
-const authMiddleware = require('./src/Api/Middlewares/authorizationMiddleware.js');
 require('dotenv').config();
 const initializeTriggers = require("./src/Api/Models/Trigger.js");
 initializeTriggers();
