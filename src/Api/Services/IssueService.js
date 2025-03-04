@@ -16,30 +16,11 @@ module.exports = {
 
   // **Bulk insert or update issues**
   bulkIssue: async (bulkIssues) => {
-    if (!Array.isArray(bulkIssues) || bulkIssues.length === 0) {
-      return { success: false, message: "Invalid input: Expected an array of issue objects." };
-    }
-
-    const validationResults = await Promise.all(
-      bulkIssues.map(async (issue) => {
-        const { error, value } = await validateWithLOVs(createUpsertIssueSchema, issue);
-        return error ? { issue, errors: error.details } : { issue: value };
-      })
-    );
-
-    const invalidIssues = validationResults.filter((result) => result.errors);
-    if (invalidIssues.length > 0) {
-      return { success: false, message: "Some issues failed validation.", errors: invalidIssues };
-    }
-
-    const validIssues = validationResults.map((result) => result.issue);
-
-    const issues = await Issue.bulkCreate(validIssues, {
+    const issues = await Issue.bulkCreate(bulkIssues, {
       updateOnDuplicate: [
         "title", "description", "issueType", "priority", "status", "category", "impactArea", "reproducibility", "rootCause", "assignedTo", "reportedBy", "resolvedBy", "resolvedAt", "dueDate", "resolutionNotes", "attachments", "tags", "relatedIssues", "escalationLevel", "escalatedTo", "workaround", "estimatedEffort", "actualEffort", "deploymentRequired",
       ],
     });
-
     return { success: true, message: "Bulk issues processed successfully", issues };
   },
 
