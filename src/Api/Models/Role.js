@@ -22,6 +22,10 @@ const roleAttribute = {
     allowNull: true,
     defaultValue: 'No description',
   },
+  status: {
+    type: DataTypes.STRING,
+    defaultValue: 'active',
+  },
   created_by: {
     type: DataTypes.STRING,
     allowNull: false,
