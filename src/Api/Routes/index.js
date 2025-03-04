@@ -10,6 +10,7 @@ const { userRouter, userActionsRouter } = require('./userRoutes');
 const { roomRouter, notificationRouter, messageRouter } = require('../../sockets/Route/ChatRoutes');
 const genericRouter = require('./GenericRoutes');
 const issuesRouter = require('./issueRoutes');
+const fileRouter = require('./fileRoutes');
 
 const router = express.Router();
 
@@ -27,5 +28,6 @@ router
   .use('/rooms', authMiddleware, roomRouter)
   .use('/generics', authMiddleware, genericRouter)
   .use('/issues', authMiddleware, issuesRouter)
+  .use("/files", fileRouter);
 
 module.exports = router;
