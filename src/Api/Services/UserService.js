@@ -12,7 +12,7 @@ module.exports = {
       Object.assign(data, { otp, expiryTime });
       const newUser = await User.create(data);
 
-      const verificationUrl = `http://localhost:5000/api/users/verify?userId=${newUser.id}&otp=${otp}`;
+      const verificationUrl = `https://mbvdvt7z-5000.inc1.devtunnels.ms/api/users/verify?userId=${newUser.id}&otp=${otp}`;
       const userName = `${newUser.first_name} ${newUser.last_name}`;
       await sendLaunchCodeEmail(newUser.id, userName, newUser.email, verificationUrl, otp);
 
