@@ -11,7 +11,7 @@ module.exports = {
       const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
       Object.assign(data, { otp, expiryTime });
       const newUser = await User.create(data);
-      
+
       const verificationUrl = `http://localhost:5000/api/users/verify?userId=${newUser.id}&otp=${otp}`;
       const userName = `${newUser.first_name} ${newUser.last_name}`;
       await sendLaunchCodeEmail(newUser.id, userName, newUser.email, verificationUrl, otp);
@@ -65,6 +65,19 @@ module.exports = {
         //   through: { attributes: [] },
         // },
       },
+    });
+    return user;
+  },
+
+  getUserByEmail: async (email) => {
+    const user = await User.findOne({
+      where: { email: userEmail },
+      include: [
+        {
+          model: Role,
+          // include: [{ model: Permission }],
+        },
+      ],
     });
     return user;
   },

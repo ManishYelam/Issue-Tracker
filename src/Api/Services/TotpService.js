@@ -1,21 +1,10 @@
 const speakeasy = require('speakeasy');
 const qrcode = require('qrcode');
+const { getUserByEmail } = require('./UserService');
 
 module.exports = {
   generateTotp: async (userEmail) => {
-    const user = await User.findOne({
-      where: { email: userEmail },
-      include: [
-        {
-          model: Role,
-          include: [
-            {
-              model: Permission,
-            },
-          ],
-        },
-      ],
-    });
+    const user =  await getUserByEmail(userEmail);
 
     const secret = speakeasy.generateSecret({ length: 50 });
     const otpauth = `otpauth://totp/${user}?secret=${secret.base32}&issuer=@ManishYelam$..!`;
