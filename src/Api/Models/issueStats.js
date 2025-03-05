@@ -5,68 +5,72 @@ const User = require('./User');
 const IssueStats = sequelize.MAIN_DB_NAME.define(
   'IssueStats',
   {
-    userId: {
+    issue_stat_id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true,
       references: {
         model: User,
         key: 'id'
       }
     },
-    totalIssues: {
+    total_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    pendingIssues: {
+    pending_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    inProgressIssues: {
+    in_progress_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    onHoldIssues: {
+    on_hold_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    resolvedIssues: {
+    resolved_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    toBeTestedIssues: {
+    to_be_tested_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    testedIssues: {
+    tested_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    committedIssues: {
+    committed_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    rejectedIssues: {
+    rejected_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    criticalIssues: {
+    critical_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    highPriorityIssues: {
+    high_priority_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    mediumPriorityIssues: {
+    medium_priority_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    lowPriorityIssues: {
+    low_priorityI_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     },
-    overdueIssues: {
+    overdue_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0
     }
