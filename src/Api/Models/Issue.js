@@ -16,7 +16,7 @@ const issueAttributes =
     type: DataTypes.TEXT,
     allowNull: false
   },
-  issueType: {
+  issue_type: {
     type: DataTypes.STRING,
     allowNull: false
   },
@@ -31,38 +31,38 @@ const issueAttributes =
   category: {
     type: DataTypes.STRING(100)
   },
-  impactArea: {
+  impact_area: {
     type: DataTypes.STRING(255)
   },
   reproducibility: {
     type: DataTypes.STRING,
     defaultValue: 'ALWAYS'
   },
-  rootCause: {
+  root_cause: {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  assignedTo: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  reportedBy: {
-    type: DataTypes.INTEGER,
-    allowNull: false
-  },
-  resolvedBy: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  resolvedAt: {
+  // assigned_to: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
+  // reported_by: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: false
+  // },
+  // resolved_by: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
+  resolved_at: {
     type: DataTypes.DATE,
     allowNull: true
   },
-  dueDate: {
+  due_date: {
     type: DataTypes.DATE,
     allowNull: true
   },
-  resolutionNotes: {
+  resolution_notes: {
     type: DataTypes.TEXT,
     allowNull: true
   },
@@ -74,31 +74,31 @@ const issueAttributes =
     type: DataTypes.STRING(255),
     allowNull: true
   },
-  relatedIssues: {
+  related_issues: {
     type: DataTypes.STRING(255),
     allowNull: true
   },
-  escalationLevel: {
+  escalation_level: {
     type: DataTypes.STRING,
     defaultValue: 'None'
   },
-  escalatedTo: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
+  // escalated_to: {
+  //   type: DataTypes.INTEGER,
+  //   allowNull: true
+  // },
   workaround: {
     type: DataTypes.TEXT,
     allowNull: true
   },
-  estimatedEffort: {
+  estimated_effort: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-  actualEffort: {
+  actual_effort: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-  deploymentRequired: {
+  deployment_required: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   }

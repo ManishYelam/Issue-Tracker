@@ -51,16 +51,16 @@ User.hasMany(ApplicationProperties, { foreignKey: 'user_id', as: 'applicationPro
 ApplicationProperties.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 
 // Issue belongs to a User (reportedBy)
-Issue.belongsTo(User, { foreignKey: 'reportedBy', as: 'reporter' });
+Issue.belongsTo(User, { foreignKey: 'reported_by', as: 'reporter' });
 
 // Issue is assigned to a User (assignedTo)
-Issue.belongsTo(User, { foreignKey: 'assignedTo', as: 'assignee' });
+Issue.belongsTo(User, { foreignKey: 'assigned_to', as: 'assignee' });
 
 // Issue is resolved by a User (resolvedBy)
-Issue.belongsTo(User, { foreignKey: 'resolvedBy', as: 'resolver' });
+Issue.belongsTo(User, { foreignKey: 'resolved_by', as: 'resolver' });
 
 // Issue is escalated to a User (escalatedTo)
-Issue.belongsTo(User, { foreignKey: 'escalatedTo', as: 'escalationHandler' });
+Issue.belongsTo(User, { foreignKey: 'escalated_to', as: 'escalationHandler' });
 
 // Issue has many Comments
 Issue.hasMany(IssueComment, { foreignKey: 'issueId', as: 'comments' });
