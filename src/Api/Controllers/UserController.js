@@ -91,27 +91,11 @@ module.exports = {
         return res.status(400).json({ error: 'Invalid ID range' });
       }
       const deletedCount = await userService.deleteUserRanges(start, end);
-      return res
-        .status(200)
-        .json({ message: `${deletedCount} users deleted successfully.` });
+      return res.status(200).json({ message: `${deletedCount} users deleted successfully.` });
     } catch (error) {
       console.error('Error deleting users:', error);
-      return res
-        .status(500)
-        .json({ error: 'An error occurred while deleting users' });
+      return res.status(500).json({ error: 'An error occurred while deleting users' });
     }
   },
 
-  checkUserPermission: async (req, res) => {
-    try {
-      const { userId, permissionName } = req.params;
-      const hasPermission = await userService.checkUserPermission(
-        userId,
-        permissionName
-      );
-      res.status(200).json({ hasPermission });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  },
 };

@@ -187,18 +187,4 @@ module.exports = {
     return deletedCount;
   },
 
-  checkUserPermission: async (userId, permissionName) => {
-    const user = await User.findByPk(userId, {
-      include: {
-        model: Role,
-        include: Permission,
-      },
-    });
-    if (!user) throw new Error('User not found');
-    const roles = user.Roles || [];
-    const hasPermission = roles
-      .flatMap((role) => role.Permissions || [])
-      .some((perm) => perm.name === permissionName);
-    return hasPermission;
-  },
 };

@@ -25,35 +25,5 @@ module.exports = {
     }
   },
 
-  checkUserPermission: async (userId, permissionName) => {
-    try {
-      const user = await User.findByPk(userId, {
-        include: {
-          model: Role,
-          include: Permission,
-        },
-      });
-
-      if (!user) {
-        console.error(`User with ID ${userId} not found.`);
-        return false;
-      }
-
-      const hasPermission = user.Roles.flatMap((role) => role.Permissions).some(
-        (perm) => perm.name === permissionName
-      );
-
-      return hasPermission;
-    } catch (error) {
-      console.error('Error checking user permission:', error);
-      return false;
-    }
-  },
 };
 
-// assignPermissionsToRole(1, [1, 2, 3]);
-
-// checkUserPermission(1, 'edit_articles')
-//     .then(hasPermission => {
-//         console.log('User has permission:', hasPermission);
-//     });

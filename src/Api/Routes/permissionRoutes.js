@@ -11,6 +11,5 @@ permissionRouter
   .put('/:id', validate(permissionUpdateSchema), permissionController.updatePermission)
   .delete('/:id', permissionController.deletePermission)
   .get('/tree/:userId', permissionController.getUserPermissionTree)
-  .get('/tree', permissionController.getAllPermissionsTree);
 
 module.exports = permissionRouter;

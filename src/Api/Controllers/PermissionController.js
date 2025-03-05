@@ -53,23 +53,10 @@ module.exports = {
     }
   },
 
-  getAllPermissionsTree: async (req, res) => {
-    try {
-      console.log(req);
-      const permissionTree = await permissionService.getAllPermissionsTree();
-      res.status(200).json({ permissionTree });
-    } catch (error) {
-      res.status(500).json({
-        message: 'Error fetching permission tree',
-        error: error.message,
-      });
-    }
-  },
-
   getUserPermissionTree: async (req, res) => {
     try {
-      const { id } = req.params;
-      const permissionTree = await permissionService.getUserPermissionTree(id);
+      const { userId } = req.params;
+      const permissionTree = await permissionService.getUserPermissionTree(userId);
       res.status(200).json({ permissionTree });
     } catch (error) {
       res.status(500).json({

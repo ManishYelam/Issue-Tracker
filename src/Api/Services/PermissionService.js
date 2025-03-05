@@ -66,9 +66,9 @@ module.exports = {
     return Permission.destroy({ where: { id } });
   },
 
-  getUserPermissionTree: async () => {
+  getUserPermissionTree: async (userId) => {
     try {
-      const user = await User.findAll({
+      const user = await User.findByPk(userId, {
         include: {
           model: Role,
           include: {

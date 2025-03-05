@@ -11,7 +11,6 @@ const userActionsRouter = express.Router();
 userRouter
   .post('/', validateAsync(createUserSchema), userController.createUser)
   .get('/verify', userController.verifyCreateUser)
-  .get('/:userId/permissions/:permissionName', authMiddleware, userController.checkUserPermission)
   .get('/', userController.getAllUsers)
   .get('/v2', userController.getAllUsersV2)
   .get('/:id', userController.getUserById)
