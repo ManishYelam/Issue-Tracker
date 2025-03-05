@@ -18,21 +18,20 @@ const issuesController = async (req, res) => {
         if (!Array.isArray(req.body) || req.body.length === 0) {
           return res.status(400).json({ success: false, message: "❌ Invalid input: Expected an array of issue objects." });
         }
-
-        const validations = await Promise.all(req.body.map(issue => validateWithLOVs(createUpsertIssueSchema, issue)));
         const validIssues = [];
         const errors = [];
-
-        validations.forEach((result, index) => {
-          if (result.error) {
-            errors.push({ row: index + 1, error: result.error.details[0]?.message || "Unknown validation error" });
-          } else {
-            validIssues.push(req.body[index]);
+        req.body.forEach(async (issue, index) => {
+          try {
+            await validateWithLOVs(createUpsertIssueSchema, issue);
+            validIssues.push(issue);
+          } catch (error) {
+            errors.push({ row: index + 1, error: error.details[0]?.message || "Unknown validation error" });
           }
         });
-
-        if (errors.length) return res.status(400).json({ success: false, message: "⚠️ Some issues have validation errors", errors });
-
+        // ❌ This will run before validation is completed!
+        if (errors.length) {
+          return res.status(400).json({ success: false, message: "⚠️ Some issues have validation errors", errors });
+        }
         return issueService.bulkIssue(validIssues);
       },
 
@@ -109,7 +108,7 @@ const issuesController = async (req, res) => {
 
     if (!actions[action]) {
       return res.status(400).json({
-        success: false, 
+        success: false,
         message: "❌ Invalid action! 👉 Use 'get', 'delete', 'upsert', 'updateStatus', or 'getAll'."
       });
     }

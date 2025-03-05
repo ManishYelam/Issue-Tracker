@@ -9,7 +9,7 @@ const createUpsertIssueSchema = async () => {
   const issueTypeLOVs = await getAllLOVs(["issue_type"], true);
   const taskCategoryTypeLOVs = await getAllLOVs(["task_category"], true);
   const reproducibilityTypeLOVs = await getAllLOVs(["reproducibility"], true);
-  const escalationLevelTypeLOVs = await getAllLOVs(["EscalationLevel"], true); 
+  const escalationLevelTypeLOVs = await getAllLOVs(["EscalationLevel"], true);
 
   // Extract 'code' values correctly
   const statusCodes = statusLOVs.map((lov) => lov.code);
@@ -23,28 +23,28 @@ const createUpsertIssueSchema = async () => {
     issue_id: Joi.number().integer().positive().optional(),
     title: Joi.string().max(255).required(),
     description: Joi.string().required(),
-    issueType: Joi.string().valid(...issueTypeCodes).required(),
+    issue_type: Joi.string().valid(...issueTypeCodes).required(),
     priority: Joi.string().valid(...priorityCodes).default("Medium"),
     status: Joi.string().valid(...statusCodes).default("Pending"),
     category: Joi.string().valid(...taskCategoryTypeCodes).allow(null, ""),
-    impactArea: Joi.string().max(255).allow(null, ""),
+    impact_area: Joi.string().max(255).allow(null, ""),
     reproducibility: Joi.string().valid(...reproducibilityCodes).default("Always"),
-    rootCause: Joi.string().allow(null, ""),
-    assignedTo: Joi.number().integer().positive().allow(null),
-    reportedBy: Joi.number().integer().positive().required(),
-    resolvedBy: Joi.number().integer().positive().allow(null),
-    resolvedAt: Joi.date().allow(null),
-    dueDate: Joi.date().allow(null),
-    resolutionNotes: Joi.string().allow(null, ""),
+    root_cause: Joi.string().allow(null, ""),
+    assigned_to: Joi.number().integer().positive().allow(null),
+    reported_by: Joi.number().integer().positive().required(),
+    resolved_by: Joi.number().integer().positive().allow(null),
+    resolved_at: Joi.date().allow(null),
+    due_date: Joi.date().allow(null),
+    resolution_notes: Joi.string().allow(null, ""),
     attachments: Joi.array().items(Joi.string().uri()).allow(null),
-    tags: Joi.string().max(255).allow(null, ""),
-    relatedIssues: Joi.string().max(255).allow(null, ""),
-    escalationLevel: Joi.string().valid(...escalationLevelCodes).default("None"),
-    escalatedTo: Joi.number().integer().positive().allow(null),
+    tags: Joi.array().items(Joi.string().max(1000000).allow(null, "")).allow(null),
+    related_issues: Joi.array().items(Joi.number().max(1000000).allow(null, "")).allow(null),
+    escalation_level: Joi.string().valid(...escalationLevelCodes).default("None"),
+    escalated_to: Joi.number().integer().positive().allow(null),
     workaround: Joi.string().allow(null, ""),
-    estimatedEffort: Joi.number().integer().positive().allow(null),
-    actualEffort: Joi.number().integer().positive().allow(null),
-    deploymentRequired: Joi.boolean().default(false),
+    estimated_effort: Joi.number().integer().positive().allow(null),
+    actual_effort: Joi.number().integer().positive().allow(null),
+    deployment_required: Joi.boolean().default(false),
   });
 };
 

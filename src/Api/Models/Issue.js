@@ -71,11 +71,11 @@ const issueAttributes =
     allowNull: true
   },
   tags: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.JSON,
     allowNull: true
   },
   related_issues: {
-    type: DataTypes.STRING(255),
+    type: DataTypes.JSON,
     allowNull: true
   },
   escalation_level: {
