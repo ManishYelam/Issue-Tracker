@@ -11,18 +11,18 @@ const userlogAttribute = {
   },
   user_id: {
     type: DataTypes.INTEGER,
-    allowNull: true,
+    allowNull: false,
     references: {
       model: User, // The User model
       key: 'id', // Reference the id field in the User table
     },
   },
   source_ip: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.STRING(100),
     allowNull: false, // IP address must be provided
   },
   device: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.STRING(100),
     allowNull: false, // IP address must be provided
   },
   related_info: {
