@@ -149,6 +149,7 @@ module.exports = {
       });
 
       return {
+        success: true,
         message: '✅ Issues fetched successfully.',
         totalRecords: count,
         totalPages: Math.ceil(count / limit),
