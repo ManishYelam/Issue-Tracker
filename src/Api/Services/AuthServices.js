@@ -70,7 +70,7 @@ const AuthService = {
         device: userAgent,
         related_info: `Session start & end times`,
         jwt_token: token,
-        login_at: new Date(),
+        action: 'login'
       };
 
       const allValuesPresent = Object.values(logData).every(value => value !== null && value !== undefined);
@@ -105,7 +105,7 @@ const AuthService = {
         related_info: 'Session start & end times',
         logoff_by: 'USER',
         jwt_token: token,
-        logoff_at: new Date(),
+        action: 'logout'
       };
 
       // Execute both operations in parallel

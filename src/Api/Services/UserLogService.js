@@ -4,46 +4,47 @@ const sequelize = require('../../Config/Database/sequelize.config');
 
 module.exports = {
   upsertUserLog: async (data) => {
-    const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
-      const { user_id, source_ip, device, related_info, logoff_by, logoff_at, login_at, jwt_token } = data;
+      const { user_id, source_ip, device, related_info, logoff_by, jwt_token, action } = data;
+      let existingLog = await UserLog.findOne({
+        where: {
+          user_id,
+          source_ip,
+          logoff_at: null,
+          logoff_by: null,
+        },
+      });
 
-      // 🔍 Check if a log already exists for the user and source IP
-      let existingLog = await UserLog.findOne({ where: { user_id, source_ip }, transaction, });
-
-      if (existingLog && existingLog.logoff_by == null && existingLog.logoff_at == null) {
-        // 🛠️ Update missing fields only
-        const updateFields = {};
-        if (!existingLog.logoff_by && logoff_by) updateFields.logoff_by = logoff_by;
-        if (!existingLog.logoff_at && logoff_at) updateFields.logoff_at = logoff_at;
-        if (!existingLog.login_at && login_at) updateFields.login_at = login_at;
-        if (jwt_token) updateFields.jwt_token = jwt_token; // Always update JWT token
-
-        if (Object.keys(updateFields).length > 0) {
-          await existingLog.update(updateFields, { transaction });
-          await transaction.commit();
-          return { message: '✅ User log updated successfully.', data: existingLog };
+      if (existingLog && action === 'logout') {
+        if (!logoff_by) {
+          return { success: false, message: '❌ logoff_by is required for logout action.' };
         }
-
-        // 🔄 If log exists and all fields are filled, create a new log
-        const newLog = await UserLog.create(
-          { user_id, source_ip, device, related_info, logoff_by, logoff_at, login_at, jwt_token },
-          { transaction }
+        await existingLog.update({
+          logoff_at: new Date(),
+          logoff_by,
+        });
+        return { success: true, message: '✅ User logged out successfully.', data: existingLog };
+      } else if (existingLog && action === 'login') {
+        await existingLog.update({
+          device,
+          related_info,
+          login_at: new Date(),
+          jwt_token,
+        });
+        return { success: true, message: '✅ User re-logged in successfully.', data: existingLog };
+      } else {
+        const newLog = await UserLog.create({
+          user_id,
+          source_ip,
+          device,
+          related_info,
+          login_at: new Date(),
+          jwt_token
+        },
         );
-        await transaction.commit();
-        return { message: '✅ New user log created on re-login.', data: newLog };
+        return { success: true, message: '✅ New user log created.', data: newLog };
       }
-
-      // 🆕 If no existing log, create a new entry
-      const newLog = await UserLog.create(
-        { user_id, source_ip, device, related_info, logoff_by, logoff_at, login_at, jwt_token },
-        { transaction }
-      );
-
-      await transaction.commit();
-      return { message: '✅ New user log created successfully.', data: newLog };
     } catch (error) {
-      await transaction.rollback();
       return { success: false, message: `❌ Error in upsertUserLog: ${error.message}` };
     }
   },
