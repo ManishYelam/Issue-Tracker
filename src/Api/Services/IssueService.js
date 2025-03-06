@@ -65,17 +65,68 @@ module.exports = {
 
   // **Bulk insert or update issues**
   bulkIssue: async (bulkIssues) => {
-    const issues = await Issue.bulkCreate(bulkIssues, {
-      updateOnDuplicate: [
-        "title", "description", "issue_type", "priority", "status", "category", "impact_area",
-        "reproducibility", "root_cause", "assigned_to", "reported_by", "resolved_by", "resolved_at",
-        "due_date", "resolution_notes", "attachments", "tags", "related_issues",
-        "escalation_level", "escalated_to", "workaround", "estimated_effort", "actual_effort",
-        "deployment_required",
-      ],
-    });
-    return { success: true, message: "Bulk issues processed successfully", issues };
-  },
+    const transaction = await sequelize.MAIN_DB_NAME.transaction();
+    try {
+      // 🚀 Bulk upsert issues
+      const issues = await Issue.bulkCreate(bulkIssues, {
+        updateOnDuplicate: [
+          "title", "description", "issue_type", "priority", "status", "category", "impact_area",
+          "reproducibility", "root_cause", "assigned_to", "reported_by", "resolved_by", "resolved_at",
+          "due_date", "resolution_notes", "attachments", "tags", "related_issues",
+          "escalation_level", "escalated_to", "workaround", "estimated_effort", "actual_effort",
+          "deployment_required"
+        ],
+        transaction,
+      });
+  
+      // 🔍 Extract unique user IDs from issues
+      const userIds = [...new Set(bulkIssues.map(issue => issue.user_id))];
+  
+      // 🔄 Ensure IssueStats exists for all users
+      await Promise.all(
+        userIds.map(async (userId) => {
+          await IssueStats.findOrCreate({
+            where: { user_id: userId },
+            defaults: {
+              user_id: userId,
+              total_issues: 0,
+              pending_issues: 0,
+              in_progress_issues: 0,
+              on_hold_issues: 0,
+              resolved_issues: 0,
+              to_be_tested_issues: 0,
+              tested_issues: 0,
+              committed_issues: 0,
+              rejected_issues: 0,
+              critical_issues: 0,
+              high_priority_issues: 0,
+              medium_priority_issues: 0,
+              low_priorityI_issues: 0,
+              overdue_issues: 0,
+            },
+            transaction,
+          });
+        })
+      );
+  
+      // 🔄 Update total issues count for each user
+      await Promise.all(
+        userIds.map(async (userId) => {
+          const totalIssues = await Issue.count({ where: { user_id: userId }, transaction });
+          await IssueStats.update(
+            { total_issues: totalIssues },
+            { where: { user_id: userId }, transaction }
+          );
+        })
+      );
+  
+      await transaction.commit();
+      return { success: true, message: "Bulk issues processed successfully", issues };
+    } catch (err) {
+      await transaction.rollback();
+      return { success: false, message: err.message };
+    }
+  },  
 
   getAllIssues: async ({ page = 1, limit = 10, filters = {}, search = '', searchFields = [] }) => {
     try {
