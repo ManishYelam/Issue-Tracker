@@ -1,130 +1,191 @@
 const { createUpsertIssueSchema, createUpdateStatusSchema, validateWithLOVs } = require("../Middlewares/Joi_Validations/issueSchema");
 const issueService = require("../Services/IssueService");
 
-const issuesController = async (req, res) => {
-  try {
-    const { action, issue_id } = req.params;
-    const { status } = req.body;
-    const IssueID = issue_id && !isNaN(issue_id) ? parseInt(issue_id, 10) : null;
 
-    const actions = {
-      upsert: async () => {
-        const { error } = await validateWithLOVs(createUpsertIssueSchema, req.body);
-        if (error) return res.status(400).json({ success: false, message: "❌ Validation failed!", errors: error.details.map(e => e.message) });
-        return issueService.upsertIssue(req.body);
-      },
-
-      bulkIssue: async () => {
-        if (!Array.isArray(req.body) || req.body.length === 0) {
-          return res.status(400).json({ success: false, message: "❌ Invalid input: Expected an array of issue objects." });
-        }
-        const validIssues = [];
-        const errors = [];
-        req.body.forEach(async (issue, index) => {
-          try {
-            await validateWithLOVs(createUpsertIssueSchema, issue);
-            validIssues.push(issue);
-          } catch (error) {
-            errors.push({ row: index + 1, error: error.details[0]?.message || "Unknown validation error" });
-          }
-        });
-        // ❌ This will run before validation is completed!
-        if (errors.length) {
-          return res.status(400).json({ success: false, message: "⚠️ Some issues have validation errors", errors });
-        }
-        return issueService.bulkIssue(validIssues);
-      },
-
-      bulkCsvIssue: async () => {
-        if (!req.file) return res.status(400).json({ message: "No file uploaded" });
-
-        const rows = await parseCSV(req.file.path);
-        deleteFile(req.file.path);
-
-        const parseData = row => ({
-          issue_title: row.issue_title,
-          description: row.description,
-          issueType: row.issueType,
-          priority: row.priority || "Medium",
-          status: row.status || "Open",
-          category: row.category || "General",
-          impactArea: row.impactArea || null,
-          reproducibility: row.reproducibility || "Always",
-          rootCause: row.rootCause || null,
-          assignedTo: row.assignedTo || null,
-          reportedBy: row.reportedBy,
-          resolvedBy: row.resolvedBy || null,
-          resolvedAt: row.resolvedAt ? new Date(row.resolvedAt).toISOString() : null,
-          dueDate: row.dueDate ? new Date(row.dueDate).toISOString() : null,
-          resolutionNotes: row.resolutionNotes || null,
-          attachments: row.attachments?.split(",") || [],
-          tags: row.tags || null,
-          relatedIssues: row.relatedIssues || null,
-          escalationLevel: row.escalationLevel || "None",
-          escalatedTo: row.escalatedTo || null,
-          workaround: row.workaround || null,
-          estimatedEffort: parseInt(row.estimatedEffort, 10) || null,
-          actualEffort: parseInt(row.actualEffort, 10) || null,
-          deploymentRequired: row.deploymentRequired === "true",
-        });
-
-        const issues = rows.map(parseData);
-        const validations = await Promise.all(issues.map(issue => validateWithLOVs(createUpsertIssueSchema, issue)));
-        const validIssues = [];
-        const errors = [];
-
-        validations.forEach((result, index) => {
-          if (result.error) {
-            errors.push({ row: index + 1, error: result.error.details[0]?.message || "Unknown validation error" });
-          } else {
-            validIssues.push(issues[index]);
-          }
-        });
-
-        if (errors.length) return res.status(400).json({ message: "Some rows have validation errors", errors });
-
-        return issueService.bulkIssue(validIssues);
-      },
-
-      get: async () => {
-        if (!IssueID) throw new Error("🔍 Oops! Issue ID is missing. 👉 Please provide a valid Issue ID.");
-        return issueService.getIssueById(IssueID);
-      },
-
-      getAll: async () => issueService.getAllIssues(req.body),
-
-      delete: async () => {
-        if (!IssueID) throw new Error("🗑️ Deletion failed! 👉 Please provide a valid Issue ID.");
-        return issueService.deleteIssueById(IssueID);
-      },
-
-      updateStatus: async () => {
-        if (!IssueID) throw new Error("⚠️ Cannot update status! 👉 A valid Issue ID is required.");
-        const { error } = await validateWithLOVs(createUpdateStatusSchema, req.body);
-        if (error) return res.status(400).json({ success: false, message: "❌ Validation failed!", errors: error.details.map(e => e.message) });
-        return issueService.updateIssueStatus(IssueID, status);
+module.exports = {
+  /**
+   * 🆕 Upsert a Single Issue (Create/Update)
+   */
+  upsertIssue: async (req, res) => {
+    try {
+      const { error } = await (createUpsertIssueSchema, req.body);
+      if (error) {
+        return res.status(400).json({ success: false, message: "❌ Validation failed!", errors: error.details.map(e => e.message) });
       }
-    };
-
-    if (!actions[action]) {
-      return res.status(400).json({
-        success: false,
-        message: "❌ Invalid action! 👉 Use 'get', 'delete', 'upsert', 'updateStatus', or 'getAll'."
-      });
+      const result = await issueService.upsertIssue(req.body);
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred: ${err.message}`);
+      return res.status(500).json({ success: false, message: "❗ Something went wrong.", error: err.message });
     }
+  },
 
-    const result = await actions[action]();
-    if (!res.headersSent) return res.status(result.success ? 200 : 400).json(result);
-  } catch (err) {
-    console.error(`🚨 Error Occurred: ${err.message}`);
-    if (!res.headersSent) {
+  /**
+   * 🔄 Bulk Insert/Update Issues
+   */
+  bulkIssue: async (req, res) => {
+    try {
+      if (!Array.isArray(req.body) || req.body.length === 0) {
+        return res.status(400).json({ success: false, message: "❌ Invalid input: Expected an array of issue objects." });
+      }
+
+      // Validate all issues
+      const validIssues = [];
+      const errors = [];
+      for (const [index, issue] of req.body.entries()) {
+        const validation = await validateWithLOVs(createUpsertIssueSchema, issue);
+        if (validation.error) {
+          errors.push({ row: index + 1, error: validation.error.details[0]?.message || "Unknown validation error" });
+        } else {
+          validIssues.push(issue);
+        }
+      }
+
+      if (errors.length) {
+        return res.status(400).json({ success: false, message: "⚠️ Some issues have validation errors", errors });
+      }
+
+      const result = await issueService.bulkIssue(validIssues);
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred: ${err.message}`);
+      return res.status(500).json({ success: false, message: "❗ Something went wrong.", error: err.message });
+    }
+  },
+
+  /**
+   * 📂 Bulk Upload Issues via CSV
+   */
+  bulkCsvIssue: async (req, res) => {
+    try {
+      if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+
+      const rows = await parseCSV(req.file.path);
+      deleteFile(req.file.path);
+
+      const parseData = row => ({
+        title: row.issue_title,
+        description: row.description,
+        issue_type: row.issueType,
+        priority: row.priority || "Medium",
+        status: row.status || "Open",
+        category: row.category || "General",
+        impact_area: row.impactArea || null,
+        reproducibility: row.reproducibility || "Always",
+        root_cause: row.rootCause || null,
+        assigned_to: row.assignedTo || null,
+        reported_by: row.reportedBy,
+        resolved_by: row.resolvedBy || null,
+        resolved_at: row.resolvedAt ? new Date(row.resolvedAt).toISOString() : null,
+        due_date: row.dueDate ? new Date(row.dueDate).toISOString() : null,
+        resolution_notes: row.resolutionNotes || null,
+        attachments: row.attachments?.split(",") || [],
+        tags: row.tags || null,
+        related_issues: row.relatedIssues || null,
+        escalation_level: row.escalationLevel || "None",
+        escalated_to: row.escalatedTo || null,
+        workaround: row.workaround || null,
+        estimated_effort: parseInt(row.estimatedEffort, 10) || null,
+        actual_effort: parseInt(row.actualEffort, 10) || null,
+        deployment_required: row.deploymentRequired === "true",
+      });
+
+      const issues = rows.map(parseData);
+      const validations = await Promise.all(issues.map(issue => validateWithLOVs(createUpsertIssueSchema, issue)));
+
+      const validIssues = [];
+      const errors = [];
+
+      validations.forEach((result, index) => {
+        if (result.error) {
+          errors.push({ row: index + 1, error: result.error.details[0]?.message || "Unknown validation error" });
+        } else {
+          validIssues.push(issues[index]);
+        }
+      });
+
+      if (errors.length) return res.status(400).json({ message: "Some rows have validation errors", errors });
+
+      const result = await issueService.bulkIssue(validIssues);
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred: ${err.message}`);
+      return res.status(500).json({ success: false, message: "❗ Something went wrong.", error: err.message });
+    }
+  },
+
+  updateIssueStatus: async (req, res) => {
+    try {
+      const issue_id = parseInt(req.params.issue_id, 10);
+      const { status } = req.body;
+
+      if (isNaN(issue_id)) {
+        return res.status(400).json({ success: false, message: "⚠️ Invalid Issue ID provided." });
+      }
+      const { error } = await validateWithLOVs(createUpdateStatusSchema, req.body);
+      if (error) {
+        return res.status(400).json({
+          success: false,
+          message: "❌ Validation failed!",
+          errors: error.details.map(e => e.message)
+        });
+      }
+
+      const result = await issueService.updateIssueStatus(issue_id, status);
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred in updateIssueStatus: ${err.message}`);
       return res.status(500).json({
         success: false,
-        message: "❗ Something went wrong. 🔧 Try again later.",
+        message: "❗ Something went wrong.",
         error: err.message
       });
     }
-  }
+  },
+
+  /**
+   * 🔍 Get a Single Issue by ID
+   */
+  getIssueById: async (req, res) => {
+    try {
+      const issue_id = parseInt(req.params.issue_id, 10);
+      if (isNaN(issue_id)) return res.status(400).json({ success: false, message: "Invalid Issue ID" });
+
+      const result = await issueService.getIssueById(issue_id);
+      return res.status(result.success ? 200 : 404).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred: ${err.message}`);
+      return res.status(500).json({ success: false, message: "❗ Something went wrong.", error: err.message });
+    }
+  },
+
+  /**
+   * 📊 Get All Issues (With Filters & Pagination)
+   */
+  getAllIssues: async (req, res) => {
+    try {
+      const result = await issueService.getAllIssues(req.body);
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred: ${err.message}`);
+      return res.status(500).json({ success: false, message: "❗ Something went wrong.", error: err.message });
+    }
+  },
+
+  /**
+   * 🗑️ Delete an Issue
+   */
+  deleteIssueById: async (req, res) => {
+    try {
+      const issue_id = parseInt(req.params.issue_id, 10);
+      if (isNaN(issue_id)) return res.status(400).json({ success: false, message: "Invalid Issue ID" });
+
+      const result = await issueService.deleteIssueById(issue_id);
+      return res.status(result.success ? 200 : 404).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred: ${err.message}`);
+      return res.status(500).json({ success: false, message: "❗ Something went wrong.", error: err.message });
+    }
+  },
 };
 
-module.exports = issuesController;
