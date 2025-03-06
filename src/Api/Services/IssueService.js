@@ -163,7 +163,7 @@ module.exports = {
   },
 
   updateIssueStatus: async (user_id, issue_id, newStatus) => {
-    const transaction = await sequelize.transaction();
+    const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
       // 🔍 Fetch the issue
       const issue = await Issue.findByPk(issue_id, { transaction });
