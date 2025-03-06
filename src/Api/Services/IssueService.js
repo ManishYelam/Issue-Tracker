@@ -2,6 +2,7 @@ const { Op } = require("sequelize");
 const { validateWithLOVs, createUpsertIssueSchema } = require("../Middlewares/Joi_Validations/issueSchema");
 const IssueStats = require("../Models/issueStats");
 const Issue = require("../Models/Issue");
+const sequelize = require("../../Config/Database/sequelize.config");
 
 module.exports = {
   updateIssueStats: async (userId, updates) => {
@@ -18,12 +19,46 @@ module.exports = {
   },
 
   upsertIssue: async (issueData) => {
+    const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
       const [issue, created] = await Issue.upsert(issueData, {
         returning: true,
+        transaction,
       });
+
+      const [issueStats, isNew] = await IssueStats.findOrCreate({
+        where: { user_id: issue.user_id },
+        defaults: {
+          user_id: issue.user_id,
+          total_issues: 0,
+          pending_issues: 0,
+          in_progress_issues: 0,
+          on_hold_issues: 0,
+          resolved_issues: 0,
+          to_be_tested_issues: 0,
+          tested_issues: 0,
+          committed_issues: 0,
+          rejected_issues: 0,
+          critical_issues: 0,
+          high_priority_issues: 0,
+          medium_priority_issues: 0,
+          low_priorityI_issues: 0,
+          overdue_issues: 0,
+        },
+        transaction,
+      });
+
+      const totalIssues = await Issue.count({
+        where: { user_id: issue.user_id },
+        transaction,
+      });
+
+      await issueStats.update({ total_issues: totalIssues }, { transaction });
+
+      await transaction.commit();
       return { success: true, issue, created };
     } catch (err) {
+      await transaction.rollback();
       return { success: false, message: err.message };
     }
   },
@@ -97,13 +132,32 @@ module.exports = {
   },
 
   deleteIssueById: async (issue_id) => {
+    const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
-      const deleted = await Issue.destroy({ where: { issue_id } });
-      if (!deleted) {
+      // 🔍 Find the issue first
+      const issue = await Issue.findByPk(issue_id, { transaction });
+      if (!issue) {
+        await transaction.rollback();
         return { success: false, message: "Issue not found or already deleted" };
       }
+
+      // 🗑️ Delete the issue
+      await Issue.destroy({ where: { issue_id }, transaction });
+
+      // 🔄 Update total_issues in IssueStats
+      const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction });
+
+      // 🔍 Check if IssueStats exists
+      const issueStats = await IssueStats.findOne({ where: { user_id: issue.user_id }, transaction });
+
+      if (issueStats) {
+        await issueStats.update({ total_issues: totalIssues }, { transaction });
+      }
+
+      await transaction.commit();
       return { success: true, message: "Issue deleted successfully" };
     } catch (err) {
+      await transaction.rollback();
       return { success: false, message: err.message };
     }
   },
