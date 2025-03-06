@@ -118,7 +118,7 @@ module.exports = {
     try {
       const issue_id = parseInt(req.params.issue_id, 10);
       const { status } = req.body;
-
+      const user_id = req.user_info.id;
       if (isNaN(issue_id)) {
         return res.status(400).json({ success: false, message: "⚠️ Invalid Issue ID provided." });
       }
@@ -131,7 +131,7 @@ module.exports = {
         });
       }
 
-      const result = await issueService.updateIssueStatus(issue_id, status);
+      const result = await issueService.updateIssueStatus(user_id, issue_id, status);
       return res.status(result.success ? 200 : 400).json(result);
     } catch (err) {
       console.error(`🚨 Error Occurred in updateIssueStatus: ${err.message}`);

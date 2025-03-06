@@ -108,13 +108,18 @@ module.exports = {
     }
   },
 
-  updateIssueStatus: async (issue_id, status) => {
+  updateIssueStatus: async (user_id, issue_id, status) => {
     try {
       const issue = await Issue.findByPk(issue_id);
       if (!issue) {
         return { success: false, message: "Issue not found" };
       }
-      await issue.update({ status });
+      const updateData = { status: status };
+      if (status === "RESOLVED") {
+        updateData.resolved_by = user_id
+        updateData.resolved_at = new Date(); 
+      }
+      await issue.update(updateData);
       return { success: true, message: "Issue status updated successfully", issue };
     } catch (err) {
       return { success: false, message: err.message };

@@ -51,7 +51,7 @@ const createUpsertIssueSchema = async () => {
 
 // **Dynamic Joi Schema for Updating Status**
 const createUpdateStatusSchema = async () => {
-  const statusLOVs = await getAllLOVs(["status"], true);
+  const statusLOVs = await getAllLOVs(["task_status"], true);
   const statusCodes = statusLOVs.map((lov) => lov.code);
 
   return Joi.object({
