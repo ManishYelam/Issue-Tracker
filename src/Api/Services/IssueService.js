@@ -5,19 +5,6 @@ const Issue = require("../Models/Issue");
 const sequelize = require("../../Config/Database/sequelize.config");
 
 module.exports = {
-  updateIssueStats: async (userId, updates) => {
-    try {
-      console.log(`Updating IssueStats for user_id: ${userId}`, updates);
-      await IssueStats.upsert(
-        { user_id: userId, ...updates },
-        { conflictFields: ['user_id'] }
-      );
-      console.log(`✅ IssueStats updated successfully for user_id: ${userId}`);
-    } catch (error) {
-      console.error(`❌ Error updating IssueStats for user_id ${userId}:`, error);
-    }
-  },
-
   upsertIssue: async (issueData) => {
     const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
