@@ -8,8 +8,6 @@ const routes = require('./src/Api/Routes/index.js');
 const { InitializeDatabase } = require('./src/Api/Models/InitializeDatabase');
 const { TestSequelizeConnection, TestMySQLConnection, } = require('./src/Config/Database/db.config.js');
 require('dotenv').config();
-const initializeTriggers = require("./src/Api/Models/Trigger.js");
-initializeTriggers();
 
 // require('./src/sockets/server.socket.js');
 
