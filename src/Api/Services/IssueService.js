@@ -1,6 +1,6 @@
 const { Op } = require("sequelize");
-const Issue = require("../Models/Issue");
 const { validateWithLOVs, createUpsertIssueSchema } = require("../Middlewares/Joi_Validations/issueSchema");
+const Issue = require("../Models/issue");
 
 module.exports = {
   upsertIssue: async (issueData) => {
