@@ -162,27 +162,53 @@ module.exports = {
     }
   },
 
-  updateIssueStatus: async (user_id, issue_id, status) => {
+  updateIssueStatus: async (user_id, issue_id, newStatus) => {
+    const transaction = await sequelize.transaction();
     try {
-      const issue = await Issue.findByPk(issue_id);
+      // 🔍 Fetch the issue
+      const issue = await Issue.findByPk(issue_id, { transaction });
       if (!issue) {
+        await transaction.rollback();
         return { success: false, message: "Issue not found" };
       }
-      const previousStatus = issue.status;
-      if (previousStatus === status) {
+
+      // 🔄 If status is already the same, do nothing
+      const prevStatus = issue.status;
+      if (prevStatus === newStatus) {
+        await transaction.rollback();
         return { success: false, message: "No changes detected. Status is already updated." };
       }
-      const updateData = { status: status };
-      if (status === "RESOLVED") {
-        updateData.resolved_by = user_id
+
+      // 🆕 Update the issue status
+      const updateData = { status: newStatus };
+      if (newStatus === "RESOLVED") {
+        updateData.resolved_by = user_id;
         updateData.resolved_at = new Date();
-      } else if (previousStatus === "RESOLVED") {
+      } else if (prevStatus === "RESOLVED") {
         updateData.resolved_by = null;
-        updateData.resolved_at = null; // ✅ Remove resolved_at if status changes from RESOLVED
+        updateData.resolved_at = null;
       }
-      await issue.update(updateData);
+      await issue.update(updateData, { transaction });
+
+      // 🔄 Fetch IssueStats for the user
+      const issueStats = await IssueStats.findOne({ where: { user_id: issue.user_id }, transaction });
+
+      if (issueStats) {
+        // 📌 Decrement the previous status count (only if > 0)
+        if (issueStats[`${prevStatus.toLowerCase()}_issues`] > 0) {
+          await issueStats.decrement(`${prevStatus.toLowerCase()}_issues`, { by: 1, transaction });
+        }
+        // 📌 Increment the new status count
+        await issueStats.increment(`${newStatus.toLowerCase()}_issues`, { by: 1, transaction });
+        // 🔄 Update total issues count
+        const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction });
+        await issueStats.update({ total_issues: totalIssues }, { transaction });
+      } else { return }
+
+      await transaction.commit();
       return { success: true, message: "Issue status updated successfully", issue };
     } catch (err) {
+      await transaction.rollback();
       return { success: false, message: err.message };
     }
   },
