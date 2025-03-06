@@ -35,12 +35,10 @@ module.exports = {
         transaction,
       });
 
-      const totalIssues = await Issue.count({
-        where: { user_id: issue.user_id },
-        transaction,
-      });
+      const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction, });
+      const pendingIssues = await Issue.count({ where: { user_id, status: "PENDING" }, transaction, });
 
-      await issueStats.update({ total_issues: totalIssues }, { transaction });
+      await issueStats.update({ total_issues: totalIssues, pending_issues: pendingIssues, }, { transaction });
 
       await transaction.commit();
       return { success: true, issue, created };
@@ -65,10 +63,10 @@ module.exports = {
         ],
         transaction,
       });
-  
+
       // 🔍 Extract unique user IDs from issues
       const userIds = [...new Set(bulkIssues.map(issue => issue.user_id))];
-  
+
       // 🔄 Ensure IssueStats exists for all users
       await Promise.all(
         userIds.map(async (userId) => {
@@ -95,25 +93,26 @@ module.exports = {
           });
         })
       );
-  
+
       // 🔄 Update total issues count for each user
       await Promise.all(
         userIds.map(async (userId) => {
           const totalIssues = await Issue.count({ where: { user_id: userId }, transaction });
+          const pendingIssues = await Issue.count({ where: { user_id: userId, status: "PENDING" }, transaction, });
           await IssueStats.update(
-            { total_issues: totalIssues },
+            { total_issues: totalIssues, pending_issues: pendingIssues, },
             { where: { user_id: userId }, transaction }
           );
         })
       );
-  
+
       await transaction.commit();
       return { success: true, message: "Bulk issues processed successfully", issues };
     } catch (err) {
       await transaction.rollback();
       return { success: false, message: err.message };
     }
-  },  
+  },
 
   getAllIssues: async ({ page = 1, limit = 10, filters = {}, search = '', searchFields = [] }) => {
     try {

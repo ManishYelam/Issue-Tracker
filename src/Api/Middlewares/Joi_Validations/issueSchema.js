@@ -26,7 +26,7 @@ const createUpsertIssueSchema = async () => {
     description: Joi.string().required(),
     issue_type: Joi.string().valid(...issueTypeCodes).required(),
     priority: Joi.string().valid(...priorityCodes).default("Medium"),
-    status: Joi.string().valid(...statusCodes).default("Pending"),
+    // status: Joi.string().valid(...statusCodes).default("PENDING"),
     category: Joi.string().valid(...taskCategoryTypeCodes).allow(null, ""),
     impact_area: Joi.string().max(255).allow(null, ""),
     reproducibility: Joi.string().valid(...reproducibilityCodes).default("Always"),
