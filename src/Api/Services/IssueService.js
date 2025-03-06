@@ -121,7 +121,7 @@ module.exports = {
       const updateData = { status: status };
       if (status === "RESOLVED") {
         updateData.resolved_by = user_id
-        updateData.resolved_at = new Date(); 
+        updateData.resolved_at = new Date();
       } else if (previousStatus === "RESOLVED") {
         updateData.resolved_by = null;
         updateData.resolved_at = null; // ✅ Remove resolved_at if status changes from RESOLVED
