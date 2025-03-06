@@ -120,14 +120,18 @@ module.exports = {
 
       let whereConditions = {};
       // Apply filters dynamically
-      if (filters.issueType) whereConditions.issueType = filters.issueType;
-      if (filters.priority) whereConditions.priority = filters.priority;
-      if (filters.status) whereConditions.status = filters.status;
-      if (filters.category) whereConditions.category = filters.category;
-      if (filters.assignedTo) whereConditions.assignedTo = filters.assignedTo;
-      if (filters.reportedBy) whereConditions.reportedBy = filters.reportedBy;
-      if (filters.resolvedBy) whereConditions.resolvedBy = filters.resolvedBy;
-      if (filters.dueDate) whereConditions.dueDate = { [Op.gte]: new Date(filters.dueDate) };
+      // if (filters.issue_type) whereConditions.issueType = filters.issueType;
+      // if (filters.priority) whereConditions.priority = filters.priority;
+      // if (filters.status) whereConditions.status = filters.status;
+      // if (filters.category) whereConditions.category = filters.category;
+      // if (filters.assigned_to) whereConditions.assignedTo = filters.assignedTo;
+      // if (filters.reported_by) whereConditions.reportedBy = filters.reportedBy;
+      // if (filters.resolved_by) whereConditions.resolvedBy = filters.resolvedBy;
+      // if (filters.due_date) whereConditions.dueDate = { [Op.gte]: new Date(filters.dueDate) };
+      // ✅ Apply filters dynamically
+      Object.keys(filters).forEach((key) => {
+        if (filters[key]) whereConditions[key] = filters[key];
+      });
 
       // Apply dynamic search on specified fields
       if (search && searchFields.length > 0) {
