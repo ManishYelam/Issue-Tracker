@@ -54,6 +54,7 @@ const AuthService = {
       // Update user login status in a single database query
       await user.update({
         logged_in_status: true,
+        last_login_at: new Date(),
         token,
         expiresAt: new Date(Date.now() + 12 * 60 * 60 * 1000), // 12 hours
         expiredAt: null,

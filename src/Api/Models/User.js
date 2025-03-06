@@ -83,6 +83,10 @@ const userAttribute = {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  last_login_at:{
+    type: DataTypes.DATE,
+    allowNull: true,
+  },
   expiresAt: {
     type: DataTypes.DATE,
     allowNull: true,
