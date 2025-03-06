@@ -5,14 +5,11 @@ const User = require('./User');
 const IssueStats = sequelize.MAIN_DB_NAME.define(
   'IssueStats',
   {
-    issue_stat_id: {
-      type: DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
-    },
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
+      primaryKey: true,
+      unique: true,
       references: {
         model: User,
         key: 'id'

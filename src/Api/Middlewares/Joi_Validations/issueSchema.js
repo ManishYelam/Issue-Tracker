@@ -21,6 +21,7 @@ const createUpsertIssueSchema = async () => {
 
   return Joi.object({
     issue_id: Joi.number().integer().positive().optional(),
+    user_id: Joi.number().integer().positive().required(),
     title: Joi.string().max(255).required(),
     description: Joi.string().required(),
     issue_type: Joi.string().valid(...issueTypeCodes).required(),

@@ -1,8 +1,22 @@
 const { Op } = require("sequelize");
 const { validateWithLOVs, createUpsertIssueSchema } = require("../Middlewares/Joi_Validations/issueSchema");
 const Issue = require("../Models/issue");
+const IssueStats = require("../Models/issueStats");
 
 module.exports = {
+  updateIssueStats: async (userId, updates) => {
+    try {
+      console.log(`Updating IssueStats for user_id: ${userId}`, updates);
+      await IssueStats.upsert(
+        { user_id: userId, ...updates },
+        { conflictFields: ['user_id'] }
+      );
+      console.log(`✅ IssueStats updated successfully for user_id: ${userId}`);
+    } catch (error) {
+      console.error(`❌ Error updating IssueStats for user_id ${userId}:`, error);
+    }
+  },
+
   upsertIssue: async (issueData) => {
     try {
       const [issue, created] = await Issue.upsert(issueData, {
@@ -18,7 +32,11 @@ module.exports = {
   bulkIssue: async (bulkIssues) => {
     const issues = await Issue.bulkCreate(bulkIssues, {
       updateOnDuplicate: [
-        "title", "description", "issueType", "priority", "status", "category", "impactArea", "reproducibility", "rootCause", "assignedTo", "reportedBy", "resolvedBy", "resolvedAt", "dueDate", "resolutionNotes", "attachments", "tags", "relatedIssues", "escalationLevel", "escalatedTo", "workaround", "estimatedEffort", "actualEffort", "deploymentRequired",
+        "title", "description", "issue_type", "priority", "status", "category", "impact_area",
+        "reproducibility", "root_cause", "assigned_to", "reported_by", "resolved_by", "resolved_at",
+        "due_date", "resolution_notes", "attachments", "tags", "related_issues",
+        "escalation_level", "escalated_to", "workaround", "estimated_effort", "actual_effort",
+        "deployment_required",
       ],
     });
     return { success: true, message: "Bulk issues processed successfully", issues };

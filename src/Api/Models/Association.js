@@ -7,11 +7,11 @@ const Organization = require('./Organization');
 const ApplicationProperties = require('./Application.Prop');
 const Like = require('./likes');
 const UserConnection = require('./UserConnections');
-const Issue = require('./Issue');
 const IssueHistory = require('./IssueHistory');
 const IssueComment = require('./IssueComment');
 const IssueStats = require('./issueStats');
 const ListOfValues = require('./List.Of.values');
+const Issue = require('./issue');
 
 // User-Role relationship: A user belongs to a role, and a role has many users.
 User.belongsTo(Role, { through: 'UserRoles', foreignKey: 'role_id' });
