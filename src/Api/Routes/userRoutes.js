@@ -11,9 +11,9 @@ const userActionsRouter = express.Router();
 userRouter
   .post('/', validateAsync(createUserSchema), userController.createUser)
   .get('/verify', userController.verifyCreateUser)
-  .get('/', userController.getAllUsers)
-  .post('/v2', userController.getAllUsersV2)
-  .get('/:id', userController.getUserById)
+  .get('/', authMiddleware, userController.getAllUsers)
+  .post('/v2', authMiddleware, userController.getAllUsersV2)
+  .get('/:id', authMiddleware, userController.getUserById)
   .put('/:id', authMiddleware, validateAsync(updateUserSchema), userController.updateUser)
   .delete('/:id', authMiddleware, userController.deleteUser)
   .delete('/user_range/:start_id/to/:end_id', authMiddleware, userController.deleteUserRanges);
