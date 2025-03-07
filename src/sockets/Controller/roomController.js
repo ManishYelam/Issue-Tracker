@@ -95,16 +95,11 @@ module.exports = {
   getMessagesByRoom: async (req, res) => {
     const { roomId, startMessageId, endMessageId } = req.query;
     try {
-      const [roomIdInt, startMessageIdInt, endMessageIdInt] = [
-        parseInt(roomId),
-        parseInt(startMessageId),
-        parseInt(endMessageId),
-      ];
+      const [roomIdInt, startMessageIdInt, endMessageIdInt] = [parseInt(roomId), parseInt(startMessageId), parseInt(endMessageId)];
       const messages = await roomService.getMessagesByRoom(roomIdInt, startMessageIdInt, endMessageIdInt);
       return res.status(200).json({ messages });
     } catch (error) {
       return res.status(error.statusCode || 500).json({ message: error.message });
     }
   },
-
 };

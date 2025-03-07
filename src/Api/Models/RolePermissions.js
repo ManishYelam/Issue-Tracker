@@ -12,13 +12,9 @@ const rolePermissionsAttributes = {
   },
 };
 
-const RolePermissions = sequelize.MAIN_DB_NAME.define(
-  'RolePermissions',
-  rolePermissionsAttributes,
-  {
-    tableName: 'tbl_role_permissions',
-    timestamps: false,
-  }
-);
+const RolePermissions = sequelize.MAIN_DB_NAME.define('RolePermissions', rolePermissionsAttributes, {
+  tableName: 'tbl_role_permissions',
+  timestamps: false,
+});
 
 module.exports = RolePermissions;

@@ -3,7 +3,7 @@ const { UserLog } = require('../Models/Association');
 const sequelize = require('../../Config/Database/sequelize.config');
 
 module.exports = {
-  upsertUserLog: async (data) => {
+  upsertUserLog: async data => {
     try {
       const { user_id, source_ip, device, related_info, logoff_by, jwt_token, action } = data;
       let existingLog = await UserLog.findOne({
@@ -39,9 +39,8 @@ module.exports = {
           device,
           related_info,
           login_at: new Date(),
-          jwt_token
-        },
-        );
+          jwt_token,
+        });
         return { success: true, message: '✅ New user log created.', data: newLog };
       }
     } catch (error) {
@@ -64,7 +63,7 @@ module.exports = {
       // Apply dynamic search on specified fields
       if (search && searchFields.length > 0) {
         whereConditions[Op.or] = searchFields.map(field => ({
-          [field]: { [Op.like]: `%${search}%` }
+          [field]: { [Op.like]: `%${search}%` },
         }));
       }
 
@@ -88,11 +87,11 @@ module.exports = {
     }
   },
 
-  getUserLogById: async (id) => {
+  getUserLogById: async id => {
     return await UserLog.findByPk(id);
   },
 
-  deleteUserLog: async (id) => {
+  deleteUserLog: async id => {
     const userLog = await UserLog.findByPk(id);
     if (!userLog) throw new Error('User Log not found');
     return await UserLog.destroy({ where: { id } });

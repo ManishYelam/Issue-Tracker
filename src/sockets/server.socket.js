@@ -10,35 +10,35 @@ const app = express();
 app.use(express.json());
 io.use(authMiddleware);
 
-io.on('connection', (socket) => {
-  const onlineUsers = {}; 
+io.on('connection', socket => {
+  const onlineUsers = {};
   console.log(onlineUsers);
 
   socket.on('user_connected', () => {
     const user = socket.user;
     if (!user) {
-        console.log('User authentication failed.');
-        return;
+      console.log('User authentication failed.');
+      return;
     }
     if (!onlineUsers[user.id]) {
-        onlineUsers[user.id] = {
-            socketId: socket.id,
-            username: user.username,
-            lastActive: new Date(),
-        };
-        socket.broadcast.emit('user_status_change', {
-            userId: user.id,
-            username: user.username,
-            status: 'online',
-        });
-        console.log(onlineUsers);
-        console.log(`User ${user.username} (${user.id}) is online.`);
+      onlineUsers[user.id] = {
+        socketId: socket.id,
+        username: user.username,
+        lastActive: new Date(),
+      };
+      socket.broadcast.emit('user_status_change', {
+        userId: user.id,
+        username: user.username,
+        status: 'online',
+      });
+      console.log(onlineUsers);
+      console.log(`User ${user.username} (${user.id}) is online.`);
     } else {
-        console.log(`User ${user.username} (${user.id}) is already online.`);
+      console.log(`User ${user.username} (${user.id}) is already online.`);
     }
-});
+  });
 
-  notificationService(socket, io, onlineUsers)
+  notificationService(socket, io, onlineUsers);
   chatService(socket, io, onlineUsers);
   statService(socket, io, onlineUsers);
 

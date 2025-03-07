@@ -5,7 +5,7 @@ const useragent = require('useragent');
 
 const authMiddleware = async (req, res, next) => {
   const token = req.headers['authorization']?.split(' ')[1];
-  const ip = (req.headers['x-forwarded-for']?.split(',')[0]) || req.socket.remoteAddress || req.connection.remoteAddress || req.ip;
+  const ip = req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress || req.connection.remoteAddress || req.ip;
   const user_agent = req.get('User-Agent') || 'unknown';
   const agent = useragent.parse(req.headers['user-agent']);
 
@@ -16,24 +16,27 @@ const authMiddleware = async (req, res, next) => {
   try {
     const decoded = verifyToken(token);
     const user = await User.findByPk(decoded.id, {
-      include: [{
-        model: Role,
-        include: {
-          model: Permission,
-          through: { attributes: [] },
+      include: [
+        {
+          model: Role,
+          include: {
+            model: Permission,
+            through: { attributes: [] },
+          },
         },
-      }],
-    });   
+      ],
+    });
 
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized: User not found' });
     }
     if (user.logged_in_status === false) {
       return res.status(401).json({
-        error: "Oh, come on! 🤨 You’re not logged in, yet you’re trying to access this? Nice try, but no access for you! Go log in first. 🔑"
+        error:
+          'Oh, come on! 🤨 You’re not logged in, yet you’re trying to access this? Nice try, but no access for you! Go log in first. 🔑',
       });
     }
-    
+
     // Extract public IPv4 address
     const getPublicIP = () => {
       const interfaces = os.networkInterfaces();

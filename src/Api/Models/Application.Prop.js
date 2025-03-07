@@ -32,23 +32,19 @@ const ApplicationPropAttribute = {
   status: {
     type: DataTypes.STRING,
     defaultValue: 'active',
-  }
+  },
 };
 
-const ApplicationProperties = sequelize.MAIN_DB_NAME.define(
-  'ApplicationProperties',
-  ApplicationPropAttribute,
-  {
-    tableName: 'tbl_application_properties',
-    indexes: [
-      {
-        unique: true,
-        fields: ['property_name', 'property_value'],
-      },
-    ],
-    timestamps: true,
-  }
-);
+const ApplicationProperties = sequelize.MAIN_DB_NAME.define('ApplicationProperties', ApplicationPropAttribute, {
+  tableName: 'tbl_application_properties',
+  indexes: [
+    {
+      unique: true,
+      fields: ['property_name', 'property_value'],
+    },
+  ],
+  timestamps: true,
+});
 
 // ✅ **Hook to Automatically Set Others to Inactive**
 ApplicationProperties.beforeCreate(async (instance, options) => {
@@ -68,6 +64,5 @@ ApplicationProperties.beforeUpdate(async (instance, options) => {
     );
   }
 });
-
 
 module.exports = ApplicationProperties;

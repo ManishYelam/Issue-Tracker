@@ -65,10 +65,7 @@ module.exports = {
   uploadToFirebase: async (req, res) => {
     try {
       const storageRef = ref(firebaseStorage, req.file.filename);
-      const snapshot = await uploadBytes(
-        storageRef,
-        fs.readFileSync(req.file.path)
-      );
+      const snapshot = await uploadBytes(storageRef, fs.readFileSync(req.file.path));
       res.status(200).json({ url: snapshot.metadata.fullPath });
     } catch (error) {
       res.status(500).json({ error: error.message });

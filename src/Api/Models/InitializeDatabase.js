@@ -1,6 +1,29 @@
 const { sequelize } = require('../../Config/Database/db.config');
-const { User, UserLog, Role, Permission, RolePermissions, ApplicationProperties, Like, UserConnection, Issue, IssueComment, IssueHistory, IssueStats, ListOfValues, } = require('./Association');
-const { BlockedUser, MediaStorage, Message, MessageReaction, Notification, Room, RoomMembers, UserSettings } = require('./Chat/ChatAssociations');
+const {
+  User,
+  UserLog,
+  Role,
+  Permission,
+  RolePermissions,
+  ApplicationProperties,
+  Like,
+  UserConnection,
+  Issue,
+  IssueComment,
+  IssueHistory,
+  IssueStats,
+  ListOfValues,
+} = require('./Association');
+const {
+  BlockedUser,
+  MediaStorage,
+  Message,
+  MessageReaction,
+  Notification,
+  Room,
+  RoomMembers,
+  UserSettings,
+} = require('./Chat/ChatAssociations');
 
 module.exports = {
   InitializeDatabase: async () => {
@@ -37,7 +60,7 @@ module.exports = {
           fields: ['property_name', 'status'],
           where: { status: 'active' },
           name: 'unique_active_app_email',
-        })
+        }),
       ]);
     } catch (error) {
       console.error('Error syncing database:', error);

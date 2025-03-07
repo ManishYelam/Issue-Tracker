@@ -95,13 +95,9 @@ const OrganizationAttribute = {
     defaultValue: DataTypes.NOW,
   },
 };
-const Organization = sequelize.MAIN_DB_NAME.define(
-  'Organization',
-  OrganizationAttribute,
-  {
-    tableName: 'tbl_organization',
-    timestamps: true,
-  }
-);
+const Organization = sequelize.MAIN_DB_NAME.define('Organization', OrganizationAttribute, {
+  tableName: 'tbl_organization',
+  timestamps: true,
+});
 
 module.exports = Organization;

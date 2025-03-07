@@ -1,5 +1,5 @@
-const validateAsync = (schemaFunction) => async (req, res, next) => {
-  try {   
+const validateAsync = schemaFunction => async (req, res, next) => {
+  try {
     const schema = await schemaFunction(); // Retrieve schema dynamically
     await schema.validateAsync(req.body, { abortEarly: false }); // Validate request body
     next(); // Proceed if validation is successful

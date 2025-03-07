@@ -4,7 +4,7 @@ const { comparePassword, hashPassword } = require('../Helpers/hashPassword');
 const { generateToken, verifyToken, blacklistToken } = require('../../Utils/jwtSecret');
 const { generateOTPTimestamped } = require('../../Utils/OTP');
 const { sendResetPasswordCodeEmail, sendPasswordChangeEmail } = require('../Services/email.Service');
-const { User, UserLog, Role, Permission, Organization, } = require('../Models/Association');
+const { User, UserLog, Role, Permission, Organization } = require('../Models/Association');
 const { upsertUserLog } = require('./UserLogService');
 
 const AuthService = {
@@ -70,7 +70,7 @@ const AuthService = {
         device: userAgent,
         related_info: `Session start & end times`,
         jwt_token: token,
-        action: 'login'
+        action: 'login',
       };
 
       const allValuesPresent = Object.values(logData).every(value => value !== null && value !== undefined);
@@ -105,11 +105,11 @@ const AuthService = {
         related_info: 'Session start & end times',
         logoff_by: 'USER',
         jwt_token: token,
-        action: 'logout'
+        action: 'logout',
       };
 
       // Execute both operations in parallel
-      const logout = await blacklistToken(token, logData)
+      const logout = await blacklistToken(token, logData);
 
       return { logout };
     } catch (error) {
@@ -149,7 +149,7 @@ const AuthService = {
     }
   },
 
-  forgetPassword: async (email) => {
+  forgetPassword: async email => {
     try {
       const user = await User.findOne({ where: { email, status: 'active' } });
       if (!user) {
@@ -176,7 +176,7 @@ const AuthService = {
     }
   },
 
-  upsertOrganization: async (data) => {
+  upsertOrganization: async data => {
     try {
       const existingOrg = await Organization.findOne();
       // if (data.emailSettings.password) {

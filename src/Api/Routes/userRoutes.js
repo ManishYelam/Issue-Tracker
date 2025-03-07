@@ -19,10 +19,10 @@ userRouter
   .delete('/user_range/:start_id/to/:end_id', authMiddleware, userController.deleteUserRanges);
 
 // User Actions routes
-userActionsRouter
-  
+userActionsRouter;
+
 // Export both routers properly
 module.exports = {
   userRouter,
-  userActionsRouter
+  userActionsRouter,
 };

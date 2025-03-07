@@ -17,7 +17,7 @@ const LikeAttribute = {
     },
   },
   entity_type: {
-    type: DataTypes.ENUM('post', 'comment',"Idea"),
+    type: DataTypes.ENUM('post', 'comment', 'Idea'),
     allowNull: false,
   },
   entity_id: {

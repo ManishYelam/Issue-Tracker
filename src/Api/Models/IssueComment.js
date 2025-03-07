@@ -48,12 +48,12 @@ const CommentAttribute = {
   likes_by: {
     type: DataTypes.JSON,
     defaultValue: 0,
-    defaultValue: []
+    defaultValue: [],
   },
   dislikes_by: {
     type: DataTypes.JSON,
     defaultValue: 0,
-    defaultValue: []
+    defaultValue: [],
   },
   is_edited: {
     type: DataTypes.BOOLEAN,

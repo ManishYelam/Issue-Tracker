@@ -8,7 +8,7 @@ module.exports = {
     try {
       const zip = new AdmZip();
 
-      inputPaths.forEach((inputPath) => {
+      inputPaths.forEach(inputPath => {
         if (fs.lstatSync(inputPath).isDirectory()) {
           zip.addLocalFolder(inputPath, path.basename(inputPath));
         } else {
@@ -37,13 +37,13 @@ module.exports = {
   },
 
   // List the contents of a ZIP file
-  listZipContents: (zipFilePath) => {
+  listZipContents: zipFilePath => {
     try {
       const zip = new AdmZip(zipFilePath);
       const zipEntries = zip.getEntries(); // Array of ZipEntry objects
 
       console.log(`Contents of ${zipFilePath}:`);
-      zipEntries.forEach((zipEntry) => {
+      zipEntries.forEach(zipEntry => {
         console.log(zipEntry.entryName); // Output each file name
       });
     } catch (error) {
@@ -57,7 +57,7 @@ module.exports = {
     try {
       const zip = new AdmZip(zipFilePath);
 
-      filesToAdd.forEach((filePath) => {
+      filesToAdd.forEach(filePath => {
         if (fs.existsSync(filePath)) {
           zip.addLocalFile(filePath);
         } else {

@@ -77,13 +77,9 @@ const permissionAttribute = {
   },
 };
 
-const Permission = sequelize.MAIN_DB_NAME.define(
-  'Permission',
-  permissionAttribute,
-  {
-    tableName: 'tbl_permission',
-    timestamps: true,
-  }
-);
+const Permission = sequelize.MAIN_DB_NAME.define('Permission', permissionAttribute, {
+  tableName: 'tbl_permission',
+  timestamps: true,
+});
 
 module.exports = Permission;

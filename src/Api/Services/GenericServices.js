@@ -1,9 +1,9 @@
-const { Op } = require("sequelize");
-const ListOfValues = require("../Models/List.Of.values");
+const { Op } = require('sequelize');
+const ListOfValues = require('../Models/List.Of.values');
 
 module.exports = {
   // Create or Update List of Value using Upsert
-  createOrUpdateLOV: async (data) => {
+  createOrUpdateLOV: async data => {
     const [lov, created] = await ListOfValues.upsert(data);
     return { lov, created };
   },
@@ -19,21 +19,21 @@ module.exports = {
     }
     return await ListOfValues.findAll({
       where: whereClause,
-      order: [['category', 'ASC']] 
+      order: [['category', 'ASC']],
     });
   },
 
   // Get a List of Value by ID
-  getLOVById: async (id) => {
+  getLOVById: async id => {
     return await ListOfValues.findByPk(id);
   },
 
   // Soft Delete a List of Value (Set isActive to false)
-  deleteLOV: async (id) => {
+  deleteLOV: async id => {
     const lov = await ListOfValues.findByPk(id);
     if (!lov) return null;
 
     await lov.update({ isActive: false });
     return lov;
   },
-}
+};

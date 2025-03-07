@@ -23,8 +23,7 @@ module.exports = {
   getPermissionById: async (req, res) => {
     try {
       const permission = await permissionService.getPermissionById(req.params.id);
-      if (!permission)
-        return res.status(404).json({ message: 'Permission not found' });
+      if (!permission) return res.status(404).json({ message: 'Permission not found' });
       res.status(200).json(permission);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -34,8 +33,7 @@ module.exports = {
   updatePermission: async (req, res) => {
     try {
       const updatedPermission = await permissionService.updatePermission(req.params.id, req.body);
-      if (updatedPermission[0] === 0)
-        return res.status(404).json({ message: 'Permission not found' });
+      if (updatedPermission[0] === 0) return res.status(404).json({ message: 'Permission not found' });
       res.status(200).json({ message: 'Permission updated successfully' });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -45,8 +43,7 @@ module.exports = {
   deletePermission: async (req, res) => {
     try {
       const deleted = await permissionService.deletePermission(req.params.id);
-      if (!deleted)
-        return res.status(404).json({ message: 'Permission not found' });
+      if (!deleted) return res.status(404).json({ message: 'Permission not found' });
       res.status(200).json({ message: 'Permission deleted successfully' });
     } catch (error) {
       res.status(500).json({ message: error.message });

@@ -22,7 +22,7 @@ exports.sendMessage = async (req, res) => {
 exports.getMessages = async (req, res) => {
   try {
     // const messages = await Message.findAll({ where: { roomId: req.params.roomId } });
-    res.status(200).json({ success: true, hii:"messages" });
+    res.status(200).json({ success: true, hii: 'messages' });
   } catch (error) {
     res.status(500).json({ error: 'Error fetching messages' });
   }

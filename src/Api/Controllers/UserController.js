@@ -5,7 +5,7 @@ module.exports = {
   createUser: async (req, res) => {
     try {
       const newUser = await userService.createUser(req.body);
-      res.status(201).json({ success: true, message: "User created successfully", user: newUser });
+      res.status(201).json({ success: true, message: 'User created successfully', user: newUser });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
@@ -54,8 +54,7 @@ module.exports = {
   updateUser: async (req, res) => {
     try {
       const updatedUser = await userService.updateUser(req.params.id, req.body);
-      if (updatedUser[0] === 0)
-        return res.status(404).json({ message: 'User not found' });
+      if (updatedUser[0] === 0) return res.status(404).json({ message: 'User not found' });
       res.status(200).json({ message: 'User updated successfully', user: req.body });
     } catch (error) {
       res.status(500).json({ message: error });
@@ -87,5 +86,4 @@ module.exports = {
       return res.status(500).json({ error: 'An error occurred while deleting users' });
     }
   },
-
 };

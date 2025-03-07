@@ -20,7 +20,7 @@ Role.hasMany(User, { foreignKey: 'role_id' });
 // Define Association: User.belongsTo(Role) using role from User and code from Role
 User.belongsTo(Role, {
   foreignKey: 'role', // `User.role` references `Role.code`
-  targetKey: 'code',   // `code` is the primary field in Role
+  targetKey: 'code', // `code` is the primary field in Role
   onDelete: 'CASCADE',
   onUpdate: 'CASCADE',
 });
@@ -86,5 +86,5 @@ module.exports = {
   IssueStats,
   Like,
   UserConnection,
-  ListOfValues
+  ListOfValues,
 };

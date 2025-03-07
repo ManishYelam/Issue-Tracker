@@ -37,10 +37,7 @@ const baseUserLogSchema = Joi.object({
 });
 
 // Forked schema for "create" use case (sourceIp and jwtToken are required for creation)
-const userLogCreateSchema = baseUserLogSchema.fork(
-  ['sourceIp', 'jwtToken'],
-  (schema) => schema.required()
-);
+const userLogCreateSchema = baseUserLogSchema.fork(['sourceIp', 'jwtToken'], schema => schema.required());
 
 // For "update" use case, no additional required fields, use the base schema directly
 const userLogUpdateSchema = baseUserLogSchema;

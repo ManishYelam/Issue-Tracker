@@ -8,9 +8,7 @@ module.exports = {
 
 module.exports = {
   logEvent: async (eventType, resourceId, userId = null) => {
-    console.log(
-      `[${new Date().toISOString()}] Event: ${eventType}, Resource: ${resourceId}, User: ${userId}`
-    );
+    console.log(`[${new Date().toISOString()}] Event: ${eventType}, Resource: ${resourceId}, User: ${userId}`);
   },
 
   // Utility function to set lock with a timeout
@@ -29,9 +27,7 @@ module.exports = {
     // Default timeout: 1 minute
     if (locks.edit.has(resourceId)) {
       if (locks.edit.get(resourceId) !== userId) {
-        throw new Error(
-          `Resource ${resourceId} is already locked by another user.`
-        );
+        throw new Error(`Resource ${resourceId} is already locked by another user.`);
       }
     } else {
       setLockWithTimeout(locks.edit, resourceId, userId, timeout);
@@ -44,9 +40,7 @@ module.exports = {
       locks.edit.delete(resourceId);
       logEvent('editLockOff', resourceId, userId);
     } else {
-      throw new Error(
-        `Resource ${resourceId} cannot be unlocked by user ${userId}.`
-      );
+      throw new Error(`Resource ${resourceId} cannot be unlocked by user ${userId}.`);
     }
   },
 
@@ -55,9 +49,7 @@ module.exports = {
     // Default timeout: 1 minute
     if (locks.update.has(resourceId)) {
       if (locks.update.get(resourceId) !== userId) {
-        throw new Error(
-          `Resource ${resourceId} is already locked by another user.`
-        );
+        throw new Error(`Resource ${resourceId} is already locked by another user.`);
       }
     } else {
       setLockWithTimeout(locks.update, resourceId, userId, timeout);
@@ -70,20 +62,12 @@ module.exports = {
       locks.update.delete(resourceId);
       logEvent('updateLockOff', resourceId, userId);
     } else {
-      throw new Error(
-        `Resource ${resourceId} cannot be unlocked by user ${userId}.`
-      );
+      throw new Error(`Resource ${resourceId} cannot be unlocked by user ${userId}.`);
     }
   },
 
   // Retry mechanism with exponential backoff for acquiring locks
-  retryLock: async (
-    lockFunction,
-    resourceId,
-    userId,
-    maxRetries = 5,
-    baseDelay = 100
-  ) => {
+  retryLock: async (lockFunction, resourceId, userId, maxRetries = 5, baseDelay = 100) => {
     let attempts = 0;
     let delay = baseDelay;
 
@@ -94,17 +78,15 @@ module.exports = {
       } catch (error) {
         attempts += 1;
         if (attempts === maxRetries) {
-          throw new Error(
-            `Failed to acquire lock on ${resourceId} after ${maxRetries} retries.`
-          );
+          throw new Error(`Failed to acquire lock on ${resourceId} after ${maxRetries} retries.`);
         }
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        await new Promise(resolve => setTimeout(resolve, delay));
         delay *= 2; // Exponential backoff
       }
     }
   },
 
   // Helper functions to check if a lock is active
-  isEditLocked: (resourceId) => locks.edit.has(resourceId),
-  isUpdateLocked: (resourceId) => locks.update.has(resourceId),
+  isEditLocked: resourceId => locks.edit.has(resourceId),
+  isUpdateLocked: resourceId => locks.update.has(resourceId),
 };

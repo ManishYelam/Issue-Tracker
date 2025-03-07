@@ -25,7 +25,7 @@ module.exports = {
       const response = await AuthService.logout(userId, token, clientIp, userAgent);
       req.token = null;
       req.user_info = null;
-      req.session.destroy((err) => {
+      req.session.destroy(err => {
         res.clearCookie('connect.sid');
         res.setHeader('Authorization', '');
         res.setHeader('Cache-Control', 'no-store');
@@ -61,9 +61,7 @@ module.exports = {
       const organization = await AuthService.upsertOrganization(req.body);
 
       res.status(organization.isNewRecord ? 201 : 200).json({
-        message: organization.isNewRecord
-          ? 'Organization created successfully'
-          : 'Organization updated successfully',
+        message: organization.isNewRecord ? 'Organization created successfully' : 'Organization updated successfully',
         data: organization,
       });
     } catch (error) {

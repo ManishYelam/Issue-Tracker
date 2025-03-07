@@ -24,11 +24,9 @@ const upload = multer({ storage, limits: { fileSize: sizeLimits.large } });
 
 const uploadMiddleware = (req, res, next) => {
   const isSingle = req.headers['upload-type'] === 'single';
-  const uploadHandler = isSingle
-    ? upload.single('file')
-    : upload.array('files', 10);
+  const uploadHandler = isSingle ? upload.single('file') : upload.array('files', 10);
 
-  uploadHandler(req, res, (err) => {
+  uploadHandler(req, res, err => {
     if (err instanceof multer.MulterError && err.code === 'LIMIT_UNEXPECTED_FILE') {
       return res.status(401).json({ error: 'Unauthorized access! User not authenticated.' });
     }

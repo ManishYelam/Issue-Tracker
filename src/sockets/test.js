@@ -1,8 +1,8 @@
 // const { Message } = require('./models/Message'); // Adjust the path based on your project structure
 
-const Message = require("../Api/Models/Chat/Message");
+const Message = require('../Api/Models/Chat/Message');
 
-const bulkInsertMessages = async (messages) => {
+const bulkInsertMessages = async messages => {
   try {
     // Insert the array of messages into the database
     const result = await Message.bulkCreate(messages, {

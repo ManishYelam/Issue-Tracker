@@ -16,8 +16,7 @@ module.exports = {
   getUserLogById: async (req, res) => {
     try {
       const userLog = await userLogService.getUserLogById(req.params.id);
-      if (!userLog)
-        return res.status(404).json({ error: 'User Log not found' });
+      if (!userLog) return res.status(404).json({ error: 'User Log not found' });
       res.status(200).json(userLog);
     } catch (error) {
       res.status(400).json({ error: error.message });

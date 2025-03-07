@@ -10,9 +10,7 @@ module.exports = {
       await emailService.sendRegistrationEmail(userId);
       res.status(200).send('Registration email sent successfully.');
     } catch (error) {
-      res
-        .status(500)
-        .send(`Error sending registration email: ${error.message}`);
+      res.status(500).send(`Error sending registration email: ${error.message}`);
     }
   },
 
@@ -24,9 +22,7 @@ module.exports = {
       await emailService.sendPasswordChangeEmail(userId);
       res.status(200).send('Password change email sent successfully.');
     } catch (error) {
-      res
-        .status(500)
-        .send(`Error sending password change email: ${error.message}`);
+      res.status(500).send(`Error sending password change email: ${error.message}`);
     }
   },
 
@@ -39,9 +35,7 @@ module.exports = {
       await emailService.sendPerformanceTrackingEmail(userId, data);
       res.status(200).send('Performance tracking email sent successfully.');
     } catch (error) {
-      res
-        .status(500)
-        .send(`Error sending performance tracking email: ${error.message}`);
+      res.status(500).send(`Error sending performance tracking email: ${error.message}`);
     }
   },
 
@@ -67,9 +61,7 @@ module.exports = {
       await emailService.sendNotificationEmail(userId, title, content);
       res.status(200).send('Notification email sent successfully.');
     } catch (error) {
-      res
-        .status(500)
-        .send(`Error sending notification email: ${error.message}`);
+      res.status(500).send(`Error sending notification email: ${error.message}`);
     }
   },
 };

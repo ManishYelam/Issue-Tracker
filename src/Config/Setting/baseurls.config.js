@@ -18,11 +18,6 @@ const services = [
   'PARTNERSHIPS',
 ];
 
-const baseUrls = Object.fromEntries(
-  services.map((service) => [
-    `${service}_URL`,
-    process.env[`${envPrefix}${service}_URL`],
-  ])
-);
+const baseUrls = Object.fromEntries(services.map(service => [`${service}_URL`, process.env[`${envPrefix}${service}_URL`]]));
 
 module.exports = baseUrls;

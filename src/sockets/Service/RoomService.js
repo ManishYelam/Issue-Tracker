@@ -12,23 +12,20 @@ module.exports = {
       const [room, created] = await Room.findOrCreate({
         where: {
           name: roomData.name,
-          createdBy: userId
+          createdBy: userId,
         },
         defaults: {
           ...roomData,
-          createdBy: userId
+          createdBy: userId,
         },
-        transaction
+        transaction,
       });
 
       if (!created) {
         throw new Error('You already have a room with this name.');
       }
 
-      await RoomMembers.create(
-        { userId: userId, roomId: room.id, role: 'owner' },
-        { transaction }
-      );
+      await RoomMembers.create({ userId: userId, roomId: room.id, role: 'owner' }, { transaction });
 
       await transaction.commit();
       return room;
@@ -50,26 +47,27 @@ module.exports = {
 
       if (filters.search) {
         whereConditions.push({
-          [Op.or]: [
-            { name: { [Op.like]: `%${filters.search}%` } },
-            { description: { [Op.like]: `%${filters.search}%` } }
-          ]
+          [Op.or]: [{ name: { [Op.like]: `%${filters.search}%` } }, { description: { [Op.like]: `%${filters.search}%` } }],
         });
       }
 
       return await Room.findAndCountAll({
         where: whereConditions.length ? { [Op.and]: whereConditions } : {},
-        include: [{
-          model: RoomMembers,
-          attributes: ['role'],
-          include: [{
-            model: User,
-            attributes: ['id', 'username']
-          }]
-        }],
+        include: [
+          {
+            model: RoomMembers,
+            attributes: ['role'],
+            include: [
+              {
+                model: User,
+                attributes: ['id', 'username'],
+              },
+            ],
+          },
+        ],
         limit: parseInt(limit),
         offset: offset,
-        order: [['createdAt', 'DESC']]
+        order: [['createdAt', 'DESC']],
       });
     } catch (error) {
       error.statusCode = 500;
@@ -77,16 +75,20 @@ module.exports = {
     }
   },
 
-  getRoomByID: async (id) => {
+  getRoomByID: async id => {
     try {
       const room = await Room.findByPk(id, {
-        include: [{
-          model: RoomMembers,
-          include: [{
-            model: User,
-            attributes: ['id', 'username']
-          }]
-        }]
+        include: [
+          {
+            model: RoomMembers,
+            include: [
+              {
+                model: User,
+                attributes: ['id', 'username'],
+              },
+            ],
+          },
+        ],
       });
 
       if (!room) {
@@ -116,7 +118,7 @@ module.exports = {
       const [member, created] = await RoomMembers.findOrCreate({
         where: { userId, roomId },
         defaults: { role: 'member' },
-        transaction
+        transaction,
       });
 
       if (!created) {
@@ -167,7 +169,7 @@ module.exports = {
 
       await Room.destroy({
         where: { id: roomId },
-        transaction
+        transaction,
       });
       await transaction.commit();
       return { message: 'Room deleted successfully', room: room };
@@ -191,7 +193,7 @@ module.exports = {
 
       const result = await RoomMembers.destroy({
         where: { userId, roomId },
-        transaction
+        transaction,
       });
       if (!result) {
         throw new Error('User not in room');
@@ -211,7 +213,7 @@ module.exports = {
     try {
       const requesterMembership = await RoomMembers.findOne({
         where: { userId: requesterId, roomId },
-        transaction
+        transaction,
       });
 
       if (!requesterMembership || !['owner', 'admin'].includes(requesterMembership.role)) {
@@ -220,7 +222,7 @@ module.exports = {
 
       const targetMembership = await RoomMembers.findOne({
         where: { userId, roomId },
-        transaction
+        transaction,
       });
 
       if (!targetMembership) {
@@ -255,7 +257,7 @@ module.exports = {
 
       const requesterMembership = await RoomMembers.findOne({
         where: { userId: requesterId, roomId },
-        transaction
+        transaction,
       });
 
       if (!requesterMembership || requesterMembership.role !== 'owner') {
@@ -264,7 +266,7 @@ module.exports = {
 
       const targetMembership = await RoomMembers.findOne({
         where: { userId, roomId },
-        transaction
+        transaction,
       });
 
       if (!targetMembership) {
@@ -286,18 +288,20 @@ module.exports = {
     }
   },
 
-  getRoomMembers: async (roomId) => {
+  getRoomMembers: async roomId => {
     try {
       return await RoomMembers.findAll({
         where: { roomId },
-        include: [{
-          model: User,
-          attributes: ['id', 'username', 'email']
-        }],
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'username', 'email'],
+          },
+        ],
         order: [
           ['role', 'DESC'],
-          ['joinDate', 'ASC']
-        ]
+          ['joinDate', 'ASC'],
+        ],
       });
     } catch (error) {
       error.statusCode = 500;
@@ -305,7 +309,7 @@ module.exports = {
     }
   },
 
-  sendMessage: async (data) => {
+  sendMessage: async data => {
     try {
       const message = await Message.create(data);
       return message;
@@ -319,11 +323,13 @@ module.exports = {
       const messages = await Message.findAll({
         where: {
           roomId,
-          id: { [Op.between]: [startMessageId, endMessageId] }
+          id: { [Op.between]: [startMessageId, endMessageId] },
         },
-        include: [{
-          model: MessageReaction
-        }],
+        include: [
+          {
+            model: MessageReaction,
+          },
+        ],
         order: [['createdAt', 'ASC']],
         limit: endMessageId,
         offset: 0,
@@ -367,7 +373,7 @@ module.exports = {
 //           {
 //             model: Message,
 //             where: {
-//               roomId: roomId, 
+//               roomId: roomId,
 //               id: { [Op.between]: [startMessageId, endMessageId] },
 //             },
 //             order: [['createdAt', 'ASC']],

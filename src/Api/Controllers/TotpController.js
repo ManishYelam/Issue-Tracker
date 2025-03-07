@@ -11,18 +11,14 @@ module.exports = {
       const { secret, qrCodeUrl } = await TotpService.generateTotp(email);
       return res.json({ secret, qrCodeUrl });
     } catch (error) {
-      return res
-        .status(500)
-        .json({ message: 'Error generating TOTP', error: error.message });
+      return res.status(500).json({ message: 'Error generating TOTP', error: error.message });
     }
   },
 
   verify: async (req, res) => {
     const { userToken, secret } = req.body;
     if (!userToken || !secret) {
-      return res
-        .status(400)
-        .json({ message: 'User token and secret are required' });
+      return res.status(400).json({ message: 'User token and secret are required' });
     }
 
     const isValid = TotpService.verifyTotp(userToken, secret);

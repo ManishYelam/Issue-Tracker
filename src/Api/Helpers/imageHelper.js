@@ -50,7 +50,7 @@ module.exports = {
   },
 
   // Get image metadata (dimensions, format, etc.)
-  getImageMetadata: async (inputPath) => {
+  getImageMetadata: async inputPath => {
     try {
       const metadata = await sharp(inputPath).metadata();
       console.log(`Image metadata:`, metadata);
@@ -62,7 +62,7 @@ module.exports = {
   },
 
   // Convert an image to a Base64 string
-  convertImageToBase64: async (inputPath) => {
+  convertImageToBase64: async inputPath => {
     try {
       const imageBuffer = await sharp(inputPath).toBuffer();
       return imageBuffer.toString('base64');

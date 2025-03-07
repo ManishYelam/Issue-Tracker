@@ -9,13 +9,10 @@ const { upsertUserLog } = require('../Api/Services/UserLogService');
 
 const generateToken = (user_info, secret = JWT_CONFIG.SECRET) => {
   try {
-    return jwt.sign(
-      user_info,
-      secret,
-      {
-        expiresIn: JWT_CONFIG.EXPIRATION,
-        algorithm: 'HS256',
-      });
+    return jwt.sign(user_info, secret, {
+      expiresIn: JWT_CONFIG.EXPIRATION,
+      algorithm: 'HS256',
+    });
   } catch (error) {
     throw new Error('Token generation failed');
   }
@@ -31,7 +28,7 @@ const verifyToken = (token, secret = JWT_CONFIG.SECRET) => {
   }
 };
 
-const decodeToken = (token) => {
+const decodeToken = token => {
   try {
     const decoded = jwt.decode(token);
     if (!decoded) {
@@ -60,7 +57,7 @@ const refreshToken = (token, secret = JWT_CONFIG.SECRET) => {
   }
 };
 
-const isTokenExpired = (token) => {
+const isTokenExpired = token => {
   try {
     const decoded = jwt.decode(token);
     if (!decoded || !decoded.exp) {
@@ -124,5 +121,5 @@ module.exports = {
   decodeToken,
   refreshToken,
   isTokenExpired,
-  blacklistToken
+  blacklistToken,
 };

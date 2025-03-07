@@ -28,6 +28,6 @@ router
   .use('/rooms', authMiddleware, roomRouter)
   .use('/generics', authMiddleware, genericRouter)
   .use('/issues', authMiddleware, issuesRouter)
-  .use("/files", authMiddleware, fileRouter);
+  .use('/files', authMiddleware, fileRouter);
 
 module.exports = router;

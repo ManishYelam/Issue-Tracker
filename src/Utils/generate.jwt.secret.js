@@ -8,7 +8,7 @@ const generateSecret = () => {
 };
 
 // Save the generated secret to an environment file
-const saveSecretToEnv = (secret) => {
+const saveSecretToEnv = secret => {
   const envPath = path.resolve(__dirname, '../../.env');
   const jwtSecret = `JWT_SECRET=${secret}\n`;
 

@@ -8,7 +8,7 @@ const userAttribute = {
     autoIncrement: true,
     primaryKey: true,
   },
-    email: {
+  email: {
     type: DataTypes.STRING(100),
     allowNull: false,
   },
@@ -32,12 +32,12 @@ const userAttribute = {
       key: 'id',
     },
   },
-  role:{
+  role: {
     type: DataTypes.STRING(50),
     allowNull: false,
     references: {
-      model: Role, 
-      key: 'code', 
+      model: Role,
+      key: 'code',
     },
   },
   date_of_birth: {
@@ -83,7 +83,7 @@ const userAttribute = {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-  last_login_at:{
+  last_login_at: {
     type: DataTypes.DATE,
     allowNull: true,
   },
@@ -95,7 +95,6 @@ const userAttribute = {
     type: DataTypes.DATE,
     allowNull: true,
   },
- 
 };
 
 const User = sequelize.MAIN_DB_NAME.define('User', userAttribute, {

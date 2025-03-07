@@ -4,7 +4,7 @@ const base64Helper = require('./base64Helper');
 
 module.exports = {
   // Read a file from the given path and return its contents
-  readFile: (filePath) => {
+  readFile: filePath => {
     try {
       return fs.readFileSync(filePath, 'utf-8');
     } catch (error) {
@@ -25,7 +25,7 @@ module.exports = {
   },
 
   // Delete a file from the given path
-  deleteFile: (filePath) => {
+  deleteFile: filePath => {
     try {
       fs.unlinkSync(filePath);
       console.log(`File successfully deleted: ${filePath}`);
@@ -36,7 +36,7 @@ module.exports = {
   },
 
   // Encode a file to Base64 string
-  encodeFileToBase64: (filePath) => {
+  encodeFileToBase64: filePath => {
     try {
       const fileBuffer = fs.readFileSync(filePath);
       return base64Helper.encodeBufferToBase64(fileBuffer);
@@ -59,7 +59,7 @@ module.exports = {
   },
 
   // Get file metadata (size, created date, etc.)
-  getFileStats: (filePath) => {
+  getFileStats: filePath => {
     try {
       return fs.statSync(filePath);
     } catch (error) {
@@ -69,7 +69,7 @@ module.exports = {
   },
 
   // Check if a file exists at the given path
-  fileExists: (filePath) => {
+  fileExists: filePath => {
     return fs.existsSync(filePath);
   },
 };

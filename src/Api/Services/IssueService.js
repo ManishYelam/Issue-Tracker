@@ -1,11 +1,11 @@
-const { Op } = require("sequelize");
-const { validateWithLOVs, createUpsertIssueSchema } = require("../Middlewares/Joi_Validations/issueSchema");
-const IssueStats = require("../Models/issueStats");
-const Issue = require("../Models/Issue");
-const sequelize = require("../../Config/Database/sequelize.config");
+const { Op } = require('sequelize');
+const { validateWithLOVs, createUpsertIssueSchema } = require('../Middlewares/Joi_Validations/issueSchema');
+const IssueStats = require('../Models/issueStats');
+const Issue = require('../Models/Issue');
+const sequelize = require('../../Config/Database/sequelize.config');
 
 module.exports = {
-  upsertIssue: async (issueData) => {
+  upsertIssue: async issueData => {
     const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
       const [issue, created] = await Issue.upsert(issueData, {
@@ -35,10 +35,10 @@ module.exports = {
         transaction,
       });
 
-      const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction, });
-      const pendingIssues = await Issue.count({ where: { user_id, status: "PENDING" }, transaction, });
+      const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction });
+      const pendingIssues = await Issue.count({ where: { user_id, status: 'PENDING' }, transaction });
 
-      await issueStats.update({ total_issues: totalIssues, pending_issues: pendingIssues, }, { transaction });
+      await issueStats.update({ total_issues: totalIssues, pending_issues: pendingIssues }, { transaction });
 
       await transaction.commit();
       return { success: true, issue, created };
@@ -49,17 +49,36 @@ module.exports = {
   },
 
   // **Bulk insert or update issues**
-  bulkIssue: async (bulkIssues) => {
+  bulkIssue: async bulkIssues => {
     const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
       // 🚀 Bulk upsert issues
       const issues = await Issue.bulkCreate(bulkIssues, {
         updateOnDuplicate: [
-          "title", "description", "issue_type", "priority", "status", "category", "impact_area",
-          "reproducibility", "root_cause", "assigned_to", "reported_by", "resolved_by", "resolved_at",
-          "due_date", "resolution_notes", "attachments", "tags", "related_issues",
-          "escalation_level", "escalated_to", "workaround", "estimated_effort", "actual_effort",
-          "deployment_required"
+          'title',
+          'description',
+          'issue_type',
+          'priority',
+          'status',
+          'category',
+          'impact_area',
+          'reproducibility',
+          'root_cause',
+          'assigned_to',
+          'reported_by',
+          'resolved_by',
+          'resolved_at',
+          'due_date',
+          'resolution_notes',
+          'attachments',
+          'tags',
+          'related_issues',
+          'escalation_level',
+          'escalated_to',
+          'workaround',
+          'estimated_effort',
+          'actual_effort',
+          'deployment_required',
         ],
         transaction,
       });
@@ -69,7 +88,7 @@ module.exports = {
 
       // 🔄 Ensure IssueStats exists for all users
       await Promise.all(
-        userIds.map(async (userId) => {
+        userIds.map(async userId => {
           await IssueStats.findOrCreate({
             where: { user_id: userId },
             defaults: {
@@ -96,18 +115,18 @@ module.exports = {
 
       // 🔄 Update total issues count for each user
       await Promise.all(
-        userIds.map(async (userId) => {
+        userIds.map(async userId => {
           const totalIssues = await Issue.count({ where: { user_id: userId }, transaction });
-          const pendingIssues = await Issue.count({ where: { user_id: userId, status: "PENDING" }, transaction, });
+          const pendingIssues = await Issue.count({ where: { user_id: userId, status: 'PENDING' }, transaction });
           await IssueStats.update(
-            { total_issues: totalIssues, pending_issues: pendingIssues, },
+            { total_issues: totalIssues, pending_issues: pendingIssues },
             { where: { user_id: userId }, transaction }
           );
         })
       );
 
       await transaction.commit();
-      return { success: true, message: "Bulk issues processed successfully", issues };
+      return { success: true, message: 'Bulk issues processed successfully', issues };
     } catch (err) {
       await transaction.rollback();
       return { success: false, message: err.message };
@@ -129,14 +148,14 @@ module.exports = {
       // if (filters.resolved_by) whereConditions.resolvedBy = filters.resolvedBy;
       // if (filters.due_date) whereConditions.dueDate = { [Op.gte]: new Date(filters.dueDate) };
       // ✅ Apply filters dynamically
-      Object.keys(filters).forEach((key) => {
+      Object.keys(filters).forEach(key => {
         if (filters[key]) whereConditions[key] = filters[key];
       });
 
       // Apply dynamic search on specified fields
       if (search && searchFields.length > 0) {
         whereConditions[Op.or] = searchFields.map(field => ({
-          [field]: { [Op.like]: `%${search}%` }
+          [field]: { [Op.like]: `%${search}%` },
         }));
       }
 
@@ -161,11 +180,11 @@ module.exports = {
     }
   },
 
-  getIssueById: async (issue_id) => {
+  getIssueById: async issue_id => {
     try {
       const issue = await Issue.findOne({ where: { issue_id } });
       if (!issue) {
-        return { success: false, message: "Issue not found" };
+        return { success: false, message: 'Issue not found' };
       }
       return { success: true, issue };
     } catch (err) {
@@ -173,14 +192,14 @@ module.exports = {
     }
   },
 
-  deleteIssueById: async (issue_id) => {
+  deleteIssueById: async issue_id => {
     const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
       // 🔍 Find the issue first
       const issue = await Issue.findByPk(issue_id, { transaction });
       if (!issue) {
         await transaction.rollback();
-        return { success: false, message: "Issue not found or already deleted" };
+        return { success: false, message: 'Issue not found or already deleted' };
       }
 
       // 🗑️ Delete the issue
@@ -197,7 +216,7 @@ module.exports = {
       }
 
       await transaction.commit();
-      return { success: true, message: "Issue deleted successfully" };
+      return { success: true, message: 'Issue deleted successfully' };
     } catch (err) {
       await transaction.rollback();
       return { success: false, message: err.message };
@@ -211,22 +230,22 @@ module.exports = {
       const issue = await Issue.findByPk(issue_id, { transaction });
       if (!issue) {
         await transaction.rollback();
-        return { success: false, message: "Issue not found" };
+        return { success: false, message: 'Issue not found' };
       }
 
       // 🔄 If status is already the same, do nothing
       const prevStatus = issue.status;
       if (prevStatus === newStatus) {
         await transaction.rollback();
-        return { success: false, message: "No changes detected. Status is already updated." };
+        return { success: false, message: 'No changes detected. Status is already updated.' };
       }
 
       // 🆕 Update the issue status
       const updateData = { status: newStatus };
-      if (newStatus === "RESOLVED") {
+      if (newStatus === 'RESOLVED') {
         updateData.resolved_by = user_id;
         updateData.resolved_at = new Date();
-      } else if (prevStatus === "RESOLVED") {
+      } else if (prevStatus === 'RESOLVED') {
         updateData.resolved_by = null;
         updateData.resolved_at = null;
       }
@@ -245,14 +264,15 @@ module.exports = {
         // 🔄 Update total issues count
         const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction });
         await issueStats.update({ total_issues: totalIssues }, { transaction });
-      } else { return }
+      } else {
+        return;
+      }
 
       await transaction.commit();
-      return { success: true, message: "Issue status updated successfully", issue };
+      return { success: true, message: 'Issue status updated successfully', issue };
     } catch (err) {
       await transaction.rollback();
       return { success: false, message: err.message };
     }
   },
-
 };

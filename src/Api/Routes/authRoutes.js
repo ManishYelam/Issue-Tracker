@@ -12,6 +12,6 @@ authRouter
   .post('/forget-password/:email', authMiddleware, AuthController.forgetPassword)
 
   .get('/organization', AuthController.getOrganization)
-  .post('/organization', authMiddleware, AuthController.upsertOrganization)
+  .post('/organization', authMiddleware, AuthController.upsertOrganization);
 
 module.exports = authRouter;

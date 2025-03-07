@@ -2,7 +2,7 @@ const { Op } = require('sequelize');
 const { ApplicationProperties } = require('../Models/Association');
 
 module.exports = {
-  createOrUpdateProperty: async (propertyData) => {
+  createOrUpdateProperty: async propertyData => {
     try {
       const existingProperty = await ApplicationProperties.findOne({
         where: {
@@ -25,13 +25,11 @@ module.exports = {
         };
       }
     } catch (error) {
-      throw new Error(
-        'Error while creating/updating application property: ' + error.message
-      );
+      throw new Error('Error while creating/updating application property: ' + error.message);
     }
   },
 
-  createOrUpdateBulkProperties: async (propertiesData) => {
+  createOrUpdateBulkProperties: async propertiesData => {
     try {
       const result = [];
       for (const propertyData of propertiesData) {
@@ -49,8 +47,7 @@ module.exports = {
             property: updatedProperty,
           });
         } else {
-          const createdProperty =
-            await ApplicationProperties.create(propertyData);
+          const createdProperty = await ApplicationProperties.create(propertyData);
           result.push({
             message: 'Application property created successfully.',
             property: createdProperty,
@@ -60,13 +57,11 @@ module.exports = {
 
       return result;
     } catch (error) {
-      throw new Error(
-        'Error while creating/updating application properties: ' + error.message
-      );
+      throw new Error('Error while creating/updating application properties: ' + error.message);
     }
   },
 
-  getAllProperties: async ({ page = 1, limit = 10, search = "", searchFields = [], filters = {} }) => {
+  getAllProperties: async ({ page = 1, limit = 10, search = '', searchFields = [], filters = {} }) => {
     try {
       const offset = (page - 1) * limit;
       let whereConditions = {};
@@ -78,9 +73,8 @@ module.exports = {
       if (filters.user_id) whereConditions.user_id = filters.user_id;
 
       // **Apply Dynamic Search Using `.map()`**
-      let searchConditions = search && searchFields.length > 0
-        ? searchFields.map((field) => ({ [field]: { [Op.like]: `%${search}%` } }))
-        : [];
+      let searchConditions =
+        search && searchFields.length > 0 ? searchFields.map(field => ({ [field]: { [Op.like]: `%${search}%` } })) : [];
 
       // **Final WHERE condition combining filters & search**
       let finalWhereCondition = { ...whereConditions };
@@ -93,11 +87,11 @@ module.exports = {
         where: finalWhereCondition,
         limit,
         offset,
-        order: [["createdAt", "DESC"]],
+        order: [['createdAt', 'DESC']],
       });
 
       return {
-        message: "✅ Application properties fetched successfully.",
+        message: '✅ Application properties fetched successfully.',
         totalRecords: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
@@ -108,19 +102,17 @@ module.exports = {
     }
   },
 
-  getPropertyById: async (id) => {
+  getPropertyById: async id => {
     try {
       return await ApplicationProperties.findOne({
         where: { id },
       });
     } catch (error) {
-      throw new Error(
-        'Error while fetching the application property: ' + error.message
-      );
+      throw new Error('Error while fetching the application property: ' + error.message);
     }
   },
 
-  deleteProperty: async (id) => {
+  deleteProperty: async id => {
     try {
       const property = await ApplicationProperties.findOne({ where: { id } });
       if (property) {
@@ -129,9 +121,7 @@ module.exports = {
       }
       throw new Error('Property not found');
     } catch (error) {
-      throw new Error(
-        'Error while deleting the application property: ' + error.message
-      );
+      throw new Error('Error while deleting the application property: ' + error.message);
     }
   },
 };

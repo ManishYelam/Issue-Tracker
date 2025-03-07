@@ -34,7 +34,7 @@ module.exports = {
 
   getAllRoles: async (req, res) => {
     try {
-      const { page = 1, limit = 10, search = "", searchFields = [], filters = {} } = req.body;
+      const { page = 1, limit = 10, search = '', searchFields = [], filters = {} } = req.body;
       const roles = await roleService.getAllRoles({ page, limit, search, searchFields, filters });
       res.status(200).json(roles);
     } catch (error) {
@@ -55,8 +55,7 @@ module.exports = {
   updateRole: async (req, res) => {
     try {
       const updatedRole = await roleService.updateRole(req.params.id, req.body);
-      if (updatedRole[0] === 0)
-        return res.status(404).json({ message: 'Role not found' });
+      if (updatedRole[0] === 0) return res.status(404).json({ message: 'Role not found' });
       res.status(200).json({ message: 'Role updated successfully' });
     } catch (error) {
       res.status(500).json({ message: error.message });

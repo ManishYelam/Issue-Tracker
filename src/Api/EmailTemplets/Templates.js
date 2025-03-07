@@ -1,6 +1,6 @@
 module.exports = {
-    // ✅ 
-    LaunchCodeTemplate: (data) => `
+  // ✅
+  LaunchCodeTemplate: data => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,8 +165,8 @@ module.exports = {
 </body>
 </html>
 `,
-    // ✅ 
-    verificationTemplate: (data) => `
+  // ✅
+  verificationTemplate: data => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -329,8 +329,8 @@ module.exports = {
 </body>
 </html>
 `,
-    // ✅ 
-    passwordChangeTemplate: (data) => `
+  // ✅
+  passwordChangeTemplate: data => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -482,8 +482,8 @@ module.exports = {
 </body>
 </html>
 `,
-    // ✅ 
-    sendResetPasswordTemplate: (data) => `
+  // ✅
+  sendResetPasswordTemplate: data => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -619,8 +619,8 @@ module.exports = {
 </body>
 </html>
 `,
-    // ✅ 🚀
-    welcomeTemplate: (data) => `
+  // ✅ 🚀
+  welcomeTemplate: data => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -741,8 +741,8 @@ module.exports = {
 </body>
 </html>
 `,
-    // ✅ 🚀
-    notificationTemplate: (data) => `
+  // ✅ 🚀
+  notificationTemplate: data => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -844,8 +844,12 @@ module.exports = {
             <p>Hi <strong>${data.recipientName}</strong>,</p>
             <p>${data.content}</p>
 
-            ${data.link ? `<p>Click the button below for more details:</p>
-            <a href="${data.link}" class="cta-button">View Notification</a>` : ''}
+            ${
+              data.link
+                ? `<p>Click the button below for more details:</p>
+            <a href="${data.link}" class="cta-button">View Notification</a>`
+                : ''
+            }
 
             <p>If you have any questions, feel free to reach out to our support team.</p>
 
@@ -863,8 +867,8 @@ module.exports = {
 </body>
 </html>
 `,
-    // ✅ 🚀
-    downloadProjectTemplate: (data) => `
+  // ✅ 🚀
+  downloadProjectTemplate: data => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -985,8 +989,7 @@ module.exports = {
 </html>
 `,
 
-
-    registrationTemplate: (data) => `
+  registrationTemplate: data => `
     <!DOCTYPE html>
     <html>
     <head>
@@ -1107,7 +1110,7 @@ module.exports = {
     </html>
 `,
 
-    otpTemplate: (data) => `
+  otpTemplate: data => `
   <!DOCTYPE html>
   <html>
   <head>
@@ -1135,7 +1138,7 @@ module.exports = {
   </html>
 `,
 
-    documentUploadTemplate: (data) => `
+  documentUploadTemplate: data => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1235,9 +1238,9 @@ module.exports = {
   </html>
 `,
 
-    sendResetEmail: (data) => {
-        const resetLink = `http://13.127.13.10:5000/reset-password?token=${data.token}`;
-        const resetEmail = `
+  sendResetEmail: data => {
+    const resetLink = `http://13.127.13.10:5000/reset-password?token=${data.token}`;
+    const resetEmail = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1318,9 +1321,9 @@ module.exports = {
 </body>
 </html>
 `;
-    },
+  },
 
-    performanceTrackingTemplate: (data) => `
+  performanceTrackingTemplate: data => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1432,14 +1435,14 @@ module.exports = {
                       <th>Duration</th>
                   </tr>
                   ${data
-            .map(
-                (item) => `
+                    .map(
+                      item => `
                   <tr>
                       <td>${item.Action}</td>
                       <td>${item.Duration}</td>
                   </tr>`
-            )
-            .join('')}
+                    )
+                    .join('')}
               </table>
               <p>If you have any questions about this report, please contact our support team.</p>
           </div>
@@ -1451,7 +1454,7 @@ module.exports = {
   </html>
 `,
 
-    systemLogsTemplate: (data) => `
+  systemLogsTemplate: data => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1564,15 +1567,15 @@ module.exports = {
                       <th>Message</th>
                   </tr>
                   ${data
-            .map(
-                (log) => `
+                    .map(
+                      log => `
                   <tr>
                       <td>${log.timestamp}</td>
                       <td>${log.level}</td>
                       <td>${log.message}</td>
                   </tr>`
-            )
-            .join('')}
+                    )
+                    .join('')}
               </table>
               <p>For any questions or further details, please reach out to support.</p>
           </div>
@@ -1584,7 +1587,7 @@ module.exports = {
   </html>
 `,
 
-    eventInvitationTemplate: (data) => `
+  eventInvitationTemplate: data => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1686,7 +1689,7 @@ module.exports = {
   </html>
 `,
 
-    eventCancellationTemplate: (data) => `
+  eventCancellationTemplate: data => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1762,7 +1765,7 @@ module.exports = {
   </html>
 `,
 
-    termsAndConditionsTemplate: (data) => `
+  termsAndConditionsTemplate: data => `
   <!DOCTYPE html>
   <html lang="en">
   <head>
@@ -1848,7 +1851,7 @@ module.exports = {
   </html>
 `,
 
-    sendLocationTemplate: (data) => `
+  sendLocationTemplate: data => `
   <!DOCTYPE html>
   <html lang="en">
   <head>

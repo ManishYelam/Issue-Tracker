@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
 
 const ListOfValues = sequelize.MAIN_DB_NAME.define(
-  "ListOfValues",
+  'ListOfValues',
   {
     id: {
       type: DataTypes.BIGINT,
@@ -27,7 +27,7 @@ const ListOfValues = sequelize.MAIN_DB_NAME.define(
     },
   },
   {
-    tableName: "tbl_list_of_values",
+    tableName: 'tbl_list_of_values',
     timestamps: true,
   }
 );

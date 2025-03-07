@@ -12,69 +12,69 @@ const IssueStats = sequelize.MAIN_DB_NAME.define(
       unique: true,
       references: {
         model: User,
-        key: 'id'
-      }
+        key: 'id',
+      },
     },
     total_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     pending_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     in_progress_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     on_hold_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     resolved_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     to_be_tested_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     tested_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     committed_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     rejected_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     critical_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     high_priority_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     medium_priority_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     low_priorityI_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
+      defaultValue: 0,
     },
     overdue_issues: {
       type: DataTypes.BIGINT,
-      defaultValue: 0
-    }
+      defaultValue: 0,
+    },
   },
   {
     tableName: 'tbl_issue_stats',
-    timestamps: true
+    timestamps: true,
   }
 );
 

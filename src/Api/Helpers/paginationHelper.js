@@ -4,7 +4,7 @@ module.exports = {
     return {
       limit,
       offset,
-      paginateData: (data) => ({
+      paginateData: data => ({
         data,
         currentPage: page,
         totalItems: model.length,

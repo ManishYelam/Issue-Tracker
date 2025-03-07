@@ -24,6 +24,4 @@ module.exports = {
       console.error('Error assigning permissions:', error);
     }
   },
-
 };
-

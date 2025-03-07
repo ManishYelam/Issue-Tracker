@@ -12,13 +12,7 @@ const Transporter = settings => {
   });
 };
 
-const sendMail = async (
-  to,
-  subject,
-  templateName,
-  templateData = {},
-  attachments = []
-) => {
+const sendMail = async (to, subject, templateName, templateData = {}, attachments = []) => {
   try {
     const app_email = await ApplicationProperties.findOne({
       where: { property_name: 'app_email', status: 'active' },
@@ -47,9 +41,7 @@ const sendMail = async (
     const transporter = Transporter(settings);
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(
-      `Email sent to ${to} with subject "${subject}". Message ID: ${info.messageId}`
-    );
+    console.log(`Email sent to ${to} with subject "${subject}". Message ID: ${info.messageId}`);
     return info;
   } catch (error) {
     return { success: false, message: error.message };

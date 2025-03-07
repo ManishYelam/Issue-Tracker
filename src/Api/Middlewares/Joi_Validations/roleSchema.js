@@ -56,18 +56,11 @@ const permissionUpdateSchema = Joi.object({
   priority: Joi.number().integer().optional(),
   valid_from: Joi.date().optional(),
   valid_until: Joi.date().optional(),
-  parent_permission_id: Joi.number()
-    .integer()
-    .positive()
-    .allow(null)
-    .optional(),
+  parent_permission_id: Joi.number().integer().positive().allow(null).optional(),
 });
 
 const rolePermissionsAssignSchema = Joi.object({
-  permissionIds: Joi.array()
-    .items(Joi.number().integer().positive())
-    .min(1)
-    .required(),
+  permissionIds: Joi.array().items(Joi.number().integer().positive()).min(1).required(),
   roleId: Joi.number().integer().positive().required(),
 });
 

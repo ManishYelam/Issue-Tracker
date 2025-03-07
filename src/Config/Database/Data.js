@@ -13,19 +13,9 @@ const paths = { MAIN: '../../Api/Models/Association' };
 const fileCategories = {
   images: ['image/jpeg', 'image/png', 'image/gif'],
   videos: ['video/mp4', 'video/mkv'],
-  documents: [
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  ],
-  spreadsheets: [
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  ],
-  presentations: [
-    'application/vnd.ms-powerpoint',
-    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-  ],
+  documents: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+  spreadsheets: ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'],
+  presentations: ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'],
   textFiles: ['text/plain'],
   csvFiles: ['text/csv'],
 };

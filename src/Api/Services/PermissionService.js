@@ -1,14 +1,14 @@
-const { Op } = require("sequelize");
-const Permission = require("../Models/Permission");
-const Role = require("../Models/Role");
-const User = require("../Models/User");
+const { Op } = require('sequelize');
+const Permission = require('../Models/Permission');
+const Role = require('../Models/Role');
+const User = require('../Models/User');
 
 module.exports = {
-  createPermission: async (data) => {
+  createPermission: async data => {
     return Permission.bulkCreate(data);
   },
 
-  getAllPermissions: async ({ page = 1, limit = 10, search = "", searchFields = [], filters = {} }) => {
+  getAllPermissions: async ({ page = 1, limit = 10, search = '', searchFields = [], filters = {} }) => {
     try {
       const offset = (page - 1) * limit;
       let whereConditions = {};
@@ -23,9 +23,8 @@ module.exports = {
       if (filters.permission_group_id) whereConditions.permission_group_id = filters.permission_group_id;
 
       // **Apply Dynamic Search Using `.map()`**
-      let searchConditions = search && searchFields.length > 0
-        ? searchFields.map((field) => ({ [field]: { [Op.like]: `%${search}%` } }))
-        : [];
+      let searchConditions =
+        search && searchFields.length > 0 ? searchFields.map(field => ({ [field]: { [Op.like]: `%${search}%` } })) : [];
 
       // **Final WHERE condition combining filters & search**
       let finalWhereCondition = { ...whereConditions };
@@ -38,23 +37,23 @@ module.exports = {
         where: finalWhereCondition,
         limit,
         offset,
-        order: [["createdAt", "DESC"]],
+        order: [['createdAt', 'DESC']],
       });
 
       return {
-        message: "✅ Permissions fetched successfully.",
+        message: '✅ Permissions fetched successfully.',
         totalRecords: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
         data: rows,
       };
     } catch (error) {
-      console.error("❌ Error in getAllPermissions:", error.message);
+      console.error('❌ Error in getAllPermissions:', error.message);
       throw new Error(`❌ Error in getAllPermissions: ${error.message}`);
     }
   },
 
-  getPermissionById: async (id) => {
+  getPermissionById: async id => {
     return Permission.findByPk(id);
   },
 
@@ -62,11 +61,11 @@ module.exports = {
     return Permission.update(data, { where: { id } });
   },
 
-  deletePermission: async (id) => {
+  deletePermission: async id => {
     return Permission.destroy({ where: { id } });
   },
 
-  getUserPermissionTree: async (userId) => {
+  getUserPermissionTree: async userId => {
     try {
       const user = await User.findByPk(userId, {
         include: {

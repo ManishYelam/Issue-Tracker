@@ -30,8 +30,7 @@ const getUploadPath = (file, userId) => {
   return finalPath;
 };
 
-const generateFileUrl = (filename, directory, userId) =>
-  `/uploads/${userId}/${directory}/${filename}`;
+const generateFileUrl = (filename, directory, userId) => `/uploads/${userId}/${directory}/${filename}`;
 
 module.exports = {
   validateFile,

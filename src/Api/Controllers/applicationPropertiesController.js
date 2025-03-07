@@ -1,4 +1,4 @@
-const ApplicationPropertiesService = require("../Services/ApplicationPropertiesService");
+const ApplicationPropertiesService = require('../Services/ApplicationPropertiesService');
 
 module.exports = {
   // Create or Update a property

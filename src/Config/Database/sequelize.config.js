@@ -6,9 +6,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 const DB_HOST = isProduction ? process.env.P_DB_HOST : process.env.L_DB_HOST;
 const DB_USER = isProduction ? process.env.P_DB_USER : process.env.L_DB_USER;
-const DB_PASSWORD = isProduction
-  ? process.env.P_DB_PASSWORD
-  : process.env.L_DB_PASSWORD;
+const DB_PASSWORD = isProduction ? process.env.P_DB_PASSWORD : process.env.L_DB_PASSWORD;
 const DB_DIALECT = process.env.DB_DIALECT || 'mysql';
 const DB_PORT = process.env.DB_PORT || 3306;
 
@@ -24,7 +22,7 @@ const initDatabases = () => {
       host: DB_HOST,
       dialect: DB_DIALECT,
       port: DB_PORT,
-      logging: (msg) => console.log(msg),
+      logging: msg => console.log(msg),
       pool: {
         max: 15,
         min: 0,

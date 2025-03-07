@@ -6,9 +6,7 @@ const { User, Role, Permission } = require('../../Api/Models/Association');
 const authMiddleware = async (socket, next) => {
   try {
     const token =
-      socket.handshake.query.token ||
-      socket.handshake.auth?.token ||
-      socket.handshake.headers['authorization']?.split(' ')[1];
+      socket.handshake.query.token || socket.handshake.auth?.token || socket.handshake.headers['authorization']?.split(' ')[1];
 
     if (!token) {
       throw new Error('Unauthorized: No token provided');
@@ -37,14 +35,9 @@ const authMiddleware = async (socket, next) => {
     const deviceType = agent.device.family || 'desktop';
     const userAgent = `${agent.os.family || 'unknown'} - ${agent.family || 'unknown'}`;
 
-    const ip =
-      socket.handshake.headers['x-forwarded-for'] ||
-      socket.handshake.address ||
-      '127.0.0.1';
+    const ip = socket.handshake.headers['x-forwarded-for'] || socket.handshake.address || '127.0.0.1';
     const geo = geoip.lookup(ip);
-    const location = geo
-      ? `${geo.city || 'unknown'}, ${geo.country || 'unknown'}`
-      : 'unknown';
+    const location = geo ? `${geo.city || 'unknown'}, ${geo.country || 'unknown'}` : 'unknown';
 
     socket.user = {
       id: user.id,

@@ -24,7 +24,7 @@ module.exports = {
   },
 
   // Clear specific cache key
-  clearCache: (key) => {
+  clearCache: key => {
     client.del(key, (err, response) => {
       if (err) {
         console.error('Error clearing cache:', err.message);
@@ -39,7 +39,7 @@ const cacheHelper = require('./cacheHelper');
 app.get('/data', (req, res) => {
   const cacheKey = 'data';
 
-  cacheHelper.getCache(cacheKey, (cachedData) => {
+  cacheHelper.getCache(cacheKey, cachedData => {
     if (cachedData) return res.json(cachedData);
 
     // Simulate expensive operation

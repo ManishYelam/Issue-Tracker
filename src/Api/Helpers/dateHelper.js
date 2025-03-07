@@ -9,7 +9,7 @@ module.exports = {
     return moment(date).add(days, 'days').toDate();
   },
 
-  isPastDate: (date) => {
+  isPastDate: date => {
     return moment().isAfter(date);
   },
 };

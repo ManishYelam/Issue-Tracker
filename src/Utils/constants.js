@@ -5,9 +5,7 @@ const JWT_CONFIG = {
     process.env.JWT_SECRET ||
     '2277c863a356e796a1bd600d1f3d219ef0632bf1635f431886796298558be460055faa328045100fbd0a8b4551c938595409',
   EXPIRATION: process.env.JWT_EXPIRATION || '1h',
-  REDIS_URL:
-    process.env.REDIS_HOST ||
-    'redis://redis-13742.c274.us-east-1-3.ec2.redns.redis-cloud.com',
+  REDIS_URL: process.env.REDIS_HOST || 'redis://redis-13742.c274.us-east-1-3.ec2.redns.redis-cloud.com',
 };
 
 const SECURITY_CONFIG = {
@@ -20,9 +18,7 @@ const RATE_LIMIT_CONFIG = {
 };
 
 const APP_SETTINGS = {
-  SUPPORTED_LANGUAGES: process.env.SUPPORTED_LANGUAGES
-    ? process.env.SUPPORTED_LANGUAGES.split(',')
-    : ['en', 'es', 'fr'],
+  SUPPORTED_LANGUAGES: process.env.SUPPORTED_LANGUAGES ? process.env.SUPPORTED_LANGUAGES.split(',') : ['en', 'es', 'fr'],
   DEFAULT_LANGUAGE: process.env.DEFAULT_LANGUAGE || 'en',
 };
 

@@ -10,9 +10,7 @@ const deleteUnverifiedUsers = async () => {
         createdAt: { [Op.lt]: oneHourAgo },
       },
     });
-    console.log(
-      `Deleted ${result} unverified user(s) created more than 60 minutes ago. ${new Date().toLocaleString()}`
-    );
+    console.log(`Deleted ${result} unverified user(s) created more than 60 minutes ago. ${new Date().toLocaleString()}`);
   } catch (error) {
     console.error('Error deleting unverified users:', error.message);
   }

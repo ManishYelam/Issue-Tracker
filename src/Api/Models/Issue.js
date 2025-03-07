@@ -1,12 +1,11 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
 
-const issueAttributes =
-{
+const issueAttributes = {
   issue_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
   user_id: {
     type: DataTypes.INTEGER,
@@ -14,37 +13,37 @@ const issueAttributes =
   },
   title: {
     type: DataTypes.STRING(255),
-    allowNull: false
+    allowNull: false,
   },
   description: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: false,
   },
   issue_type: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   priority: {
     type: DataTypes.STRING,
-    defaultValue: 'MEDIUM'
+    defaultValue: 'MEDIUM',
   },
   status: {
     type: DataTypes.STRING,
-    defaultValue: 'PENDING'
+    defaultValue: 'PENDING',
   },
   category: {
-    type: DataTypes.STRING(100)
+    type: DataTypes.STRING(100),
   },
   impact_area: {
-    type: DataTypes.STRING(255)
+    type: DataTypes.STRING(255),
   },
   reproducibility: {
     type: DataTypes.STRING,
-    defaultValue: 'ALWAYS'
+    defaultValue: 'ALWAYS',
   },
   root_cause: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
   // assigned_to: {
   //   type: DataTypes.INTEGER,
@@ -60,31 +59,31 @@ const issueAttributes =
   // },
   resolved_at: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
   },
   due_date: {
     type: DataTypes.DATE,
-    allowNull: true
+    allowNull: true,
   },
   resolution_notes: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
   attachments: {
     type: DataTypes.JSON,
-    allowNull: true
+    allowNull: true,
   },
   tags: {
     type: DataTypes.JSON,
-    allowNull: true
+    allowNull: true,
   },
   related_issues: {
     type: DataTypes.JSON,
-    allowNull: true
+    allowNull: true,
   },
   escalation_level: {
     type: DataTypes.STRING,
-    defaultValue: 'None'
+    defaultValue: 'None',
   },
   // escalated_to: {
   //   type: DataTypes.INTEGER,
@@ -92,25 +91,25 @@ const issueAttributes =
   // },
   workaround: {
     type: DataTypes.TEXT,
-    allowNull: true
+    allowNull: true,
   },
   estimated_effort: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
   },
   actual_effort: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
   },
   deployment_required: {
     type: DataTypes.BOOLEAN,
-    defaultValue: false
-  }
-}
+    defaultValue: false,
+  },
+};
 
 const Issue = sequelize.MAIN_DB_NAME.define('Issue', issueAttributes, {
   tableName: 'tbl_issues',
-  timestamps: true
+  timestamps: true,
 });
 
 module.exports = Issue;

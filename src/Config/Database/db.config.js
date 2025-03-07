@@ -21,9 +21,7 @@ const TestSequelizeConnection = async () => {
   try {
     for (const key in sequelize) {
       await sequelize[key].authenticate();
-      console.log(
-        `✅ Sequelize connection established successfully for database: ${key}`
-      );
+      console.log(`✅ Sequelize connection established successfully for database: ${key}`);
     }
   } catch (error) {
     console.error(`❌ Unable to connect to Sequelize database: ${error.message}`, {

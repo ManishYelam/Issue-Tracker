@@ -1,29 +1,29 @@
-const { Op } = require("sequelize");
-const Permission = require("../Models/Permission");
-const Role = require("../Models/Role");
-const RolePermissions = require("../Models/RolePermissions");
-const User = require("../Models/User");
-const { getUserById } = require("./UserService");
+const { Op } = require('sequelize');
+const Permission = require('../Models/Permission');
+const Role = require('../Models/Role');
+const RolePermissions = require('../Models/RolePermissions');
+const User = require('../Models/User');
+const { getUserById } = require('./UserService');
 
 module.exports = {
-  createRoles: async (data) => {
+  createRoles: async data => {
     return Role.bulkCreate(data);
   },
 
   assignPermissionsToRole: async (roleId, permissionIds) => {
     const role = await Role.findByPk(roleId);
     if (!role) {
-      throw new Error("Role not found");
+      throw new Error('Role not found');
     }
     const permissions = await Permission.findAll({
       where: { id: permissionIds },
     });
     if (!permissions.length) {
-      throw new Error("Permissions not found");
+      throw new Error('Permissions not found');
     }
     await role.addPermissions(permissions);
     return {
-      message: "Permissions assigned to role successfully",
+      message: 'Permissions assigned to role successfully',
       role,
       permissions,
     };
@@ -32,15 +32,12 @@ module.exports = {
   _assignPermissionsToUserInDB: async (userID, validPermissions) => {
     try {
       if (!Array.isArray(validPermissions) || validPermissions.length === 0) {
-        return { message: "No valid permissions to update." };
+        return { message: 'No valid permissions to update.' };
       }
-      const [updatedUser] = await User.update(
-        { permission_ids: validPermissions },
-        { where: { id: userID } }
-      );
-      return { message: "User permissions updated successfully", updatedUser };
+      const [updatedUser] = await User.update({ permission_ids: validPermissions }, { where: { id: userID } });
+      return { message: 'User permissions updated successfully', updatedUser };
     } catch (error) {
-      console.error("Error updating user permissions:", error.message);
+      console.error('Error updating user permissions:', error.message);
       return { error: error.message };
     }
   },
@@ -49,20 +46,20 @@ module.exports = {
     try {
       const user = await getUserById(userID);
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
 
       if (!user.Role || !user.Role.id) {
-        throw new Error("User role is missing");
+        throw new Error('User role is missing');
       }
 
       const role = await module.exports.getRoleById(user.Role.id);
       if (!role) {
-        throw new Error("Role not found");
+        throw new Error('Role not found');
       }
 
       if (!role.role || !role.role.Permissions) {
-        throw new Error("Role or permissions not found");
+        throw new Error('Role or permissions not found');
       }
 
       const validPermissionIdsArray = role.role.Permissions.map(permission => {
@@ -84,28 +81,27 @@ module.exports = {
           permissionUpdateResult = await module.exports._assignPermissionsToUserInDB(userID, validPermissions);
         } catch (dbError) {
           return {
-            message: "Failed to update permissions",
+            message: 'Failed to update permissions',
             validPermissions,
             invalidPermissions,
-            error: dbError.message
+            error: dbError.message,
           };
         }
       }
       return {
         updatedPermissions: permissionUpdateResult,
         validPermissions,
-        invalidPermissions
+        invalidPermissions,
       };
-
     } catch (error) {
       return {
-        message: "Failed to update permissions",
-        error: error.message
+        message: 'Failed to update permissions',
+        error: error.message,
       };
     }
   },
 
-  getAllRoles: async ({ page = 1, limit = 10, search = "", searchFields = [], filters = {} }) => {
+  getAllRoles: async ({ page = 1, limit = 10, search = '', searchFields = [], filters = {} }) => {
     try {
       const offset = (page - 1) * limit;
       let whereConditions = {};
@@ -124,9 +120,8 @@ module.exports = {
       if (filters.permission_status) permissionWhereConditions.status = filters.permission_status;
 
       // **Apply Dynamic Search Using `.map()`**
-      let searchConditions = search && searchFields.length > 0
-        ? searchFields.map((field) => ({ [field]: { [Op.like]: `%${search}%` } }))
-        : [];
+      let searchConditions =
+        search && searchFields.length > 0 ? searchFields.map(field => ({ [field]: { [Op.like]: `%${search}%` } })) : [];
 
       // **Final WHERE condition combining filters & search**
       let finalWhereCondition = { ...whereConditions };
@@ -146,11 +141,11 @@ module.exports = {
         ],
         limit,
         offset,
-        order: [["createdAt", "DESC"]],
+        order: [['createdAt', 'DESC']],
       });
 
       return {
-        message: "✅ Roles fetched successfully.",
+        message: '✅ Roles fetched successfully.',
         totalRecords: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
@@ -161,7 +156,7 @@ module.exports = {
     }
   },
 
-  getRoleById: async (id) => {
+  getRoleById: async id => {
     const role = await Role.findByPk(id, {
       include: {
         model: Permission,
@@ -175,7 +170,7 @@ module.exports = {
     return Role.update(data, { where: { id } });
   },
 
-  deleteRole: async (id) => {
+  deleteRole: async id => {
     return Role.destroy({ where: { id } });
   },
 };

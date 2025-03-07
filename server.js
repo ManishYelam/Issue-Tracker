@@ -1,12 +1,12 @@
 const http = require('http');
 const path = require('path');
-const express = require("express");
+const express = require('express');
 const cors = require('cors');
 const moment = require('moment');
 const Middleware = require('./src/Api/Middlewares/index.middleware.js');
 const routes = require('./src/Api/Routes/index.js');
 const { InitializeDatabase } = require('./src/Api/Models/InitializeDatabase');
-const { TestSequelizeConnection, TestMySQLConnection, } = require('./src/Config/Database/db.config.js');
+const { TestSequelizeConnection, TestMySQLConnection } = require('./src/Config/Database/db.config.js');
 require('dotenv').config();
 
 // require('./src/sockets/server.socket.js');
@@ -17,10 +17,12 @@ const server = http.createServer(app);
 
 const DefineRoutes = () => {
   // 📌 **Serve Intro**
-  app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'public', 'index.html')); });
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  });
 
   // 📌 **Serve Uploaded Files**
-  app.use("/uploads", express.static('UPLOAD_DIR'));
+  app.use('/uploads', express.static('UPLOAD_DIR'));
 
   // 📌 **Serve APIs**
   app.use('/api', routes);
@@ -28,10 +30,7 @@ const DefineRoutes = () => {
 
 const StartServer = async () => {
   try {
-    await Promise.all([
-      TestMySQLConnection(),
-      TestSequelizeConnection(),
-    ]);
+    await Promise.all([TestMySQLConnection(), TestSequelizeConnection()]);
     InitializeDatabase();
     DefineRoutes();
 

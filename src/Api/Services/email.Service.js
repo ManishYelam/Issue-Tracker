@@ -1,9 +1,15 @@
 const sendMail = require('../../Config/Setting/nodemailer.config');
-const { registrationTemplate, passwordChangeTemplate, performanceTrackingTemplate, systemLogsTemplate, notificationTemplate, } = require('../EmailTemplets/Templates');
+const {
+  registrationTemplate,
+  passwordChangeTemplate,
+  performanceTrackingTemplate,
+  systemLogsTemplate,
+  notificationTemplate,
+} = require('../EmailTemplets/Templates');
 const { User } = require('../Models/Association');
 
 module.exports = {
-  // ✅ 
+  // ✅
   sendLaunchCodeEmail: async (userId, userName, userEmail, verificationUrl, otp, password) => {
     const user_Email = userEmail;
     const subject = '🚀 Your Exclusive Service Launch Code is Here!';
@@ -13,11 +19,11 @@ module.exports = {
       userName: userName,
       launchCode: otp,
       verificationUrl: verificationUrl,
-      password: password
+      password: password,
     };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
-  // ✅ 
+  // ✅
   sendVerificationEmail: async (userName, userEmail, password) => {
     const user_Email = userEmail;
     const subject = '✅ Email Verified Successfully – Welcome Aboard!';
@@ -25,23 +31,23 @@ module.exports = {
     const template_Data = {
       userEmail: userEmail,
       userName: userName,
-      password: password
+      password: password,
     };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
-  // ✅ 
+  // ✅
   sendPasswordChangeEmail: async (userId, userEmail, userName) => {
     const user_Email = userEmail;
     const subject = '🔒 Password Update Confirmation – Your Account is Secure';
     const template_Name = 'passwordChangeTemplate';
     const template_Data = {
       userId: userId,
-      userName: userName
+      userName: userName,
     };
     sendMail(user_Email, subject, template_Name, template_Data);
   },
 
-  sendResetPasswordCodeEmail: async (userId, userName, userEmail, resetLink, otp) => {     
+  sendResetPasswordCodeEmail: async (userId, userName, userEmail, resetLink, otp) => {
     const user_Email = userEmail;
     const subject = '🔑 Password Reset Request – Secure Your Account';
     const template_Name = 'sendResetPasswordTemplate';
@@ -54,14 +60,11 @@ module.exports = {
     sendMail(user_Email, subject, template_Name, template_Data);
   },
 
-  sendRegistrationEmail: async (userId) => {
+  sendRegistrationEmail: async userId => {
     const user = await User.findByPk(userId);
     if (!user) throw new Error('User not found');
     const subject = 'Welcome to [Your App Name] - Verify Your Email';
-    const html = registrationTemplate(
-      user.name,
-      'http:/localhost:5000/verify?token=abc123'
-    );
+    const html = registrationTemplate(user.name, 'http:/localhost:5000/verify?token=abc123');
     sendMail(user.email, subject, html);
   },
 
@@ -107,15 +110,10 @@ module.exports = {
 
   uploadDocument: async (file, userId, uploadPath = 'uploads') => {
     const allowedFileTypes = ['pdf', 'docx', 'zip'];
-    const fileExtension = path
-      .extname(file.originalname)
-      .toLowerCase()
-      .substring(1);
+    const fileExtension = path.extname(file.originalname).toLowerCase().substring(1);
 
     if (!allowedFileTypes.includes(fileExtension)) {
-      throw new Error(
-        'Invalid file type. Only PDF, DOCX, and ZIP files are allowed.'
-      );
+      throw new Error('Invalid file type. Only PDF, DOCX, and ZIP files are allowed.');
     }
 
     const fileName = `${userId}_${Date.now()}_${file.originalname}`;

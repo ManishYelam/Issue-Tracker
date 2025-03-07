@@ -1,4 +1,3 @@
-
 const express = require('express');
 const userLogController = require('../Controllers/UserLogController');
 const validate = require('../Middlewares/validateMiddleware');

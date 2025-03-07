@@ -5,7 +5,7 @@ const base64Helper = require('./base64Helper');
 
 module.exports = {
   // Read a PDF file and return its contents as a buffer
-  readPdfFile: (filePath) => {
+  readPdfFile: filePath => {
     try {
       return fs.readFileSync(filePath);
     } catch (error) {
@@ -26,7 +26,7 @@ module.exports = {
   },
 
   // Encode a PDF file to Base64 string
-  encodePdfToBase64: (filePath) => {
+  encodePdfToBase64: filePath => {
     try {
       const pdfBuffer = fs.readFileSync(filePath);
       return base64Helper.encodeBufferToBase64(pdfBuffer);

@@ -9,7 +9,7 @@ const RoomMembers = require('./RoomMembers');
 const UserSettings = require('./UserSettings');
 
 User.hasMany(Message, { foreignKey: 'senderId' });
-User.belongsToMany(Room, { through: RoomMembers, });
+User.belongsToMany(Room, { through: RoomMembers });
 User.hasMany(Notification, { foreignKey: 'userId' });
 User.hasMany(MessageReaction, { foreignKey: 'userId' });
 User.belongsToMany(User, {
@@ -36,13 +36,13 @@ Room.belongsToMany(MediaStorage, {
 Room.belongsToMany(User, {
   through: RoomMembers,
   foreignKey: 'roomId',
-  as: 'roomUsers'  // Ensure a unique alias for this association
+  as: 'roomUsers', // Ensure a unique alias for this association
 });
 
 User.belongsToMany(Room, {
   through: RoomMembers,
   foreignKey: 'userId',
-  as: 'userRooms'  // Ensure a unique alias for this association
+  as: 'userRooms', // Ensure a unique alias for this association
 });
 
 Room.hasMany(RoomMembers, { foreignKey: 'roomId' });
@@ -68,7 +68,7 @@ MessageReaction.belongsTo(User, { foreignKey: 'userId' });
 MessageReaction.belongsTo(Message, { foreignKey: 'messageId' });
 MessageReaction.belongsTo(MediaStorage, { foreignKey: 'mediaId' });
 
-Message.hasMany(MessageReaction, { foreignKey: 'messageId',  });
+Message.hasMany(MessageReaction, { foreignKey: 'messageId' });
 MessageReaction.belongsTo(Message, { foreignKey: 'messageId' });
 
 // BlockedUser associations

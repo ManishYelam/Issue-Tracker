@@ -7,15 +7,15 @@ const issueHistoryAttributes = {
   issue_history_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
-    primaryKey: true
+    primaryKey: true,
   },
   issue_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: Issue,
-      key: 'issue_id'
-    }
+      key: 'issue_id',
+    },
   },
   user_id: {
     type: DataTypes.INTEGER,
@@ -27,7 +27,7 @@ const issueHistoryAttributes = {
   },
   changeDescription: {
     type: DataTypes.TEXT,
-    allowNull: false
+    allowNull: false,
   },
   action_type: {
     type: DataTypes.ENUM('create', 'update', 'view', 'delete'),
@@ -61,9 +61,9 @@ const issueHistoryAttributes = {
     type: DataTypes.STRING,
     allowNull: true,
   },
-}
+};
 const IssueHistory = sequelize.MAIN_DB_NAME.define('tbl_issue_histories', issueHistoryAttributes, {
-  timestamps: true
+  timestamps: true,
 });
 
 module.exports = IssueHistory;

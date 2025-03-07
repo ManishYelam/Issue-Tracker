@@ -5,7 +5,7 @@ const mammoth = require('mammoth');
 
 module.exports = {
   // Read a DOCX file and return its content as plain text
-  readWordFile: async (filePath) => {
+  readWordFile: async filePath => {
     try {
       const result = await mammoth.extractRawText({ path: filePath });
       return result.value; // Extracted plain text
@@ -16,7 +16,7 @@ module.exports = {
   },
 
   // Convert a DOCX file to HTML format
-  convertWordToHtml: async (filePath) => {
+  convertWordToHtml: async filePath => {
     try {
       const result = await mammoth.convertToHtml({ path: filePath });
       return result.value; // Extracted HTML content
@@ -34,7 +34,7 @@ module.exports = {
           {
             properties: {},
             children: textArray.map(
-              (text) =>
+              text =>
                 new Paragraph({
                   children: [new TextRun(text)],
                 })
@@ -60,9 +60,9 @@ module.exports = {
           {
             properties: {},
             children: paragraphs.map(
-              (para) =>
+              para =>
                 new Paragraph({
-                  children: para.map((text) => new TextRun(text)),
+                  children: para.map(text => new TextRun(text)),
                 })
             ),
           },

@@ -142,8 +142,7 @@ const departments = [
     status: 'Active',
     date_founded: new Date('2012-08-25'),
     num_employees: 60,
-    description:
-      'Responsible for all IT infrastructure and software development.',
+    description: 'Responsible for all IT infrastructure and software development.',
     created_by: 'System',
     updated_by: 'System',
   },
@@ -220,6 +219,6 @@ sequelize.MAIN_DB_NAME.sync({ force: false })
   .then(() => {
     console.log('Departments inserted successfully!');
   })
-  .catch((error) => {
+  .catch(error => {
     console.error('Error inserting departments:', error);
   });

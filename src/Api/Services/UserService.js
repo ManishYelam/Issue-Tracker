@@ -6,7 +6,7 @@ const { User, Role, Permission } = require('../Models/Association');
 const { sequelize } = require('../../Config/Database/db.config');
 
 module.exports = {
-  createUser: async (data) => {
+  createUser: async data => {
     try {
       const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
       Object.assign(data, { otp, expiryTime });
@@ -33,7 +33,7 @@ module.exports = {
       const { isValid, message } = verifyOTPTimestamped(launchCode, otp, expiryTime);
       if (!isValid) throw new Error(message);
 
-      const generate_password = generateStrongPassword(16)
+      const generate_password = generateStrongPassword(16);
       const password = await hashPassword(generate_password);
 
       // Update user verification status
@@ -56,7 +56,7 @@ module.exports = {
     return User.findAll({ include: [Role] });
   },
 
-  getAllUsersV2: async ({ page = 1, limit = 10, search = "", searchFields = [], filters = {} }) => {
+  getAllUsersV2: async ({ page = 1, limit = 10, search = '', searchFields = [], filters = {} }) => {
     try {
       const offset = (page - 1) * limit;
       let whereConditions = {};
@@ -71,9 +71,8 @@ module.exports = {
       if (filters.email) whereConditions.email = { [Op.like]: `%${filters.email}%` };
 
       // **Apply Dynamic Search Using `.map()`**
-      let searchConditions = search && searchFields.length > 0
-        ? searchFields.map((field) => ({ [field]: { [Op.like]: `%${search}%` } }))
-        : [];
+      let searchConditions =
+        search && searchFields.length > 0 ? searchFields.map(field => ({ [field]: { [Op.like]: `%${search}%` } })) : [];
 
       // **Final WHERE condition combining filters & search**
       let finalWhereCondition = { ...whereConditions };
@@ -87,30 +86,30 @@ module.exports = {
         include: [
           {
             model: Role,
-            as: "Role",
+            as: 'Role',
             where: roleWhereConditions,
             required: false,
           },
         ],
         limit,
         offset,
-        order: [["createdAt", "DESC"]],
+        order: [['createdAt', 'DESC']],
       });
 
       return {
-        message: "✅ Users fetched successfully.",
+        message: '✅ Users fetched successfully.',
         totalRecords: count,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
         data: rows,
       };
     } catch (error) {
-      console.error("❌ Error in getAllUsers:", error.message);
+      console.error('❌ Error in getAllUsers:', error.message);
       throw new Error(`❌ Error in getAllUsers: ${error.message}`);
     }
   },
 
-  getUserById: async (id) => {
+  getUserById: async id => {
     const user = await User.findByPk(id, {
       include: {
         model: Role,
@@ -123,7 +122,7 @@ module.exports = {
     return user;
   },
 
-  getUserByEmail: async (email) => {
+  getUserByEmail: async email => {
     const user = await User.findOne({
       where: { email: userEmail },
       include: [
@@ -136,7 +135,7 @@ module.exports = {
     return user;
   },
 
-  checkExistsEmail: async (email) => {
+  checkExistsEmail: async email => {
     const user = await User.findOne({ where: { email } });
     return user;
   },
@@ -146,7 +145,7 @@ module.exports = {
     try {
       const user = await User.findByPk(userId, { transaction });
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
       // Prepare updated user data
       const updatedUserData = {
@@ -160,7 +159,7 @@ module.exports = {
         address: data.address ?? user.address,
         status: data.status ?? user.status,
         role_id: data.role_id ?? user.role_id,
-        user_metadata: data.user_metadata ? { ...user.user_metadata, ...data.user_metadata } : user.user_metadata
+        user_metadata: data.user_metadata ? { ...user.user_metadata, ...data.user_metadata } : user.user_metadata,
       };
       // Update user record
       await user.update(updatedUserData, { transaction });
@@ -168,11 +167,11 @@ module.exports = {
       return { updatedUser: user };
     } catch (error) {
       await transaction.rollback();
-      throw new Error("Error updating user: " + error.message);
+      throw new Error('Error updating user: ' + error.message);
     }
   },
 
-  deleteUser: (id) => {
+  deleteUser: id => {
     return User.destroy({ where: { id } });
   },
 
@@ -186,5 +185,4 @@ module.exports = {
     });
     return deletedCount;
   },
-
 };

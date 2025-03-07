@@ -1,11 +1,34 @@
-const { Message, Room, MessageReaction, Notification, MediaStorage, BlockedUser, RoomMembers, UserSettings } = require('../../Api/Models/Chat/ChatAssociations');
-const { joinRoom, createRoom, getRooms, getRoomByID, updateRoom, deleteRoom, leaveRoom, removeUserFromRoom, updateUserRole, getRoomMembers, sendMessage, updateMessage, getMessagesByRoom } = require('./RoomService');
+const {
+  Message,
+  Room,
+  MessageReaction,
+  Notification,
+  MediaStorage,
+  BlockedUser,
+  RoomMembers,
+  UserSettings,
+} = require('../../Api/Models/Chat/ChatAssociations');
+const {
+  joinRoom,
+  createRoom,
+  getRooms,
+  getRoomByID,
+  updateRoom,
+  deleteRoom,
+  leaveRoom,
+  removeUserFromRoom,
+  updateUserRole,
+  getRoomMembers,
+  sendMessage,
+  updateMessage,
+  getMessagesByRoom,
+} = require('./RoomService');
 
 const chatService = (socket, io) => {
   console.log(`Chat service connected: ${socket.id}`);
 
-  const socketHandlers = (socket) => {
-    socket.on('joinRoom', async (roomId) => {
+  const socketHandlers = socket => {
+    socket.on('joinRoom', async roomId => {
       try {
         const room = await joinRoom(socket.user.id, roomId);
         socket.emit('roomJoined', { message: 'Joined room successfully', roomId: room.id });
@@ -16,7 +39,7 @@ const chatService = (socket, io) => {
       }
     });
 
-    socket.on('createRoom', async (roomData) => {
+    socket.on('createRoom', async roomData => {
       try {
         const room = await createRoom(roomData, socket.user.id);
         socket.emit('roomCreated', { message: 'Room created successfully', roomId: room.id });
@@ -36,7 +59,7 @@ const chatService = (socket, io) => {
       }
     });
 
-    socket.on('getRoomById', async (roomId) => {
+    socket.on('getRoomById', async roomId => {
       try {
         const room = await getRoomByID(roomId);
         socket.emit('roomDetails', room);
@@ -56,7 +79,7 @@ const chatService = (socket, io) => {
       }
     });
 
-    socket.on('deleteRoom', async (roomId) => {
+    socket.on('deleteRoom', async roomId => {
       try {
         const result = await deleteRoom(roomId, socket.user.id);
         socket.emit('roomDeleted', result);
@@ -66,7 +89,7 @@ const chatService = (socket, io) => {
       }
     });
 
-    socket.on('leaveRoom', async (roomId) => {
+    socket.on('leaveRoom', async roomId => {
       try {
         const result = await leaveRoom(socket.user.id, roomId);
         socket.emit('roomLeft', result);
@@ -98,7 +121,7 @@ const chatService = (socket, io) => {
       }
     });
 
-    socket.on('getRoomMembers', async (roomId) => {
+    socket.on('getRoomMembers', async roomId => {
       try {
         const members = await getRoomMembers(roomId);
         socket.emit('roomMembers', members);
@@ -110,7 +133,7 @@ const chatService = (socket, io) => {
 
     socket.on('sendMessage', async ({ data }) => {
       try {
-        const message = await sendMessage(data)
+        const message = await sendMessage(data);
         socket.emit('messageSent', { message: 'Message sent successfully', message });
         socket.to(data.roomId).emit('newMessage', { message });
       } catch (error) {
@@ -121,7 +144,7 @@ const chatService = (socket, io) => {
 
     socket.on('getMessagesByRoom', async ({ roomId, startMessageId, endMessageId }) => {
       try {
-        const message = await getMessagesByRoom(roomId, startMessageId, endMessageId)
+        const message = await getMessagesByRoom(roomId, startMessageId, endMessageId);
         socket.emit('messageGet', { message: 'Message get successfully', message });
         socket.to(roomId).emit('newMessage', { message });
       } catch (error) {
@@ -132,7 +155,7 @@ const chatService = (socket, io) => {
 
     socket.on('updateMessage', async ({ data }) => {
       try {
-        const message = await updateMessage(data)
+        const message = await updateMessage(data);
         socket.emit('messageUpdate', { message: 'Message update successfully', message });
         socket.to(data.roomId).emit('newMessage', { message });
       } catch (error) {
@@ -140,9 +163,6 @@ const chatService = (socket, io) => {
         socket.emit('error', error.message || 'Error updating message');
       }
     });
-
-
-
   };
 
   socketHandlers(socket);

@@ -12,21 +12,20 @@ module.exports = {
         sortBy: sortBy || 'createdAt',
         order: order || 'DESC',
         search: search || '',
-        filters
+        filters,
       });
 
       return res.status(200).json({
         success: true,
         message: 'Notifications fetched successfully',
-        data: notificationData
+        data: notificationData,
       });
-
     } catch (error) {
       console.error('Error fetching notifications:', error);
       return res.status(500).json({
         success: false,
         message: 'Failed to fetch notifications',
-        error: error.message
+        error: error.message,
       });
     }
   },
@@ -41,5 +40,4 @@ module.exports = {
       res.status(500).json({ message: error.message || 'Failed to delete notification.' });
     }
   },
-}
-
+};
