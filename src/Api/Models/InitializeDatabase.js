@@ -55,12 +55,12 @@ module.exports = {
 
         ListOfValues.sync({ alter: false }),
 
-        ApplicationProperties.addConstraint('ApplicationProperties', {
-          type: 'unique',
-          fields: ['property_name', 'status'],
-          where: { status: 'active' },
-          name: 'unique_active_app_email',
-        }),
+        // ApplicationProperties.addConstraint('ApplicationProperties', {
+        //   type: 'unique',
+        //   fields: ['property_name', 'status'],
+        //   where: { status: 'active' },
+        //   name: 'unique_active_app_email',
+        // }),
       ]);
     } catch (error) {
       console.error('Error syncing database:', error);
