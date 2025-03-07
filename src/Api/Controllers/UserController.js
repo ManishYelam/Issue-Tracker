@@ -25,9 +25,9 @@ module.exports = {
     try {
       const { page, limit, search, searchFields, ...filters } = req.body;
       const users = await userService.getAllUsersV2({ page, limit, search, searchFields, ...filters });
-      res.status(200).json({ message: 'Fetch all users successfully', user: users });
+      res.status(200).json(users);
     } catch (error) {
-      res.status(500).json({ message: error || 'Internal Server Error' });
+      res.status(500).json({ message: error.message });
     }
   },
 
@@ -35,15 +35,9 @@ module.exports = {
     try {
       const users = await userService.getAllUsers();
       res.status(200).json(users);
-      res
-        .status(200)
-        .json({ message: 'Fetch all users successfully', user: users });
+      // res.status(200).json({ message: 'Fetch all users successfully', user: users });
     } catch (error) {
-      if (!res.headersSent) {
-        return res
-          .status(500)
-          .json({ message: error || 'Internal Server Error' });
-      }
+      res.status(500).json({ message: error.message });
     }
   },
 
@@ -62,9 +56,7 @@ module.exports = {
       const updatedUser = await userService.updateUser(req.params.id, req.body);
       if (updatedUser[0] === 0)
         return res.status(404).json({ message: 'User not found' });
-      res
-        .status(200)
-        .json({ message: 'User updated successfully', user: req.body });
+      res.status(200).json({ message: 'User updated successfully', user: req.body });
     } catch (error) {
       res.status(500).json({ message: error });
     }
@@ -74,9 +66,7 @@ module.exports = {
     try {
       const deleted = await userService.deleteUser(req.params.id);
       if (!deleted) return res.status(404).json({ message: 'User not found' });
-      res
-        .status(200)
-        .json({ message: 'User deleted successfully', user: req.params.id });
+      res.status(200).json({ message: 'User deleted successfully', user: req.params.id });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
