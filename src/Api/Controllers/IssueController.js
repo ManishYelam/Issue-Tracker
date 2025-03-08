@@ -11,7 +11,7 @@ module.exports = {
    */
   upsertIssue: async (req, res) => {
     try {
-      const { error } = await (createUpsertIssueSchema, req.body);
+      const { error } = await validateWithLOVs(createUpsertIssueSchema, req.body);
       if (error) {
         return res.status(400).json({
           success: false,
