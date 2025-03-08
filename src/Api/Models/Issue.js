@@ -105,6 +105,14 @@ const issueAttributes = {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
+  environments:{
+    type: DataTypes.JSON,
+    defaultValue:[],
+  },
+  browsers:{
+    type: DataTypes.JSON,
+    defaultValue:[],
+  }
 };
 
 const Issue = sequelize.MAIN_DB_NAME.define('Issue', issueAttributes, {

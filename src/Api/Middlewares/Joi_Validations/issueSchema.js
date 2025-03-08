@@ -30,7 +30,7 @@ const createUpsertIssueSchema = async () => {
     priority: Joi.string()
       .valid(...priorityCodes)
       .default('Medium'),
-    // status: Joi.string().valid(...statusCodes).default("PENDING"),
+    status: Joi.string().valid(...statusCodes).default("PENDING"),
     category: Joi.string()
       .valid(...taskCategoryTypeCodes)
       .allow(null, ''),
@@ -56,6 +56,8 @@ const createUpsertIssueSchema = async () => {
     estimated_effort: Joi.number().integer().positive().allow(null),
     actual_effort: Joi.number().integer().positive().allow(null),
     deployment_required: Joi.boolean().default(false),
+    environments: Joi.array().items(Joi.number().max(1000000).allow(null, '')).allow(null),
+    browsers: Joi.array().items(Joi.number().max(1000000).allow(null, '')).allow(null),
   });
 };
 
