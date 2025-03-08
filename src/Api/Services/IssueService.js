@@ -1,4 +1,4 @@
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 const { validateWithLOVs, createUpsertIssueSchema } = require('../Middlewares/Joi_Validations/issueSchema');
 const IssueStats = require('../Models/issueStats');
 const Issue = require('../Models/Issue');
@@ -36,9 +36,35 @@ module.exports = {
       });
 
       const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction });
-      const pendingIssues = await Issue.count({ where: { user_id, status: 'PENDING' }, transaction });
+      const statusCounts = await Issue.findAll({
+        where: { user_id: issue.user_id },
+        attributes: ['status', [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']],
+        group: ['status'],
+        transaction,
+        raw: true,
+      });
+      const issueStatusCounts = statusCounts.reduce((acc, { status, count }) => {
+        acc[`${status.toLowerCase()}_issues`] = count;
+        return acc;
+      }, {});
 
-      await issueStats.update({ total_issues: totalIssues, pending_issues: pendingIssues }, { transaction });
+      const overdueIssues = await Issue.count({
+        where: {
+          user_id: issue.user_id,
+          due_date: { [Op.lt]: new Date() },
+          status: { [Op.notIn]: ['RESOLVED', 'REJECTED'] },
+        },
+        transaction,
+      });
+
+      await issueStats.update(
+        {
+          total_issues: totalIssues,
+          overdue_issues: overdueIssues,
+          ...issueStatusCounts,
+        },
+        { transaction }
+      );
 
       await transaction.commit();
       return { success: true, issue, created };
@@ -48,11 +74,9 @@ module.exports = {
     }
   },
 
-  // **Bulk insert or update issues**
   bulkIssue: async bulkIssues => {
     const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
-      // 🚀 Bulk upsert issues
       const issues = await Issue.bulkCreate(bulkIssues, {
         updateOnDuplicate: [
           'title',
@@ -83,10 +107,8 @@ module.exports = {
         transaction,
       });
 
-      // 🔍 Extract unique user IDs from issues
       const userIds = [...new Set(bulkIssues.map(issue => issue.user_id))];
 
-      // 🔄 Ensure IssueStats exists for all users
       await Promise.all(
         userIds.map(async userId => {
           await IssueStats.findOrCreate({
@@ -113,13 +135,36 @@ module.exports = {
         })
       );
 
-      // 🔄 Update total issues count for each user
       await Promise.all(
         userIds.map(async userId => {
           const totalIssues = await Issue.count({ where: { user_id: userId }, transaction });
-          const pendingIssues = await Issue.count({ where: { user_id: userId, status: 'PENDING' }, transaction });
+          const statusCounts = await Issue.findAll({
+            where: { user_id: userId },
+            attributes: ['status', [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']],
+            group: ['status'],
+            transaction,
+            raw: true,
+          });
+          const issueStatusCounts = statusCounts.reduce((acc, { status, count }) => {
+            acc[`${status.toLowerCase()}_issues`] = count;
+            return acc;
+          }, {});
+
+          const overdueIssues = await Issue.count({
+            where: {
+              user_id: userId,
+              due_date: { [Op.lt]: new Date() },
+              status: { [Op.notIn]: ['RESOLVED', 'REJECTED'] },
+            },
+            transaction,
+          });
+
           await IssueStats.update(
-            { total_issues: totalIssues, pending_issues: pendingIssues },
+            {
+              total_issues: totalIssues,
+              overdue_issues: overdueIssues,
+              ...issueStatusCounts,
+            },
             { where: { user_id: userId }, transaction }
           );
         })
