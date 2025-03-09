@@ -33,18 +33,18 @@
       <div class="tech-card">
         <h3>🟢 Node.js & Express.js</h3>
         <p>Node.js is a fast and scalable JavaScript runtime, and Express.js is a minimal web framework.</p>
-        <pre><code>const express = require('express');
-const app = express();
-app.get('/', (req, res) => res.send('Hello World!'));
-app.listen(3000);</code></pre>
+        <pre><code>Node.js enables developers to build fast, scalable, and
+event-driven applications. Express.js simplifies API
+development and routing.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>📡 RESTful APIs & GraphQL</h3>
         <p>REST APIs follow standard HTTP methods, while GraphQL enables flexible querying.</p>
-        <pre><code>app.get('/users', (req, res) => {
-  res.json([{ id: 1, name: "Manish" }]);
-});</code></pre>
+        <pre><code>REST APIs use HTTP methods, while GraphQL provides a flexible
+query mechanism, allowing clients to fetch only required data.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>🔗 Microservices Architecture</h3>
         <p>Breaking applications into independent services improves scalability and maintenance.</p>
@@ -52,58 +52,64 @@ app.listen(3000);</code></pre>
 🔹 User Management Service
 🔹 Payment Processing Service</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>🐳 Docker & Kubernetes</h3>
         <p>Docker packages applications into containers, and Kubernetes orchestrates them.</p>
-        <pre><code>docker build -t myapp .
-docker run -p 8080:8080 myapp</code></pre>
+        <pre><code>Docker ensures consistency across environments, while
+Kubernetes manages and scales containerized workloads.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>🚦 API Gateways (Express Gateway, Kong)</h3>
         <p>API gateways manage authentication, rate limiting, and service routing.</p>
-        <pre><code>express-gateway start</code></pre>
+        <pre><code>API gateways act as a single entry point, handling security,
+traffic control, and performance optimization.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>☁️ Serverless Computing (AWS Lambda, Azure)</h3>
         <p>Run backend logic in cloud functions without managing servers.</p>
-        <pre><code>exports.handler = async (event) => {
-  return { statusCode: 200, body: "Hello from AWS Lambda" };
-};</code></pre>
+        <pre><code>Serverless computing reduces operational overhead and
+automatically scales based on demand.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>🔑 Authentication (JWT, OAuth)</h3>
         <p>Use secure authentication mechanisms for API access.</p>
-        <pre><code>const token = jwt.sign({ userId: 123 }, 'secret', { expiresIn: '1h' });</code></pre>
+        <pre><code>JWT provides token-based authentication, while OAuth 
+enables secure third-party logins.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>🗄️ MySQL & MongoDB</h3>
         <p>SQL databases for structured data, NoSQL for flexible storage.</p>
-        <pre><code>SELECT * FROM users;
-db.users.find({});</code></pre>
+        <pre><code>MySQL is structured and relational, while MongoDB offers
+flexible, document-based storage.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>🔄 Jenkins & CI/CD Pipelines</h3>
         <p>Automate testing and deployment with continuous integration.</p>
-        <pre><code>pipeline {
-  stages {
-    stage('Deploy') { steps { sh 'npm install && npm start' } }
-  }
-}</code></pre>
+        <pre><code>Jenkins automates development workflows, ensuring faster
+and error-free deployments.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>⚡ Redis & Caching</h3>
         <p>Improve app performance using Redis for in-memory storage.</p>
-        <pre><code>redis-cli SET "user:1" "Manish"</code></pre>
+        <pre><code>Redis stores frequently accessed data in memory, reducing
+database load and improving response time.</code></pre>
       </div>
+    
       <div class="tech-card">
         <h3>📡 Event-Driven Architecture (WebSockets, Socket.io)</h3>
         <p>Efficient real-time data transfer using WebSockets & Event-Driven Programming.</p>
-        <pre><code>const io = require("socket.io")(server);
-io.on("connection", socket => {
-  console.log("New connection established");
-});</code></pre>
+        <pre><code>Event-driven architectures enable real-time communication
+for applications like chat, notifications, and live tracking.</code></pre>
       </div>
     </div>
+    
   </section>
   <section class="section">
     <h2>Business & Productivity Skills</h2>
@@ -120,18 +126,15 @@ Retrospectives 🔄</code></pre>
       <div class="skill-card">
         <h3>📁 Version Control with Git & GitHub</h3>
         <p>Git enables tracking changes, while GitHub allows collaborative development.</p>
-        <pre><code>git init
-git commit -m "Initial Commit"
-git push origin main</code></pre>
+        <pre><code>Initialize a Git repository  
+Commit code changes  
+Push to a remote repository</code></pre>
       </div>
       <div class="skill-card">
-        <h3>📈 API Documentation (Swagger & Postman)</h3>
+        <h3>📈 API Documentation (Postman)</h3>
         <p>APIs must be well-documented for easy integration with frontends and third-party services.</p>
-        <pre><code>POST /users
-{
-  "name": "John Doe",
-  "email": "johndoe@example.com"
-}</code></pre>
+        <pre><code>Test endpoints in Postman  
+Ensure clear request and response formats</code></pre>
       </div>
       <div class="skill-card">
         <h3>🔐 Scalable Security Practices</h3>
@@ -150,20 +153,16 @@ git push origin main</code></pre>
       <div class="skill-card">
         <h3>🛠️ Automated Testing (Jest, Mocha, Chai)</h3>
         <p>Ensuring code quality by writing test cases for APIs and business logic.</p>
-        <pre><code>describe("Login API", () => {
-  it("should return 200 on success", async () => {
-    expect(response.status).toBe(200);
-  });
-});</code></pre>
+        <pre><code>Write unit tests using Jest  
+Perform integration testing with Mocha  
+Use Chai for assertions</code></pre>
       </div>
       <div class="skill-card">
         <h3>🔄 Continuous Integration & Deployment (CI/CD)</h3>
         <p>Automating deployment pipelines using GitHub Actions, Jenkins, and Docker.</p>
-        <pre><code>steps:
-- name: Install dependencies
-  run: npm install
-- name: Deploy to AWS
-  run: aws deploy</code></pre>
+        <pre><code>Set up CI/CD pipelines  
+Automate testing and deployment  
+Use Docker for consistent environments</code></pre>
       </div>
       <div class="skill-card">
         <h3>📬 Business Communication Skills</h3>
