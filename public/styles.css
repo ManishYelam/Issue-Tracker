@@ -91,13 +91,20 @@ main, .section {
   text-align: left;
 }
 
-/* ===== Two-Column Grid ===== */
+/* Default Grid Layout (For Desktop) */
 .tech-skills-container, .skill-grid, .tech-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 1fr); /* Default: 2 columns */
   gap: 16px;
   max-width: 1000px;
   margin: 30px auto;
+}
+
+/* Responsive Grid for Mobile */
+@media (max-width: 768px) {
+  .tech-skills-container, .skill-grid, .tech-grid {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  }
 }
 
 h2 {
@@ -192,5 +199,4 @@ pre {
 @media (max-width: 768px) {
   .hero-title, .warning-title { font-size: 2rem; }
   .cta-button, .social-links a { font-size: 0.9rem; }
-  .tech-grid, .skill-grid, .tech-skills-container { grid-template-columns: 1fr; }
 }
