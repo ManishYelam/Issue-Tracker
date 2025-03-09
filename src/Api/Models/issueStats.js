@@ -51,7 +51,7 @@ const IssueStats = sequelize.MAIN_DB_NAME.define(
       type: DataTypes.BIGINT,
       defaultValue: 0,
     },
-    critical_issues: {
+    critical_priority_issues: {
       type: DataTypes.BIGINT,
       defaultValue: 0,
     },

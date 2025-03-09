@@ -57,11 +57,31 @@ module.exports = {
         transaction,
       });
 
+      const priorityCounts = await Issue.findAll({
+        where: { user_id: issue.user_id },
+        attributes: ['priority', [Sequelize.fn('COUNT', Sequelize.col('priority')), 'count']],
+        group: ['priority'],
+        transaction,
+        raw: true,
+      });
+
+      const priorityStatusCounts = {
+        low_priority_issues: 0,
+        medium_priority_issues: 0,
+        high_priority_issues: 0,
+        critical_priority_issues: 0,
+      };
+
+      priorityCounts.forEach(({ priority, count }) => {
+        priorityStatusCounts[`${priority.toLowerCase()}_priority_issues`] = count;
+      });
+
       await issueStats.update(
         {
           total_issues: totalIssues,
           overdue_issues: overdueIssues,
           ...issueStatusCounts,
+          ...priorityStatusCounts,
         },
         { transaction }
       );
@@ -103,6 +123,8 @@ module.exports = {
           'estimated_effort',
           'actual_effort',
           'deployment_required',
+          'environments',
+          'browsers',
         ],
         transaction,
       });
@@ -159,11 +181,31 @@ module.exports = {
             transaction,
           });
 
+          const priorityCounts = await Issue.findAll({
+            where: { user_id: userId },
+            attributes: ['priority', [Sequelize.fn('COUNT', Sequelize.col('priority')), 'count']],
+            group: ['priority'],
+            transaction,
+            raw: true,
+          });
+
+          const priorityStatusCounts = {
+            low_priority_issues: 0,
+            medium_priority_issues: 0,
+            high_priority_issues: 0,
+            critical_priority_issues: 0,
+          };
+
+          priorityCounts.forEach(({ priority, count }) => {
+            priorityStatusCounts[`${priority.toLowerCase()}_priority_issues`] = count;
+          });
+
           await IssueStats.update(
             {
               total_issues: totalIssues,
               overdue_issues: overdueIssues,
               ...issueStatusCounts,
+              ...priorityStatusCounts
             },
             { where: { user_id: userId }, transaction }
           );
