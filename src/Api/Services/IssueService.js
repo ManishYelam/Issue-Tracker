@@ -205,7 +205,7 @@ module.exports = {
               total_issues: totalIssues,
               overdue_issues: overdueIssues,
               ...issueStatusCounts,
-              ...priorityStatusCounts
+              ...priorityStatusCounts,
             },
             { where: { user_id: userId }, transaction }
           );

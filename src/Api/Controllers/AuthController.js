@@ -56,6 +56,17 @@ module.exports = {
     }
   },
 
+  resetPassword: async (req, res) => {
+    const { email } = req.params;
+    const { otp, new_password } = req.body;
+    try {
+      const result = await AuthService.resetPassword(email, otp, new_password);
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
   upsertOrganization: async (req, res) => {
     try {
       const organization = await AuthService.upsertOrganization(req.body);

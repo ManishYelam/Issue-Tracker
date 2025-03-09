@@ -56,7 +56,7 @@ module.exports = {
       userName,
       otp,
       resetLink,
-      resetPasswordLink
+      resetPasswordLink,
     };
     sendMail(user_Email, subject, template_Name, template_Data);
   },

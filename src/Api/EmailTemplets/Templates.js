@@ -647,7 +647,7 @@ module.exports = {
       </div>
   </body>
   </html>
-  `,  
+  `,
   // ✅ 🚀
   welcomeTemplate: data => `
 <!DOCTYPE html>

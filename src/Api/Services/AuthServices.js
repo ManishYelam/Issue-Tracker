@@ -16,11 +16,16 @@ const AuthService = {
         include: [{ model: Role }],
       });
 
-      if (!user) throw new Error('Invalid credentials');
+      if (!user) throw new Error('⚠️ Oops! The email or password you entered is incorrect. Please try again.');
 
       // Validate password
       const isValidPassword = await comparePassword(password, user.password);
-      if (!isValidPassword) throw new Error('Invalid credentials');
+      if (!isValidPassword)
+        throw new Error('🔒 Incorrect password! Please check and try again. If you forgot your password, reset it.');
+      if (!user.isVerified)
+        throw new Error('🚀 Your account is not verified yet! Please check your email and verify your account before logging in.');
+      if (user.status !== 'active')
+        throw new Error('⛔ Your account is currently inactive. Please contact support for assistance.');
 
       // Extract necessary user data for the token
       const user_info = {
@@ -84,7 +89,7 @@ const AuthService = {
       return { token, user: userResponse };
     } catch (error) {
       console.error('Login error:', error.message);
-      throw new Error('Login failed. Please try again.');
+      throw new Error(`Login failed. Please try again. ${error.message}`);
     }
   },
 
@@ -149,6 +154,31 @@ const AuthService = {
     }
   },
 
+  resetPassword: async (email, otp, new_password) => {
+    try {
+      const user = await User.findOne({ where: { email: email } });
+      if (!user) {
+        throw new Error('User not found');
+      }
+
+      if (user.otp !== otp) {
+        throw new Error(
+          '⚠️ Oops! The OTP you entered is incorrect. Please double-check and try again. If you didn’t request a password reset, please ignore this message or request a new OTP. 🔄'
+        );
+      }
+
+      const newHashedPassword = await hashPassword(new_password, 10);
+      await user.update({ password: newHashedPassword });
+
+      const userName = `${user.first_name} ${user.last_name}`;
+      await sendPasswordChangeEmail(user.id, user.email, userName);
+
+      return { message: 'Your password has been updated successfully! For security, please log in again with your new password.' };
+    } catch (error) {
+      throw new Error(`${error.message}`);
+    }
+  },
+
   forgetPassword: async email => {
     try {
       const user = await User.findOne({ where: { email, status: 'active' } });
@@ -158,16 +188,15 @@ const AuthService = {
 
       // Generate OTP & expiry time
       const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
-      await user.update({ otp, expiryTime, });
+      await user.update({ otp, expiryTime });
 
       // Generate verification and reset password links
       const resetVerificationLink = `https://mbvdvt7z-5000.inc1.devtunnels.ms/api/users/verify?userId=${user.id}&otp=${otp}`;
       const resetPasswordLink = `http://localhost:5000/verify-reset-password?userId=${user.id}&token=${otp}`;
 
-
       // Send OTP email
       const userName = `${user.first_name} ${user.last_name}`;
-      await sendResetPasswordCodeEmail(user.id, userName, user.email, resetVerificationLink,resetPasswordLink, otp);
+      await sendResetPasswordCodeEmail(user.id, userName, user.email, resetVerificationLink, resetPasswordLink, otp);
 
       return { message: 'An OTP has been sent to your email. Please verify to proceed with password reset.' };
     } catch (error) {
