@@ -9,7 +9,7 @@ authRouter
   .post('/login', validate(loginSchema), AuthController.login)
   .post('/logout', authMiddleware, AuthController.logout)
   .post('/change-password', validate(changePasswordSchema), authMiddleware, AuthController.changePassword)
-  .post('/forget-password/:email', authMiddleware, AuthController.forgetPassword)
+  .post('/forget-password/:email', AuthController.forgetPassword)
 
   .get('/organization', AuthController.getOrganization)
   .post('/organization', authMiddleware, AuthController.upsertOrganization);
