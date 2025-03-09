@@ -89,7 +89,7 @@ const AuthService = {
       return { token, user: userResponse };
     } catch (error) {
       console.error('Login error:', error.message);
-      throw new Error(`Login failed. Please try again. ${error.message}`);
+      throw new Error(`⚠️ Login failed. ${error.message}`);
     }
   },
 
