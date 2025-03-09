@@ -7,6 +7,7 @@ const Middleware = require('./src/Api/Middlewares/index.middleware.js');
 const routes = require('./src/Api/Routes/index.js');
 const { InitializeDatabase } = require('./src/Api/Models/InitializeDatabase');
 const { TestSequelizeConnection, TestMySQLConnection } = require('./src/Config/Database/db.config.js');
+const authMiddleware = require('./src/Api/Middlewares/authorizationMiddleware.js');
 require('dotenv').config();
 
 // require('./src/sockets/server.socket.js');
@@ -25,7 +26,7 @@ const DefineRoutes = () => {
   });
 
   // 📌 **Serve Uploaded Files**
-  app.use('/uploads', express.static('UPLOAD_DIR'));
+  app.use('/uploads', authMiddleware, express.static('UPLOAD_DIR'));
 
   // 📌 **Serve APIs**
   app.use('/api', routes);
