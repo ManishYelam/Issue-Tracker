@@ -8,7 +8,7 @@ const { sequelize } = require('../../Config/Database/db.config');
 module.exports = {
   createUser: async data => {
     try {
-      const { otp, expiryTime } = generateOTPTimestamped(10, 300000, true);
+      const { otp, expiryTime } = generateOTPTimestamped(10, 3600000, true);
       Object.assign(data, { otp, expiryTime });
       const newUser = await User.create(data);
 
