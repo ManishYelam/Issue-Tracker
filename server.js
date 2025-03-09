@@ -16,6 +16,9 @@ app.use(cors());
 const server = http.createServer(app);
 
 const DefineRoutes = () => {
+  // 📌 Serve static files (CSS, Images, JS)
+  app.use(express.static(path.join(__dirname, 'public')));
+
   // 📌 **Serve Intro**
   app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
