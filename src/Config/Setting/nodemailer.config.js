@@ -31,7 +31,7 @@ const sendMail = async (to, subject, templateName, templateData = {}, attachment
     const html = await template(enrichedTemplateData);
 
     const mailOptions = {
-      from: process.env.EMAIL_USER,
+      from: `"${settings.metadata.companyName || 'Your Company'}" <${settings.metadata.emailSettings.username || process.env.EMAIL_USER}>`,
       to,
       subject,
       html: html,
