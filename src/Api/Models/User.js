@@ -53,7 +53,7 @@ const userAttribute = {
     allowNull: true,
   },
   status: {
-    type: DataTypes.ENUM('active', 'inactive', 'banned', 'online', 'offline', 'away', 'do_not_disturb'),
+    type: DataTypes.STRING(50),
     defaultValue: 'active',
   },
   otp: {

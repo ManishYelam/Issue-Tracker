@@ -30,34 +30,37 @@ const createUpsertIssueSchema = async () => {
     priority: Joi.string()
       .valid(...priorityCodes)
       .default('Medium'),
-    status: Joi.string()
-      .valid(...statusCodes)
-      .default('PENDING'),
-    category: Joi.string()
-      .valid(...taskCategoryTypeCodes)
-      .allow(null, ''),
-    impact_area: Joi.string().max(255).allow(null, ''),
-    reproducibility: Joi.string()
-      .valid(...reproducibilityCodes)
-      .default('Always'),
-    root_cause: Joi.string().allow(null, ''),
-    assigned_to: Joi.number().integer().positive().allow(null),
-    reported_by: Joi.number().integer().positive().required(),
-    resolved_by: Joi.number().integer().positive().allow(null),
-    resolved_at: Joi.date().allow(null),
-    due_date: Joi.date().allow(null),
-    resolution_notes: Joi.string().allow(null, ''),
+    // status: Joi.string()
+    //   .valid(...statusCodes)
+    //   .default('PENDING'),
+    // category: Joi.string()
+    //   .valid(...taskCategoryTypeCodes)
+    //   .allow(null, ''),
+    // impact_area: Joi.string().max(255).allow(null, ''),
+    // reproducibility: Joi.string()
+    //   .valid(...reproducibilityCodes)
+    //   .default('Always'),
+    // root_cause: Joi.string().allow(null, ''),
+    // assigned_to: Joi.number().integer().positive().allow(null),
+    // reported_by: Joi.number().integer().positive().required(),
+    // resolved_by: Joi.number().integer().positive().allow(null),
+    // resolved_at: Joi.date().allow(null),
+    // due_date: Joi.date().allow(null),
+    // resolution_notes: Joi.string().allow(null, ''),
     attachments: Joi.array().items(Joi.string().uri()).allow(null),
-    tags: Joi.array().items(Joi.string().max(1000000).allow(null, '')).allow(null),
-    related_issues: Joi.array().items(Joi.number().max(1000000).allow(null, '')).allow(null),
-    escalation_level: Joi.string()
-      .valid(...escalationLevelCodes)
-      .default('None'),
-    escalated_to: Joi.number().integer().positive().allow(null),
-    workaround: Joi.string().allow(null, ''),
-    estimated_effort: Joi.number().integer().positive().allow(null),
-    actual_effort: Joi.number().integer().positive().allow(null),
-    deployment_required: Joi.boolean().default(false),
+    // tags: Joi.array().items(Joi.string().max(1000000).allow(null, '')).allow(null),
+    steps: Joi.array()
+      .items(Joi.object({ description: Joi.string().max(1000000).allow(null, '').required() }))
+      .allow(null),
+    // related_issues: Joi.array().items(Joi.number().max(1000000).allow(null, '')).allow(null),
+    // escalation_level: Joi.string()
+    //   .valid(...escalationLevelCodes)
+    //   .default('None'),
+    // escalated_to: Joi.number().integer().positive().allow(null),
+    // workaround: Joi.string().allow(null, ''),
+    // estimated_effort: Joi.number().integer().positive().allow(null),
+    // actual_effort: Joi.number().integer().positive().allow(null),
+    // deployment_required: Joi.boolean().default(false),
     environments: Joi.array().items(Joi.string().max(1000000).allow('', null)).required(),
     browsers: Joi.array().items(Joi.string().max(1000000).allow('', null)).required(),
   });

@@ -65,11 +65,17 @@ module.exports = {
 
 const generateUserSchema = async (isUpdate = false) => {
   const userRoleLOVs = await getAllLOVs(['UserRole'], true);
+  const userStatusLOVs = await getAllLOVs(['status'], true);
   const userRoleCodes = userRoleLOVs.map(lov => lov.code);
+  const userStatusCodes = userStatusLOVs.map(lov => lov.code.toLowerCase());
 
   return Joi.object({
     ...(isUpdate
-      ? {} // Don't include email for updates
+      ? {
+          status: Joi.string()
+            .valid(...userStatusCodes)
+            .optional(),
+        } // Don't include email for updates & include status for updates
       : { email: Joi.string().email().max(100).required().external(checkEmailDuplicate) }),
     first_name: Joi.string().max(50)[isUpdate ? 'optional' : 'required'](),
     last_name: Joi.string().max(50)[isUpdate ? 'optional' : 'required'](),

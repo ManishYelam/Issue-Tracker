@@ -1,30 +1,40 @@
 const User = require('../Models/User');
 const { Op } = require('sequelize');
+const UserLog = require('../Models/user_logs');
 
 const updateExpireUsers = async () => {
   try {
-    // Find all users where `expiresAt` is in the past
-    const users = await User.findAll({
-      where: {
-        expiresAt: { [Op.lt]: new Date() },
+    // Update all expired users in one query
+    const [userUpdatedCount] = await User.update(
+      {
+        logged_in_status: false,
+        token: null,
+        expiresAt: null, // Reset expiresAt
+        expiredAt: new Date(), // Set expiredAt to now
       },
-    });
-
-    for (const user of users) {
-      console.log(`🔄 Updating User ID: ${user.id}, Expired At: ${user.expiresAt}`);
-
-      user.logged_in_status = false;
-      user.logoff_by = 'SYSTEM';
-      user.expiredAt = new Date(); // Set expiredAt to now
-      user.expiresAt = null; // Reset expiresAt
-
-      await user.save(); // Save updated user
-      console.log(`✅ Updated User ID: ${user.id}`);
-    }
-
-    console.log('✅ All expired users updated successfully.');
+      {
+        where: {
+          expiresAt: { [Op.lt]: new Date() },
+        },
+      }
+    );
+    // Update UserLog table
+    const [logUpdatedCount] = await UserLog.update(
+      {
+        logoff_by: 'SYSTEM',
+        logoff_at: new Date(),
+      },
+      {
+        where: {
+          logoff_by: null,
+          logoff_at: null,
+          login_at: { [Op.lt]: new Date() },
+        },
+      }
+    );
+    console.log(`✅ Updated ${userUpdatedCount} users and ${logUpdatedCount} logs successfully.`);
   } catch (error) {
-    throw new Error('Error updating expired users:', error.message);
+    console.error('❌ Error updating expired users:', error.message);
   }
 };
 

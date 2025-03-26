@@ -77,6 +77,10 @@ const issueAttributes = {
     type: DataTypes.JSON,
     allowNull: true,
   },
+  steps: {
+    type: DataTypes.JSON,
+    allowNull: true,
+  },
   related_issues: {
     type: DataTypes.JSON,
     allowNull: true,
