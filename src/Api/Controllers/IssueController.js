@@ -194,4 +194,16 @@ module.exports = {
       return res.status(500).json({ success: false, message: '❗ Something went wrong.', error: err.message });
     }
   },
+
+  getIssueStats: async (req, res) => {
+    try {
+      const { user_id, fields } = req.query;
+      const selectedFields = fields ? fields.split(',').map(f => f.trim()) : [];
+      const result = await issueService.getIssueStats(user_id, selectedFields);
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred:`, err);
+      return res.status(500).json({ success: false, message: '❗ Something went wrong.', error: err.message });
+    }
+  },
 };

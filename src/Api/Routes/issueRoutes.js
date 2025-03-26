@@ -11,6 +11,7 @@ issuesRouter
   .get('/get/:issue_id', issuesController.getIssueById)
   .post('/getAll', issuesController.getAllIssues)
   .delete('/delete/:issue_id', issuesController.deleteIssueById)
-  .put('/update-status/:issue_id', issuesController.updateIssueStatus);
+  .put('/update-status/:issue_id', issuesController.updateIssueStatus)
+  .get('/issue-stats', issuesController.getIssueStats);
 
 module.exports = issuesRouter;

@@ -362,4 +362,49 @@ module.exports = {
       return { success: false, message: err.message };
     }
   },
+
+  getIssueStats: async (user_id = null, fields = []) => {
+    try {
+      const validFields = [
+        'total_issues',
+        'pending_issues',
+        'in_progress_issues',
+        'on_hold_issues',
+        'resolved_issues',
+        'to_be_tested_issues',
+        'tested_issues',
+        'committed_issues',
+        'rejected_issues',
+        'critical_priority_issues',
+        'high_priority_issues',
+        'medium_priority_issues',
+        'low_priority_issues',
+        'overdue_issues',
+      ];
+
+      const validSelectedFields = fields.length > 0 ? fields.filter(field => validFields.includes(field)) : [];
+
+      if (fields.length > 0 && validSelectedFields.length === 0) {
+        return { success: false, message: 'Invalid fields provided.' };
+      }
+
+      const queryOptions = {
+        attributes: validSelectedFields.length > 0 ? validSelectedFields : undefined,
+        raw: true,
+      };
+
+      const issueStats = user_id
+        ? await IssueStats.findOne({ where: { user_id }, ...queryOptions })
+        : await IssueStats.findAll(queryOptions);
+
+      if (!issueStats || (Array.isArray(issueStats) && issueStats.length === 0)) {
+        return { success: false, message: user_id ? 'Issue stats not found for this user' : 'No issue stats available' };
+      }
+
+      return { success: true, data: issueStats };
+    } catch (err) {
+      console.error('Error fetching issue stats:', err);
+      return { success: false, message: 'Internal server error', error: err.message };
+    }
+  },
 };
