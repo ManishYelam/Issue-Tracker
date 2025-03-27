@@ -174,7 +174,7 @@ module.exports = {
       return {
         success: true,
         message: "✅ Projects fetched successfully.",
-        totalRecords: count,
+        totalRecords: rows.length,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
         data: rows,
