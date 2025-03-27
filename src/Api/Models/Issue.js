@@ -1,7 +1,16 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
+const Projects = require('./Project');
 
 const issueAttributes = {
+  project_id: {
+    type: DataTypes.UUID,
+    references: {
+      model: Projects,
+      key: 'project_id',
+    },
+    allowNull: false,
+  },
   issue_id: {
     type: DataTypes.INTEGER,
     autoIncrement: true,

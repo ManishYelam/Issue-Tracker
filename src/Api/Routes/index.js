@@ -11,6 +11,7 @@ const { roomRouter, notificationRouter, messageRouter } = require('../../sockets
 const genericRouter = require('./GenericRoutes');
 const issuesRouter = require('./issueRoutes');
 const fileRouter = require('./fileRoutes');
+const projectRouter = require('./projectRoutes');
 
 const router = express.Router();
 
@@ -26,6 +27,7 @@ router
   .use('/messages', authMiddleware, messageRouter)
   .use('/notifications', authMiddleware, notificationRouter)
   .use('/rooms', authMiddleware, roomRouter)
+  .use('/projects', authMiddleware, projectRouter)
   .use('/generics', authMiddleware, genericRouter)
   .use('/issues', authMiddleware, issuesRouter)
   .use('/files', authMiddleware, fileRouter);

@@ -12,6 +12,9 @@ const IssueComment = require('./IssueComment');
 const IssueStats = require('./issueStats');
 const ListOfValues = require('./List.Of.values');
 const Issue = require('./Issue');
+const Projects = require('./Project');
+const Team = require('./Team');
+const TeamMember = require('./TeamMember');
 
 // User-Role relationship: A user belongs to a role, and a role has many users.
 User.belongsTo(Role, { through: 'UserRoles', foreignKey: 'role_id' });
@@ -72,6 +75,27 @@ IssueHistory.belongsTo(Issue, { foreignKey: 'issue_id' });
 
 IssueStats.belongsTo(User, { foreignKey: 'user_id' });
 
+User.hasMany(Projects, { foreignKey: 'owner_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+Projects.belongsTo(User, { foreignKey: 'owner_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
+
+Projects.hasMany(Issue, { foreignKey: 'project_id', as: 'tasks' });
+Issue.belongsTo(Projects, { foreignKey: 'project_id', as: 'project' });
+
+User.hasMany(Issue, { foreignKey: 'user_id', as: 'tasks' });
+Issue.belongsTo(User, { foreignKey: 'user_id', as: 'assignedUser' });
+
+// Project & Team (One-to-Many)
+Projects.hasMany(Team, { foreignKey: 'project_id', as: 'teams' });
+Team.belongsTo(Projects, { foreignKey: 'project_id', as: 'project' });
+
+// Team & TeamMembers (One-to-Many)
+Team.hasMany(TeamMember, { foreignKey: 'team_id', as: 'members' });
+TeamMember.belongsTo(Team, { foreignKey: 'team_id', as: 'team' });
+
+// User & TeamMembers (One-to-Many)
+User.hasMany(TeamMember, { foreignKey: 'user_id', as: 'teams' });
+TeamMember.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
+
 module.exports = {
   User,
   UserLog,
@@ -87,4 +111,7 @@ module.exports = {
   Like,
   UserConnection,
   ListOfValues,
+  Projects,
+  Team,
+  TeamMember,
 };

@@ -13,6 +13,9 @@ const {
   IssueHistory,
   IssueStats,
   ListOfValues,
+  Projects,
+  Team,
+  TeamMember,
 } = require('./Association');
 const {
   BlockedUser,
@@ -54,6 +57,10 @@ module.exports = {
         UserSettings.sync({ alter: false }),
 
         ListOfValues.sync({ alter: false }),
+
+        Projects.sync({ alter: true }),
+        Team.sync({ alter: false }),
+        TeamMember.sync({ alter: false }),
 
         // ApplicationProperties.addConstraint('ApplicationProperties', {
         //   type: 'unique',
