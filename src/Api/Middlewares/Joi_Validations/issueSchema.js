@@ -21,7 +21,6 @@ const createUpsertIssueSchema = async () => {
 
   return Joi.object({
     issue_id: Joi.number().integer().positive().optional(),
-    user_id: Joi.number().integer().positive().required(),
     title: Joi.string().max(255).required(),
     description: Joi.string().required(),
     issue_type: Joi.string()
@@ -41,7 +40,7 @@ const createUpsertIssueSchema = async () => {
     //   .valid(...reproducibilityCodes)
     //   .default('Always'),
     // root_cause: Joi.string().allow(null, ''),
-    // assigned_to: Joi.number().integer().positive().allow(null),
+    user_id: Joi.number().integer().positive().required(),
     // reported_by: Joi.number().integer().positive().required(),
     // resolved_by: Joi.number().integer().positive().allow(null),
     // resolved_at: Joi.date().allow(null),

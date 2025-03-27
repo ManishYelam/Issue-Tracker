@@ -54,7 +54,7 @@ ApplicationProperties.belongsTo(User, { foreignKey: 'user_id', as: 'user' });
 Issue.belongsTo(User, { foreignKey: 'reported_by', as: 'reporter' });
 
 // Issue is assigned to a User (assignedTo)
-Issue.belongsTo(User, { foreignKey: 'assigned_to', as: 'assignee' });
+Issue.belongsTo(User, { foreignKey: 'user_id', as: 'assignee' });
 
 // Issue is resolved by a User (resolvedBy)
 Issue.belongsTo(User, { foreignKey: 'resolved_by', as: 'resolver' });
