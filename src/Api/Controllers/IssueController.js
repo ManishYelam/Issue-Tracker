@@ -19,7 +19,7 @@ module.exports = {
           errors: error.details.map(e => e.message),
         });
       }
-      const result = await issueService.upsertIssue(req.body);
+      const result = await issueService.upsertIssue(req.body, req.user_info.id);
       return res.status(result.success ? 200 : 400).json(result);
     } catch (err) {
       console.error(`🚨 Error Occurred: ${err.message}`);

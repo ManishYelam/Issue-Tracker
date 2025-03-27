@@ -5,13 +5,17 @@ const Issue = require('../Models/Issue');
 const sequelize = require('../../Config/Database/sequelize.config');
 
 module.exports = {
-  upsertIssue: async issueData => {
+  upsertIssue: async (issueData, user_id) => {
     const transaction = await sequelize.MAIN_DB_NAME.transaction();
     try {
       const [issue, created] = await Issue.upsert(issueData, {
         returning: true,
         transaction,
       });
+
+      if (created) {
+        await Issue.update({ reported_by: user_id }, { where: { issue_id: issue.issue_id }, transaction });
+      }
 
       const [issueStats, isNew] = await IssueStats.findOrCreate({
         where: { user_id: issue.user_id },

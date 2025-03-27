@@ -44,7 +44,7 @@ const createUpsertIssueSchema = async () => {
       .optional(),
     root_cause: Joi.string().allow(null, '').optional(),
     user_id: Joi.number().integer().positive().required(),
-    reported_by: Joi.number().integer().positive().required().optional(),
+    // reported_by: Joi.number().integer().positive().required().optional(),
     // resolved_by: Joi.number().integer().positive().allow(null),
     // resolved_at: Joi.date().allow(null),
     due_date: Joi.date().allow(null).optional(),
