@@ -58,7 +58,7 @@ module.exports = {
 
         ListOfValues.sync({ alter: false }),
 
-        Projects.sync({ alter: true }),
+        Projects.sync({ alter: false }),
         Team.sync({ alter: false }),
         TeamMember.sync({ alter: false }),
 

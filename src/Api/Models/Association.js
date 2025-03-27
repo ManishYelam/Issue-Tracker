@@ -89,7 +89,7 @@ Projects.hasMany(Team, { foreignKey: 'project_id', as: 'teams' });
 Team.belongsTo(Projects, { foreignKey: 'project_id', as: 'project' });
 
 // Team & TeamMembers (One-to-Many)
-Team.hasMany(TeamMember, { foreignKey: 'team_id', as: 'members' });
+Team.hasMany(TeamMember, { foreignKey: 'team_id', as: 'team_members' });
 TeamMember.belongsTo(Team, { foreignKey: 'team_id', as: 'team' });
 
 // User & TeamMembers (One-to-Many)
