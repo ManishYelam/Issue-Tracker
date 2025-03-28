@@ -22,7 +22,7 @@ const IssueStats = sequelize.MAIN_DB_NAME.define(
         model: Projects,
         key: 'project_id',
       },
-      // allowNull: false,
+      allowNull: false,
     },
     total_issues: {
       type: DataTypes.BIGINT,
