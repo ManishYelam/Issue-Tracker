@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
 const User = require('./User');
+const Projects = require('./Project');
 
 const IssueStats = sequelize.MAIN_DB_NAME.define(
   'IssueStats',
@@ -14,6 +15,14 @@ const IssueStats = sequelize.MAIN_DB_NAME.define(
         model: User,
         key: 'id',
       },
+    },
+    project_id: {
+      type: DataTypes.UUID,
+      references: {
+        model: Projects,
+        key: 'project_id',
+      },
+      // allowNull: false,
     },
     total_issues: {
       type: DataTypes.BIGINT,

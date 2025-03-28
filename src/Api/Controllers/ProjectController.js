@@ -32,12 +32,12 @@ module.exports = {
   },
 
   getAllProjects: async (req, res) => {
-      try {
-        const result = await projectService.getAllProjects(req.body);
-        return res.status(result.success ? 200 : 400).json(result);
-      } catch (err) {
-        console.error(`🚨 Error Occurred: ${err.message}`);
-        return res.status(500).json({ success: false, message: '❗ Something went wrong.', error: err.message });
-      }
-    },
+    try {
+      const result = await projectService.getAllProjects(req.body);
+      return res.status(result.success ? 200 : 400).json(result);
+    } catch (err) {
+      console.error(`🚨 Error Occurred: ${err.message}`);
+      return res.status(500).json({ success: false, message: '❗ Something went wrong.', error: err.message });
+    }
+  },
 };

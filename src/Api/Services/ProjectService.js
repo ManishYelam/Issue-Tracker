@@ -5,19 +5,28 @@ module.exports = {
   upsertProject: async data => {
     return await sequelize.MAIN_DB_NAME.transaction(async transaction => {
       let project;
+      let projectStatus = 'created'; // Track project status
+      let statusSummary = {
+        project: null,
+        teams: [],
+        team_members: [],
+      };
 
       // ✅ Ensure project exists before updating
       if (data.project_id) {
         project = await Projects.findByPk(data.project_id, { transaction });
 
-        if (!project) {
+        if (project) {
+          await project.update(data, { transaction });
+          projectStatus = 'updated';
+        } else {
           throw new Error(`Project with ID ${data.project_id} does not exist.`);
         }
-
-        await project.update(data, { transaction });
       } else {
         project = await Projects.create(data, { transaction });
       }
+
+      statusSummary.project = projectStatus;
 
       let upsertedTeams = [];
 
@@ -29,8 +38,17 @@ module.exports = {
               throw new Error('team_id is required for updating an existing team.');
             }
 
-            // ✅ Upsert Team
-            let [updatedTeam] = await Team.upsert({ ...team, project_id: project.project_id }, { transaction, returning: true });
+            let existingTeam = await Team.findByPk(team.team_id, { transaction });
+            let teamStatus = 'created';
+
+            if (existingTeam) {
+              await existingTeam.update(team, { transaction });
+              teamStatus = 'updated';
+            } else {
+              existingTeam = await Team.create({ ...team, project_id: project.project_id }, { transaction });
+            }
+
+            statusSummary.teams.push({ team_id: team.team_id, status: teamStatus });
 
             let upsertedTeamMembers = [];
 
@@ -47,6 +65,8 @@ module.exports = {
                     transaction,
                   });
 
+                  let memberStatus = created ? 'created' : 'updated';
+
                   // ✅ If the member already exists, update relevant fields
                   if (!created) {
                     await teamMember.update(
@@ -58,13 +78,15 @@ module.exports = {
                     );
                   }
 
+                  statusSummary.team_members.push({ user_id: member.user_id, team_id: team.team_id, status: memberStatus });
+
                   return teamMember.get({ plain: true }); // ✅ Convert to raw JSON object
                 })
               );
             }
 
             return {
-              ...updatedTeam.get({ plain: true }),
+              ...existingTeam.get({ plain: true }),
               team_members: upsertedTeamMembers, // ✅ Attach upserted team members
             };
           })
@@ -76,7 +98,7 @@ module.exports = {
         teams: upsertedTeams,
       };
 
-      return projectResponse;
+      return { project: projectResponse, status: statusSummary };
     });
   },
 
@@ -120,20 +142,20 @@ module.exports = {
     }
   },
 
-  getAllProjects: async ({ page = 1, limit = 10, filters = {}, search = "", searchFields = [] }) => {
+  getAllProjects: async ({ page = 1, limit = 10, filters = {}, search = '', searchFields = [] }) => {
     try {
       const offset = (page - 1) * limit;
 
       let whereConditions = {};
 
       // ✅ Apply dynamic filters
-      Object.keys(filters).forEach((key) => {
+      Object.keys(filters).forEach(key => {
         if (filters[key]) whereConditions[key] = filters[key];
       });
 
       // ✅ Apply dynamic search on specified fields
       if (search && searchFields.length > 0) {
-        whereConditions[Op.or] = searchFields.map((field) => ({
+        whereConditions[Op.or] = searchFields.map(field => ({
           [field]: { [Op.like]: `%${search}%` },
         }));
       }
@@ -143,19 +165,19 @@ module.exports = {
         where: whereConditions,
         limit,
         offset,
-        order: [["createdAt", "DESC"]],
+        order: [['createdAt', 'DESC']],
         include: [
           {
             model: Team,
-            as: "teams",
+            as: 'teams',
             include: [
               {
                 model: TeamMember,
-                as: "team_members",
+                as: 'team_members',
                 include: [
                   {
                     model: User,
-                    as: "user",
+                    as: 'user',
                     include: [
                       {
                         model: Role,
@@ -173,7 +195,7 @@ module.exports = {
 
       return {
         success: true,
-        message: "✅ Projects fetched successfully.",
+        message: '✅ Projects fetched successfully.',
         totalRecords: rows.length,
         totalPages: Math.ceil(count / limit),
         currentPage: page,
@@ -183,5 +205,4 @@ module.exports = {
       throw new Error(`❌ Error in getAllProjects: ${error.message}`);
     }
   },
-
 };
