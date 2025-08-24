@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white flex flex-col items-center justify-center h-screen">
+  <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-96 text-center">
+    <h1 class="text-xl font-bold mb-4">WebSocket Status</h1>
+    <p id="status" class="text-green-400 font-semibold">Disconnected</p>
+    <div class="flex justify-center gap-4 mt-4">
+      <button id="connectBtn" class="bg-blue-500 px-4 py-2 rounded hover:bg-blue-600">Connect</button>
+      <button id="disconnectBtn" class="bg-red-500 px-4 py-2 rounded hover:bg-red-600" disabled>Disconnect</button>
+    </div>
+    <div id="userStatus" class="mt-4 text-sm text-gray-300"></div>
+    <div id="messages" class="mt-4 text-xs text-gray-400 h-32 overflow-auto"></div>
+  </div>
+
+  <script>
+    let socket;
+
+    document.getElementById('connectBtn').addEventListener('click', () => {
+      socket = io('http://localhost:8000', {
+        auth: { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NjMsImVtYWlsIjoidW5pdHkuY2lyY2xlLjIwMDJAZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6Ik1hbmlzaCIsImxhc3RfbmFtZSI6IlllbGFtIiwicm9sZSI6IkFETUlOIiwiZGF0ZV9vZl9iaXJ0aCI6bnVsbCwicGhvbmVfbnVtYmVyIjpudWxsLCJhZGRyZXNzIjpudWxsLCJzdGF0dXMiOiJhY3RpdmUiLCJpc1ZlcmlmaWVkIjp0cnVlLCJwZXJtaXNzaW9uX2lkcyI6W10sInVzZXJfbWV0YWRhdGEiOnt9LCJyb2xlX2luZm8iOnsiaWQiOjEsImNvZGUiOiJBRE1JTiIsIm5hbWUiOiJGb3VuZGVyIiwiZGVzY3JpcHRpb24iOiJSZXNwb25zaWJsZSBmb3IgdGhlIGVzdGFibGlzaG1lbnQgYW5kIHN0cmF0ZWdpYyBkaXJlY3Rpb24gb2YgdGhlIG9yZ2FuaXphdGlvbi4iLCJjcmVhdGVkX2J5IjoiU3lzdGVtIiwidXBkYXRlZF9ieSI6IlN5c3RlbSIsImNyZWF0ZWRBdCI6IjIwMjUtMDItMjZUMDg6MDk6NTIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjUtMDMtMDRUMDI6NTE6MjMuMDAwWiJ9LCJpYXQiOjE3NDMzMTgzMDAsImV4cCI6MTc0MzM2MTUwMH0.002dx1NfUzwzxgS4PulyJAOcd7HRCPRc2oDpeoffwEA' }
+      });
+
+      socket.on('connect', () => {
+        document.getElementById('status').innerText = 'Connected';
+        document.getElementById('status').classList.replace('text-green-400', 'text-blue-400');
+        document.getElementById('disconnectBtn').disabled = false;
+        document.getElementById('connectBtn').disabled = true;
+        socket.emit('user_connected');
+      });
+
+      socket.on('user_status_change', (data) => {
+        document.getElementById('userStatus').innerHTML = `<p>User ${data.username} is now ${data.status}</p>`;
+      });
+
+      socket.on('statsData', (data) => {
+        document.getElementById('messages').innerHTML += `<p>Stats: ${JSON.stringify(data)}</p>`;
+      });
+
+      socket.on('disconnect', () => {
+        document.getElementById('status').innerText = 'Disconnected';
+        document.getElementById('status').classList.replace('text-blue-400', 'text-green-400');
+        document.getElementById('disconnectBtn').disabled = true;
+        document.getElementById('connectBtn').disabled = false;
+      });
+    });
+
+    document.getElementById('disconnectBtn').addEventListener('click', () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    });
+  </script>
+</body>
+</html>

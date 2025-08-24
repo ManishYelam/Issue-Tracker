@@ -20,6 +20,7 @@ const createUpsertIssueSchema = async () => {
   const escalationLevelCodes = escalationLevelTypeLOVs.map(lov => lov.code);
 
   return Joi.object({
+    project_id: Joi.string().uuid().required(),
     issue_id: Joi.number().integer().positive().optional(),
     title: Joi.string().max(255).required(),
     description: Joi.string().required(),
