@@ -18,9 +18,10 @@ module.exports = {
       }
 
       const [issueStats, isNew] = await IssueStats.findOrCreate({
-        where: { user_id: issue.user_id },
+        where: { user_id: issue.user_id, project_id: issue.project_id },
         defaults: {
           user_id: issue.user_id,
+          project_id: issue.project_id,
           total_issues: 0,
           pending_issues: 0,
           in_progress_issues: 0,
@@ -39,9 +40,9 @@ module.exports = {
         transaction,
       });
 
-      const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction });
+      const totalIssues = await Issue.count({ where: { user_id: issue.user_id, project_id: issue.project_id }, transaction });
       const statusCounts = await Issue.findAll({
-        where: { user_id: issue.user_id },
+        where: { user_id: issue.user_id, project_id: issue.project_id },
         attributes: ['status', [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']],
         group: ['status'],
         transaction,
@@ -55,6 +56,7 @@ module.exports = {
       const overdueIssues = await Issue.count({
         where: {
           user_id: issue.user_id,
+          project_id: issue.project_id,
           due_date: { [Op.lt]: new Date() },
           status: { [Op.notIn]: ['RESOLVED', 'REJECTED'] },
         },
@@ -62,7 +64,7 @@ module.exports = {
       });
 
       const priorityCounts = await Issue.findAll({
-        where: { user_id: issue.user_id },
+        where: { user_id: issue.user_id, project_id: issue.project_id },
         attributes: ['priority', [Sequelize.fn('COUNT', Sequelize.col('priority')), 'count']],
         group: ['priority'],
         transaction,
@@ -103,6 +105,7 @@ module.exports = {
     try {
       const issues = await Issue.bulkCreate(bulkIssues, {
         updateOnDuplicate: [
+          'project_id',
           'title',
           'description',
           'issue_type',
@@ -133,14 +136,18 @@ module.exports = {
         transaction,
       });
 
-      const userIds = [...new Set(bulkIssues.map(issue => issue.user_id))];
+      // Create array of unique user_id/project_id objects
+      const userProjectPairs = [
+        ...new Set(bulkIssues.map(issue => JSON.stringify({ user_id: issue.user_id, project_id: issue.project_id }))),
+      ].map(str => JSON.parse(str));
 
       await Promise.all(
-        userIds.map(async userId => {
+        userProjectPairs.map(async ({ user_id, project_id }) => {
           await IssueStats.findOrCreate({
-            where: { user_id: userId },
+            where: { user_id, project_id },
             defaults: {
-              user_id: userId,
+              user_id,
+              project_id,
               total_issues: 0,
               pending_issues: 0,
               in_progress_issues: 0,
@@ -162,10 +169,10 @@ module.exports = {
       );
 
       await Promise.all(
-        userIds.map(async userId => {
-          const totalIssues = await Issue.count({ where: { user_id: userId }, transaction });
+        userProjectPairs.map(async ({ user_id, project_id }) => {
+          const totalIssues = await Issue.count({ where: { user_id, project_id }, transaction });
           const statusCounts = await Issue.findAll({
-            where: { user_id: userId },
+            where: { user_id, project_id },
             attributes: ['status', [Sequelize.fn('COUNT', Sequelize.col('status')), 'count']],
             group: ['status'],
             transaction,
@@ -178,7 +185,8 @@ module.exports = {
 
           const overdueIssues = await Issue.count({
             where: {
-              user_id: userId,
+              user_id,
+              project_id,
               due_date: { [Op.lt]: new Date() },
               status: { [Op.notIn]: ['RESOLVED', 'REJECTED'] },
             },
@@ -186,7 +194,7 @@ module.exports = {
           });
 
           const priorityCounts = await Issue.findAll({
-            where: { user_id: userId },
+            where: { user_id, project_id },
             attributes: ['priority', [Sequelize.fn('COUNT', Sequelize.col('priority')), 'count']],
             group: ['priority'],
             transaction,
@@ -211,7 +219,7 @@ module.exports = {
               ...issueStatusCounts,
               ...priorityStatusCounts,
             },
-            { where: { user_id: userId }, transaction }
+            { where: { user_id, project_id }, transaction }
           );
         })
       );
@@ -297,13 +305,13 @@ module.exports = {
       await Issue.destroy({ where: { issue_id }, transaction });
 
       // 🔄 Update total_issues in IssueStats
-      const totalIssues = await Issue.count({ where: { user_id: issue.user_id }, transaction });
+      const totalIssues = await Issue.count({ where: { user_id: issue.user_id, project_id: issue.project_id }, transaction });
 
       // 🔍 Check if IssueStats exists
-      const issueStats = await IssueStats.findOne({ where: { user_id: issue.user_id }, transaction });
+      const issueStats = await IssueStats.findOne({ where: { user_id: issue.user_id, project_id: issue.project_id }, transaction });
 
       if (issueStats) {
-        await issueStats.update({ total_issues: totalIssues }, { transaction });
+        await issueStats.update({ total_issues: totalIssues, project_id: issue.project_id }, { transaction });
       }
 
       await transaction.commit();

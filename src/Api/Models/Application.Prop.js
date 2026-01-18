@@ -1,6 +1,5 @@
 const { DataTypes, Op } = require('sequelize');
 const { sequelize } = require('../../Config/Database/db.config');
-const { User } = require('./Association');
 
 const ApplicationPropAttribute = {
   id: {

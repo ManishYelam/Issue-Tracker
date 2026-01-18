@@ -10,7 +10,7 @@ const { TestSequelizeConnection, TestMySQLConnection } = require('./src/Config/D
 const authMiddleware = require('./src/Api/Middlewares/authorizationMiddleware.js');
 require('dotenv').config();
 
-// require('./src/sockets/server.socket.js');
+require('./src/sockets/server.socket.js');
 
 const app = Middleware();
 app.use(cors());

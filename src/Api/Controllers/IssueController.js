@@ -44,7 +44,7 @@ module.exports = {
         if (validation.error) {
           errors.push({ row: index + 1, error: validation.error.details[0]?.message || 'Unknown validation error' });
         } else {
-          validIssues.push(issue);
+          validIssues.push({ ...issue, reported_by: req.user_info.id });
         }
       }
 

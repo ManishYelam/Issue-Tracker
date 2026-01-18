@@ -33,19 +33,19 @@ module.exports = {
   },
 };
 
-const cacheHelper = require('./cacheHelper');
+// const cacheHelper = require('./cacheHelper');
 
 // Caching data from an expensive query
-app.get('/data', (req, res) => {
-  const cacheKey = 'data';
+// app.get('/data', (req, res) => {
+//   const cacheKey = 'data';
 
-  cacheHelper.getCache(cacheKey, cachedData => {
-    if (cachedData) return res.json(cachedData);
+//   cacheHelper.getCache(cacheKey, cachedData => {
+//     if (cachedData) return res.json(cachedData);
 
-    // Simulate expensive operation
-    const data = getDataFromDB();
-    cacheHelper.setCache(cacheKey, data);
+//     // Simulate expensive operation
+//     const data = getDataFromDB();
+//     cacheHelper.setCache(cacheKey, data);
 
-    res.json(data);
-  });
-});
+//     res.json(data);
+//   });
+// });

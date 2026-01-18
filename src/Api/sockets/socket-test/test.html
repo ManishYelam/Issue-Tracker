@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+</head>
+<body>
+  <h1>WebSocket Connection Test</h1>
+  <div>
+    <button id="connectBtn">Connect</button>
+    <button id="disconnectBtn" disabled>Disconnect</button>
+  </div>
+  <p><strong>Status:</strong> <span id="status">Not Connected</span></p>
+  <h3>Messages:</h3>
+  <ul id="messages"></ul>
+
+  <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+  <script>
+    let socket;
+    const user = {
+      id: '123',
+      username: 'TestUser' // Change to dynamically get username
+    };
+
+    document.getElementById('connectBtn').addEventListener('click', () => {
+      socket = io('http://localhost:8000', {
+        auth: {
+          token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NDgsImVtYWlsIjoibWFuaXNoeWVsYW1AZ21haWwuY29tIiwiZmlyc3RfbmFtZSI6Ik1hbmlzaCIsImxhc3RfbmFtZSI6IlllbGFtIiwicm9sZSI6IkFETUlOIiwiZGF0ZV9vZl9iaXJ0aCI6bnVsbCwicGhvbmVfbnVtYmVyIjpudWxsLCJhZGRyZXNzIjpudWxsLCJzdGF0dXMiOiJhY3RpdmUiLCJpc1ZlcmlmaWVkIjp0cnVlLCJwZXJtaXNzaW9uX2lkcyI6W10sInVzZXJfbWV0YWRhdGEiOnt9LCJyb2xlX2luZm8iOnsiaWQiOjEsImNvZGUiOiJBRE1JTiIsIm5hbWUiOiJGb3VuZGVyIiwiZGVzY3JpcHRpb24iOiJSZXNwb25zaWJsZSBmb3IgdGhlIGVzdGFibGlzaG1lbnQgYW5kIHN0cmF0ZWdpYyBkaXJlY3Rpb24gb2YgdGhlIG9yZ2FuaXphdGlvbi4iLCJjcmVhdGVkX2J5IjoiU3lzdGVtIiwidXBkYXRlZF9ieSI6IlN5c3RlbSIsImNyZWF0ZWRBdCI6IjIwMjUtMDItMjZUMDg6MDk6NTIuMDAwWiIsInVwZGF0ZWRBdCI6IjIwMjUtMDMtMDRUMDI6NTE6MjMuMDAwWiJ9LCJpYXQiOjE3NDMzMTUyNjcsImV4cCI6MTc0MzM1ODQ2N30.fUMm4G3tRSjQLBjU6XrcYqFRybryjhtxvO7Sdl_teSI' // Replace with actual token
+        }
+      });
+
+      socket.on('connect', () => {
+        document.getElementById('status').innerText = '✅ Connected to server';
+        document.getElementById('disconnectBtn').disabled = false;
+        document.getElementById('connectBtn').disabled = true;
+        console.log("🔗 Connected to WebSocket");
+
+        socket.emit('user_connected', user);
+      });
+
+      socket.on('user_status_change', (data) => {
+        console.log(`🟢 Status Change: ${data.username} is now ${data.status}`);
+
+        const messageList = document.getElementById('messages');
+        const messageItem = document.createElement('li');
+        messageItem.innerText = `${data.username} is now ${data.status}`;
+        messageList.appendChild(messageItem);
+      });
+
+      socket.on('disconnect', () => {
+        document.getElementById('status').innerText = '❌ Disconnected from server';
+        document.getElementById('disconnectBtn').disabled = true;
+        document.getElementById('connectBtn').disabled = false;
+        console.log("🔴 Disconnected from WebSocket");
+      });
+
+      socket.on('connect_error', (err) => {
+        console.error("⚠️ Connection Error:", err.message);
+        document.getElementById('status').innerText = `⚠️ Error: ${err.message}`;
+      });
+
+      socket.on('error', (error) => {
+        console.error("⚠️ WebSocket Error:", error);
+      });
+    });
+
+    document.getElementById('disconnectBtn').addEventListener('click', () => {
+      if (socket) {
+        socket.disconnect();
+      }
+    });
+  </script>
+</body>
+</html>
